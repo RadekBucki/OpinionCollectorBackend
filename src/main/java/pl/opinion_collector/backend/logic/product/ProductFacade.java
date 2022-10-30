@@ -1,25 +1,25 @@
 package pl.opinion_collector.backend.logic.product;
 
-import pl.opinion_collector.backend.database_communication.CategoryInterface;
-import pl.opinion_collector.backend.database_communication.ProductInterface;
+import pl.opinion_collector.backend.database_communication.Category;
+import pl.opinion_collector.backend.database_communication.Product;
 
 import java.util.List;
 
-public interface ProductFacadeInterface {
-    ProductInterface getProductBySku(String sku);
+public interface ProductFacade {
+    Product getProductBySku(String sku);
 
-    List<ProductInterface> getAllProducts();
+    List<Product> getAllProducts();
 
-    List<ProductInterface> getProducts();
+    List<Product> getProducts();
 
-    List<ProductInterface> getProductsFiltered(
+    List<Product> getProductsFiltered(
             String categoryName,
             String searchPhrase,
             Integer opinionAvgMin,
             Integer opinionAvgMax
     );
 
-    List<ProductInterface> addProduct(
+    List<Product> addProduct(
             String sku,
             String name,
             String pictureUrl,
@@ -28,7 +28,7 @@ public interface ProductFacadeInterface {
             Boolean visible
     );
 
-    ProductInterface editProduct(
+    Product editProduct(
             String sku,
             String name,
             String pictureUrl,
@@ -39,9 +39,9 @@ public interface ProductFacadeInterface {
 
     void removeProduct(String sku);
 
-    CategoryInterface addCategory(String categoryName, Boolean visible);
+    Category addCategory(String categoryName, Boolean visible);
 
-    CategoryInterface editCategory(String categoryName, Boolean visible);
+    Category editCategory(String categoryName, Boolean visible);
 
     void removeCategory(String categoryName);
 }

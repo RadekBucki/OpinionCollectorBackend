@@ -2,12 +2,12 @@ package pl.opinion_collector.backend.database_communication;
 
 import java.util.List;
 
-interface DatabaseCommunicationFacadeInterface {
-    List<UserInterface> getAllUsers();
+interface DatabaseCommunicationFacade {
+    List<User> getAllUsers();
 
-    UserInterface getUserByToken(String token);
+    User getUserByToken(String token);
 
-    UserInterface createUser(
+    User createUser(
             String firstName,
             String lastName,
             String email,
@@ -20,7 +20,7 @@ interface DatabaseCommunicationFacadeInterface {
 
     String addUserToken(Integer userId, String token);
 
-    UserInterface updateUser(
+    User updateUser(
             Integer userId,
             String firstName,
             String lastName,
@@ -30,20 +30,20 @@ interface DatabaseCommunicationFacadeInterface {
             Boolean isAdmin
     );
 
-    ProductInterface getProductBySku(String sku);
+    Product getProductBySku(String sku);
 
-    List<ProductInterface> getAllProducts();
+    List<Product> getAllProducts();
 
-    List<ProductInterface> getVisibleProducts();
+    List<Product> getVisibleProducts();
 
-    List<ProductInterface> getProductsFilterProducts(
+    List<Product> getProductsFilterProducts(
             String categoryName,
             String searchPhrase,
             Integer opinionAvgMin,
             Integer opinionAvgMax
     );
 
-    ProductInterface createProduct(
+    Product createProduct(
             Integer authorId,
             String sku, String name,
             String pictureUrl,
@@ -52,7 +52,7 @@ interface DatabaseCommunicationFacadeInterface {
             Boolean visible
     );
 
-    ProductInterface updateProduct(
+    Product updateProduct(
             Integer authorId,
             String sku,
             String name,
@@ -62,17 +62,17 @@ interface DatabaseCommunicationFacadeInterface {
             Boolean visible
     );
 
-    ProductInterface removeProduct(String sku);
+    Product removeProduct(String sku);
 
-    CategoryInterface createCategory(String categoryName, Boolean visible);
+    Category createCategory(String categoryName, Boolean visible);
 
-    CategoryInterface updateCategory(String categoryName, Boolean visible);
+    Category updateCategory(String categoryName, Boolean visible);
 
-    CategoryInterface removeCategory(String categoryName);
+    Category removeCategory(String categoryName);
 
-    List<OpinionInterface> getProductOpinions(String sku);
+    List<Opinion> getProductOpinions(String sku);
 
-    OpinionInterface addProductOpinion(
+    Opinion addProductOpinion(
             Integer opinionValue,
             String opinionDescription,
             String opinionPicture,
@@ -80,15 +80,15 @@ interface DatabaseCommunicationFacadeInterface {
             List<String> disadvantages
     );
 
-    List<OpinionInterface> getUserOpinions(Integer userId);
+    List<Opinion> getUserOpinions(Integer userId);
 
-    List<SuggestionInterface> getAllSuggestions();
+    List<Suggestion> getAllSuggestions();
 
-    List<SuggestionInterface> getUserSuggestions(Integer userId);
+    List<Suggestion> getUserSuggestions(Integer userId);
 
-    List<SuggestionInterface> addSuggestion(String sku, Integer userId, String suggestionDescription);
+    List<Suggestion> addSuggestion(String sku, Integer userId, String suggestionDescription);
 
-    SuggestionInterface replySuggestion(
+    Suggestion replySuggestion(
             Integer suggestionId,
             Integer suggestionReviewerId,
             String suggestionStatus,

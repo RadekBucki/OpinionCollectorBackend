@@ -15,6 +15,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 public class SwaggerConfiguration {
     /**
      * Swagger 2 docked initialization
+     *
      * @return Docket
      */
     @Bean
@@ -29,6 +30,7 @@ public class SwaggerConfiguration {
 
     /**
      * API info
+     *
      * @return ApiInfo
      */
     private ApiInfo apiInfoMetaData() {

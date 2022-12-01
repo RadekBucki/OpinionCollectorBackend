@@ -41,7 +41,6 @@ public class Suggestion {
     private Product productId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User reviewerId;
 
     @OneToOne

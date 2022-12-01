@@ -4,8 +4,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -57,11 +55,9 @@ public class Product {
     @JoinColumn(name = "user_id")
     private User authorId;
 
-    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "productId", targetEntity = Opinion.class, cascade = CascadeType.ALL)
     private List<Opinion> opinions = new ArrayList<>();
 
-    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "productId", targetEntity = Suggestion.class, cascade = CascadeType.ALL)
     private List<Suggestion> suggestions = new ArrayList<>();
 

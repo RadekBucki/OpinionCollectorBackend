@@ -2,8 +2,8 @@ spring:
   application:
     name: opinioncollectorbackend
   datasource:
-    username: admin
-    password: admin
+    username:
+    password:
     url: jdbc:postgresql://localhost:5432/opinioncollector
   jpa:
     hibernate:

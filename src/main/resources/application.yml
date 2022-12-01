@@ -1,5 +1,16 @@
 spring:
+  application:
+    name: opinioncollectorbackend
   datasource:
-    username:
-    password:
+    username: admin
+    password: admin
     url: jdbc:postgresql://localhost:5432/opinioncollector
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        globally_quoted_identifiers: true

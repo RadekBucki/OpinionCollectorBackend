@@ -1,13 +1,13 @@
 package pl.opinion_collector.backend.database_communication.communication;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import pl.opinion_collector.backend.database_communication.model.Opinion;
 import pl.opinion_collector.backend.database_communication.repository.OpinionRepository;
 
 import java.util.List;
 
-@Service
+@Component
 public class OpinionDatabaseCommunication {
 
     @Autowired
@@ -24,7 +24,7 @@ public class OpinionDatabaseCommunication {
     }
 
     public Opinion addProductOpinion(Integer opinionValue, String opinionDescription, String opinionPicture, List<String> advantages, List<String> disadvantages) {
-        Opinion opinion = new Opinion(opinionValue, opinionDescription, opinionPicture);
+        Opinion opinion = new Opinion(opinionValue, opinionDescription, opinionPicture, advantages, disadvantages);
         return opinionRepository.save(opinion);
     }
 

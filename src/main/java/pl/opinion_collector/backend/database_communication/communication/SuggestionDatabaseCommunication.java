@@ -1,8 +1,7 @@
 package pl.opinion_collector.backend.database_communication.communication;
 
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import pl.opinion_collector.backend.database_communication.model.Product;
 import pl.opinion_collector.backend.database_communication.model.Review;
 import pl.opinion_collector.backend.database_communication.model.Suggestion;
@@ -11,8 +10,7 @@ import pl.opinion_collector.backend.database_communication.repository.Suggestion
 
 import java.util.List;
 
-@Service
-@NoArgsConstructor
+@Component
 public class SuggestionDatabaseCommunication {
 
     @Autowired

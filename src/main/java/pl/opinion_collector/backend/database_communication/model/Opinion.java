@@ -1,23 +1,24 @@
 package pl.opinion_collector.backend.database_communication.model;
 
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
+@TypeDefs({
+        @TypeDef(name = "json", typeClass = JsonType.class)
+})
 @Table(name = "opinion")
 public class Opinion {
 
@@ -35,6 +36,14 @@ public class Opinion {
     @NonNull
     private String pictureUrl;
 
+    @NonNull
+    @Type(type = "json")
+    private List<String> advantages;
+
+    @NonNull
+    @Type(type = "json")
+    private List<String> disadvantages;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User userId;
@@ -43,8 +52,4 @@ public class Opinion {
     @JoinColumn(name = "product_id")
     private Product productId;
 
-
-//    private List<String> advantages = new ArrayList<>();
-//
-//    private List<String> disadvantages = new ArrayList<>();
 }

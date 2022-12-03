@@ -1,7 +1,7 @@
 package pl.opinion_collector.backend.database_communication.communication;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import pl.opinion_collector.backend.database_communication.model.Category;
 import pl.opinion_collector.backend.database_communication.model.Product;
 import pl.opinion_collector.backend.database_communication.model.User;
@@ -9,7 +9,7 @@ import pl.opinion_collector.backend.database_communication.repository.ProductRep
 
 import java.util.List;
 
-@Service
+@Component
 public class ProductDatabaseCommunication {
 
     @Autowired

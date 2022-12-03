@@ -1,7 +1,7 @@
 package pl.opinion_collector.backend.logic.product;
 
-import pl.opinion_collector.backend.database_communication.Category;
-import pl.opinion_collector.backend.database_communication.Product;
+import pl.opinion_collector.backend.database_communication.model.Category;
+import pl.opinion_collector.backend.database_communication.model.Product;
 
 import java.util.List;
 

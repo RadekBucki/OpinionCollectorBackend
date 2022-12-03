@@ -1,6 +1,6 @@
 package pl.opinion_collector.backend.logic.opinion;
 
-import pl.opinion_collector.backend.database_communication.Opinion;
+import pl.opinion_collector.backend.database_communication.model.Opinion;
 
 import java.util.List;
 

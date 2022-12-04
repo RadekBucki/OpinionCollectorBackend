@@ -20,6 +20,4 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Build backend application
-        run: mvn -B package --file pom.xml
-      - name: Run backend application tests
-        run: mvn -B test --file pom.xml
+        run: mvn install -DskipTests --file pom.xml

@@ -4,23 +4,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import pl.opinion_collector.backend.database_communication.listener.ProductListener;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.PostLoad;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@EntityListeners(ProductListener.class)
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
@@ -63,12 +54,4 @@ public class Product {
 
     @ManyToMany(mappedBy = "products", targetEntity = Category.class, cascade = CascadeType.ALL)
     private List<Category> categories = new ArrayList<>();
-
-    @PostLoad
-    public void calculateAvgOpinion() {
-        opinionAvg = opinions.stream()
-                .mapToDouble(Opinion::getOpinionValue)
-                .average()
-                .orElse(0.0);
-    }
 }

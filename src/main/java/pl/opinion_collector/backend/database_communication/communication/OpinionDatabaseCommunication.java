@@ -20,7 +20,7 @@ public class OpinionDatabaseCommunication {
     private UserDatabaseCommunication userDatabaseCommunication;
 
     public List<Opinion> getProductOpinions(String sku) {
-        return opinionRepository.findByProductId(productDatabaseCommunication.getProductBySku(sku));
+        return opinionRepository.findAllByProductId(productDatabaseCommunication.getProductBySku(sku));
     }
 
     public Opinion addProductOpinion(Integer opinionValue, String opinionDescription, String opinionPicture, List<String> advantages, List<String> disadvantages) {
@@ -29,7 +29,7 @@ public class OpinionDatabaseCommunication {
     }
 
     public List<Opinion> getUserOpinions(Long userId) {
-        return opinionRepository.findByUserId(userDatabaseCommunication.getUserById(userId));
+        return opinionRepository.findAllByUserId(userDatabaseCommunication.getUserById(userId));
     }
 
 

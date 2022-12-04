@@ -13,7 +13,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findAllByVisibleTrue();
 
-    List<Product> findAllByNameContainingIgnoreCaseAndOpinionAvgIsBetween(
+    List<Product> findAllByNameContainingIgnoreCaseAndOpinionAvgIsBetweenAndVisibleTrue(
             String searchPhrase, Double opinionAvgMin, Double opinionAvgMax);
 
     Product deleteBySku(String sku);

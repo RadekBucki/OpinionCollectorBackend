@@ -1,6 +1,6 @@
 package pl.opinion_collector.backend.database_communication.model;
 
-import com.vladmihalcea.hibernate.type.json.JsonType;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @TypeDefs({
-        @TypeDef(name = "json", typeClass = JsonType.class)
+        @TypeDef(name = "json", typeClass = JsonStringType.class)
 })
 @Table(name = "opinion")
 public class Opinion {

@@ -34,7 +34,7 @@ public class ProductDatabaseCommunication {
     }
 
     public List<Product> getProductsFilterProducts(String categoryName, String searchPhrase, Double opinionAvgMin, Double opinionAvgMax) {
-        List<Product> jpaFilteredProducts = productRepository.findAllByNameContainingIgnoreCaseAndOpinionAvgIsBetween(searchPhrase, opinionAvgMin, opinionAvgMax);
+        List<Product> jpaFilteredProducts = productRepository.findAllByNameContainingIgnoreCaseAndOpinionAvgIsBetweenAndVisibleTrue(searchPhrase, opinionAvgMin, opinionAvgMax);
         Category category = categoryDatabaseCommunication.getCategoryByName(categoryName);
         return jpaFilteredProducts.stream()
                 .filter(product -> product.getCategories().contains(category)).toList();

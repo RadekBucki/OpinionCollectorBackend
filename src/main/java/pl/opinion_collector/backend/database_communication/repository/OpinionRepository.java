@@ -11,8 +11,8 @@ import java.util.List;
 @Repository
 public interface OpinionRepository extends JpaRepository<Opinion, Long> {
 
-    List<Opinion> findByProductId(Product product);
+    List<Opinion> findAllByProductId(Product product);
 
-    List<Opinion> findByUserId(User user);
+    List<Opinion> findAllByUserId(User user);
 
 }

@@ -8,7 +8,7 @@ import pl.opinion_collector.backend.database_communication.model.User;
 
 import java.util.List;
 
-interface DatabaseCommunicationFacade {
+public interface DatabaseCommunicationFacade {
     List<User> getAllUsers();
 
     User getUserById(Long userId);
@@ -57,13 +57,13 @@ interface DatabaseCommunicationFacade {
             Boolean visible
     );
 
-    Product removeProduct(String sku);
+    void removeProduct(String sku);
 
     Category createCategory(String categoryName, Boolean visible);
 
     Category updateCategory(String categoryName, Boolean visible);
 
-    Category removeCategory(String categoryName);
+    void removeCategory(String categoryName);
 
     List<Opinion> getProductOpinions(String sku);
 

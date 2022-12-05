@@ -85,8 +85,8 @@ public class DatabaseCommunicationFacadeImpl implements DatabaseCommunicationFac
     }
 
     @Override
-    public Product removeProduct(String sku) {
-        return productDatabaseCommunication.removeProduct(sku);
+    public void removeProduct(String sku) {
+        productDatabaseCommunication.removeProduct(sku);
     }
 
     @Override
@@ -100,8 +100,8 @@ public class DatabaseCommunicationFacadeImpl implements DatabaseCommunicationFac
     }
 
     @Override
-    public Category removeCategory(String categoryName) {
-        return categoryDatabaseCommunication.removeCategory(categoryName);
+    public void removeCategory(String categoryName) {
+        categoryDatabaseCommunication.removeCategory(categoryName);
     }
 
     @Override

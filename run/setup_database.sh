@@ -1,5 +1,4 @@
 #!/bin/bash
-
 build_docker() {
   echo "-- DOCKER CONFIGURATION --"
 

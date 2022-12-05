@@ -2,6 +2,7 @@ package pl.opinion_collector.backend.database_communication.communication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import pl.opinion_collector.backend.database_communication.model.Category;
 import pl.opinion_collector.backend.database_communication.model.Product;
 import pl.opinion_collector.backend.database_communication.model.User;
@@ -10,6 +11,7 @@ import pl.opinion_collector.backend.database_communication.repository.ProductRep
 import java.util.List;
 
 @Component
+@Transactional
 public class ProductDatabaseCommunication {
 
     @Autowired
@@ -47,11 +49,12 @@ public class ProductDatabaseCommunication {
     }
 
     public Product updateProduct(Long authorId, String sku, String name, String pictureUrl, String description, List<String> categoryNames, Boolean visible) {
+        removeProduct(sku);
         return createProduct(authorId, sku, name, pictureUrl, description, categoryNames, visible);
     }
 
-    public Product removeProduct(String sku) {
-        return productRepository.deleteBySku(sku);
+    public void removeProduct(String sku) {
+        productRepository.deleteAllBySku(sku);
     }
 
 

@@ -2,12 +2,14 @@ package pl.opinion_collector.backend.database_communication.communication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import pl.opinion_collector.backend.database_communication.model.Category;
 import pl.opinion_collector.backend.database_communication.repository.CategoryRepository;
 
 import java.util.List;
 
 @Component
+@Transactional
 public class CategoryDatabaseCommunication {
 
     @Autowired
@@ -27,11 +29,13 @@ public class CategoryDatabaseCommunication {
     }
 
     public Category updateCategory(String categoryName, Boolean visible) {
+        removeCategory(categoryName);
         return createCategory(categoryName, visible);
     }
 
-    public Category removeCategory(String categoryName) {
-        return categoryRepository.deleteByCategoryName(categoryName);
+
+    public void removeCategory(String categoryName) {
+        categoryRepository.deleteByCategoryName(categoryName);
     }
 
 

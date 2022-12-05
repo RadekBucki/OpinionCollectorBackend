@@ -48,9 +48,8 @@ public class ProductDatabaseCommunication {
         return productRepository.save(product);
     }
 
-    public Product updateProduct(Long authorId, String sku, String name, String pictureUrl, String description, List<String> categoryNames, Boolean visible) {
-        removeProduct(sku);
-        return createProduct(authorId, sku, name, pictureUrl, description, categoryNames, visible);
+    public void updateProduct(Long authorId, String sku, String name, String pictureUrl, String description, List<String> categoryNames, Boolean visible) {
+        productRepository.updateProduct(authorId, sku, name, pictureUrl, description, visible);
     }
 
     public void removeProduct(String sku) {

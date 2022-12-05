@@ -80,8 +80,8 @@ public class DatabaseCommunicationFacadeImpl implements DatabaseCommunicationFac
     }
 
     @Override
-    public Product updateProduct(Long authorId, String sku, String name, String pictureUrl, String description, List<String> categoryNames, Boolean visible) {
-        return productDatabaseCommunication.updateProduct(authorId, sku, name, pictureUrl, description, categoryNames, visible);
+    public void updateProduct(Long authorId, String sku, String name, String pictureUrl, String description, List<String> categoryNames, Boolean visible) {
+        productDatabaseCommunication.updateProduct(authorId, sku, name, pictureUrl, description, categoryNames, visible);
     }
 
     @Override
@@ -95,8 +95,8 @@ public class DatabaseCommunicationFacadeImpl implements DatabaseCommunicationFac
     }
 
     @Override
-    public Category updateCategory(String categoryName, Boolean visible) {
-        return categoryDatabaseCommunication.updateCategory(categoryName, visible);
+    public void updateCategory(String categoryName, Boolean visible) {
+        categoryDatabaseCommunication.updateCategory(categoryName, visible);
     }
 
     @Override
@@ -110,8 +110,8 @@ public class DatabaseCommunicationFacadeImpl implements DatabaseCommunicationFac
     }
 
     @Override
-    public Opinion addProductOpinion(Integer opinionValue, String opinionDescription, String opinionPicture, List<String> advantages, List<String> disadvantages) {
-        return opinionDatabaseCommunication.addProductOpinion(opinionValue, opinionDescription, opinionPicture, advantages, disadvantages);
+    public Opinion addProductOpinion(Integer opinionValue, String opinionDescription, String opinionPicture, List<String> advantages, List<String> disadvantages, String sku, Long userId) {
+        return opinionDatabaseCommunication.addProductOpinion(opinionValue, opinionDescription, opinionPicture, advantages, disadvantages, sku, userId);
     }
 
     @Override

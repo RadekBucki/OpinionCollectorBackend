@@ -25,8 +25,8 @@ public class OpinionDatabaseCommunication {
         return opinionRepository.findAllByProductId(productDatabaseCommunication.getProductBySku(sku));
     }
 
-    public Opinion addProductOpinion(Integer opinionValue, String opinionDescription, String opinionPicture, List<String> advantages, List<String> disadvantages) {
-        Opinion opinion = new Opinion(opinionValue, opinionDescription, opinionPicture, advantages, disadvantages);
+    public Opinion addProductOpinion(Integer opinionValue, String opinionDescription, String opinionPicture, List<String> advantages, List<String> disadvantages, String sku, Long userId) {
+        Opinion opinion = new Opinion(opinionValue, opinionDescription, opinionPicture, advantages, disadvantages, userDatabaseCommunication.getUserById(userId), productDatabaseCommunication.getProductBySku(sku));
         return opinionRepository.save(opinion);
     }
 

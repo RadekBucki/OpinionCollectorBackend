@@ -28,9 +28,8 @@ public class CategoryDatabaseCommunication {
         return categoryRepository.save(category);
     }
 
-    public Category updateCategory(String categoryName, Boolean visible) {
-        removeCategory(categoryName);
-        return createCategory(categoryName, visible);
+    public void updateCategory(String categoryName, Boolean visible) {
+        categoryRepository.updateCategory(categoryName, visible);
     }
 
 

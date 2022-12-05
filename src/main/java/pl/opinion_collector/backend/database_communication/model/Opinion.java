@@ -44,10 +44,12 @@ public class Opinion {
     @Type(type = "json")
     private List<String> disadvantages;
 
+    @NonNull
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User userId;
 
+    @NonNull
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product productId;

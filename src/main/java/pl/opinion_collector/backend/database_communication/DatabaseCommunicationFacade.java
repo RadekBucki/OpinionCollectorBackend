@@ -47,7 +47,7 @@ public interface DatabaseCommunicationFacade {
             Boolean visible
     );
 
-    Product updateProduct(
+    void updateProduct(
             Long authorId,
             String sku,
             String name,
@@ -61,7 +61,7 @@ public interface DatabaseCommunicationFacade {
 
     Category createCategory(String categoryName, Boolean visible);
 
-    Category updateCategory(String categoryName, Boolean visible);
+    void updateCategory(String categoryName, Boolean visible);
 
     void removeCategory(String categoryName);
 
@@ -72,7 +72,9 @@ public interface DatabaseCommunicationFacade {
             String opinionDescription,
             String opinionPicture,
             List<String> advantages,
-            List<String> disadvantages
+            List<String> disadvantages,
+            String sku,
+            Long userId
     );
 
     List<Opinion> getUserOpinions(Long userId);

@@ -8,3 +8,5 @@ If you are a new contributor be sure to read
 the [Coding Standards article](https://github.com/RadekBucki/OpinionCollectorBackend/wiki/Coding-standards)
 
 [Local Swagger UI](http://localhost:8080/swagger-ui/index.html)
+
+Database setup instructions [WIKI](https://github.com/RadekBucki/OpinionCollectorBackend/wiki/Database-setup)

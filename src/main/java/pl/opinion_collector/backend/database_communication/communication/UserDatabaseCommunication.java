@@ -28,9 +28,8 @@ public class UserDatabaseCommunication {
         return userRepository.save(user);
     }
 
-    public User updateUser(Long userId, String firstName, String lastName, String email, String passwordHash, String profilePictureUrl, Boolean isAdmin) {
-        userRepository.deleteById(userId);
-        return createUser(firstName, lastName, email, passwordHash, profilePictureUrl, isAdmin);
+    public void updateUser(Long userId, String firstName, String lastName, String email, String passwordHash, String profilePictureUrl, Boolean isAdmin) {
+        userRepository.updateUser(userId, firstName, lastName, email, passwordHash, profilePictureUrl, isAdmin);
     }
 
 }

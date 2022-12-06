@@ -50,8 +50,8 @@ public class DatabaseCommunicationFacadeImpl implements DatabaseCommunicationFac
     }
 
     @Override
-    public User updateUser(Long userId, String firstName, String lastName, String email, String passwordHash, String profilePictureUrl, Boolean isAdmin) {
-        return userDatabaseCommunication.updateUser(userId, firstName, lastName, email, passwordHash, profilePictureUrl, isAdmin);
+    public void updateUser(Long userId, String firstName, String lastName, String email, String passwordHash, String profilePictureUrl, Boolean isAdmin) {
+        userDatabaseCommunication.updateUser(userId, firstName, lastName, email, passwordHash, profilePictureUrl, isAdmin);
     }
 
     @Override

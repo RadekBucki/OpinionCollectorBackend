@@ -22,7 +22,7 @@ public interface DatabaseCommunicationFacade {
             Boolean isAdmin
     );
 
-    User updateUser(Long userId, String firstName, String lastName, String email, String passwordHash, String profilePictureUrl, Boolean isAdmin);
+    void updateUser(Long userId, String firstName, String lastName, String email, String passwordHash, String profilePictureUrl, Boolean isAdmin);
 
     Product getProductBySku(String sku);
 

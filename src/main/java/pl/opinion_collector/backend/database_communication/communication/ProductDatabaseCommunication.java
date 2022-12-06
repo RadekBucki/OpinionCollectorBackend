@@ -44,16 +44,22 @@ public class ProductDatabaseCommunication {
 
     public Product createProduct(Long authorId, String sku, String name, String pictureUrl, String description, List<String> categoryNames, Boolean visible) {
         User author = userDatabaseCommunication.getUserById(authorId);
-        Product product = new Product(sku, name, pictureUrl, description, visible, author);
+        Product product = new Product(sku, name, pictureUrl, description, visible, author, mapNamesToCategories(categoryNames));
         return productRepository.save(product);
     }
 
     public void updateProduct(Long authorId, String sku, String name, String pictureUrl, String description, List<String> categoryNames, Boolean visible) {
-        productRepository.updateProduct(authorId, sku, name, pictureUrl, description, visible);
+        productRepository.updateProduct(authorId, sku, name, pictureUrl, description, visible, mapNamesToCategories(categoryNames));
     }
 
     public void removeProduct(String sku) {
         productRepository.deleteAllBySku(sku);
+    }
+
+    private List<Category> mapNamesToCategories(List<String> categoryNames) {
+        return categoryNames.stream()
+                .map(categoryName -> categoryDatabaseCommunication.createCategory(categoryName, true))
+                .toList();
     }
 
 

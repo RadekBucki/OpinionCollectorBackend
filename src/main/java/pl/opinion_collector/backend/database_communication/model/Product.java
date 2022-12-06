@@ -6,7 +6,19 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import pl.opinion_collector.backend.database_communication.listener.ProductListener;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +64,11 @@ public class Product {
     @OneToMany(mappedBy = "productId", targetEntity = Suggestion.class, cascade = CascadeType.ALL)
     private List<Suggestion> suggestions = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "products", targetEntity = Category.class, cascade = CascadeType.ALL)
-    private List<Category> categories = new ArrayList<>();
+    @NonNull
+    @ManyToMany
+    @JoinTable(
+            name = "category_products",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private List<Category> categories;
 }

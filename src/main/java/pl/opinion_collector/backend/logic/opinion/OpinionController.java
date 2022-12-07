@@ -1,5 +1,6 @@
 package pl.opinion_collector.backend.logic.opinion;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -15,27 +16,36 @@ import java.util.List;
 @RequestMapping("/opinions")
 public class OpinionController {
 
+    @Autowired
     private Opinions opinionsFacade;
     private UserFacade userFacade;
     private ProductFacade productFacade;
 
+    /**
+     * All opinions endpoint
+     * @return list of all opinions of user
+     */
     @GetMapping("/user")
     public List<Opinion> getUserOpinions() {
         User user = userFacade.getUserByToken(getBearerTokenHeader());
         if (user == null) {
             throw new IllegalArgumentException("Authentication failed!");
         }
-//        return opinionsFacade.getUserOpinions(user.getUserId());
-        return user.getOpinions();
+        return opinionsFacade.getUserOpinions(user.getUserId());
     }
 
+    /**
+     * Endpoint for all opinions of given products
+     * @param sku - identifier of a product
+     * @return - list of all opinions of given products
+     */
     @GetMapping("/product")
     public List<Opinion> getProductOpinions(@RequestParam String sku) {
         return opinionsFacade.getProductOpinions(sku);
     }
 
     /**
-     * Logged-in user adds his opinion.
+     * Endpoint for Logged-in user to add his opinion.
      * @param opinionDto - opinion data transfer object
      */
     @PostMapping("/add")

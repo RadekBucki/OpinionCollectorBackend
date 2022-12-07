@@ -1,5 +1,6 @@
 package pl.opinion_collector.backend.logic.opinion;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
 import pl.opinion_collector.backend.database_communication.model.Opinion;
@@ -9,11 +10,8 @@ import java.util.List;
 @Component
 class OpinionService implements Opinions {
 
-    private final DatabaseCommunicationFacade databaseCommunication;
-
-    public OpinionService(DatabaseCommunicationFacade databaseCommunication) {
-        this.databaseCommunication = databaseCommunication;
-    }
+    @Autowired
+    private DatabaseCommunicationFacade databaseCommunication;
 
     @Override
     public List<Opinion> getProductOpinions(String sku) {

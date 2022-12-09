@@ -1,7 +1,10 @@
 package pl.opinion_collector.backend.logic.suggestion;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -11,6 +14,7 @@ import pl.opinion_collector.backend.logic.product.ProductFacade;
 import pl.opinion_collector.backend.logic.user.UserFacade;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/suggestions")
@@ -27,12 +31,13 @@ public class SuggestionController {
      * @return list of all Suggestions of user
      */
     @GetMapping("/user")
-    public List<Suggestion> getUserSuggestions() {
+    public List<SuggestionShortDto> getUserSuggestions() {
         User user = userFacade.getUserByToken(getBearerTokenHeader());
         if (user == null) {
             throw new IllegalArgumentException("Authentication failed!");
         }
-        return suggestionFacade.getUserSuggestions(user.getUserId());
+        List<Suggestion> userSuggestions = suggestionFacade.getUserSuggestions(user.getUserId());
+        return userSuggestions.stream().map(this::mapSuggestionToDto).collect(Collectors.toList());
     }
 
     /**
@@ -41,17 +46,21 @@ public class SuggestionController {
      * @return - list of all Suggestions
      */
     @GetMapping("/get")
-    public List<Suggestion> getAllSuggestions() {
-        return suggestionFacade.getAllSuggestions();
+    public List<SuggestionShortDto> getAllSuggestions() {
+        return suggestionFacade.getAllSuggestions().stream().
+                map(this::mapSuggestionToDto).collect(Collectors.toList());
     }
 
     /**
-     * Endpoint for logged-in user to add suggestion
-      * @param sku - identifier of the product to add opinion to
-     * @param description - content of the suggestion
+     * Current user adds suggestion
+     *
+     * @param argHolder - sku and description
      */
-    @PostMapping("/add")
-    public void addSuggestion(@RequestBody String sku, @RequestBody String description) {
+    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void addSuggestion(@RequestBody ArgHolder argHolder) {
+
+        String sku = argHolder.getSku();
+        String description = argHolder.getDescription();
 
         // check whether user is valid
         User user = userFacade.getUserByToken(getBearerTokenHeader());
@@ -67,9 +76,12 @@ public class SuggestionController {
         suggestionFacade.addSuggestion(user.getUserId(), product, description);
     }
 
-    @PutMapping("/reply")
-    public void replyToSuggestion(@RequestBody Integer suggestionId, @RequestBody String suggestionStatus,
-                                  @RequestBody String suggestionReply) {
+    @PutMapping(value = "/reply", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void replyToSuggestion(@RequestBody ArgHolderTwo argHolderTwo) {
+
+        Integer suggestionId = argHolderTwo.getSuggestionId();
+        String suggestionStatus = argHolderTwo.getSuggestionStatus();
+        String suggestionReply = argHolderTwo.getSuggestionReply();
 
         // check whether user is valid
         User user = userFacade.getUserByToken(getBearerTokenHeader());
@@ -82,6 +94,45 @@ public class SuggestionController {
 
         suggestionFacade.replySuggestion(user.getUserId(), suggestionId, suggestionStatus, suggestionReply);
 
+    }
+
+    /**
+     * Helper classes used to avoid dumping huge JSON onto frontend
+     */
+    @Data
+    @AllArgsConstructor
+    private class SuggestionShortDto {
+        private Long suggestionId;
+        private Review reviewId;
+        private Long userId;
+        private String description;
+        private Long productId;
+        private Long reviewerId;
+    }
+
+    @Data
+    @AllArgsConstructor
+    private class ArgHolder {
+        private String description;
+        private String sku;
+    }
+
+    @Data
+    @AllArgsConstructor
+    private class ArgHolderTwo {
+        Integer suggestionId;
+        String suggestionStatus;
+        String suggestionReply;
+    }
+
+
+    /**
+     * Helper functions
+     */
+    private SuggestionShortDto mapSuggestionToDto(Suggestion suggestion) {
+        return new SuggestionShortDto(suggestion.getSuggestionId(), suggestion.getReview(),
+                suggestion.getUserId().getUserId(), suggestion.getDescription(),
+                suggestion.getProductId().getProductId(), suggestion.getReviewerId().getUserId());
     }
 
 

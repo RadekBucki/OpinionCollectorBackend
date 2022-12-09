@@ -67,7 +67,7 @@ public class SuggestionController {
         suggestionFacade.addSuggestion(user.getUserId(), product, description);
     }
 
-    @PutMapping("/add")
+    @PutMapping("/reply")
     public void replyToSuggestion(@RequestBody Integer suggestionId, @RequestBody String suggestionStatus,
                                   @RequestBody String suggestionReply) {
 

@@ -1,4 +1,4 @@
-package pl.opinion_collector.backend.logic.product;
+package pl.opinion_collector.backend.logic.product.service;
 
 import pl.opinion_collector.backend.database_communication.model.Category;
 import pl.opinion_collector.backend.database_communication.model.Product;
@@ -6,11 +6,12 @@ import pl.opinion_collector.backend.database_communication.model.Product;
 import java.util.List;
 
 public interface ProductFacade {
+
     Product getProductBySku(String sku);
 
-    List<Product> getAllProducts();
+    List<Product> getAllProducts(String page);
 
-    List<Product> getProducts();
+    List<Product> getProducts(String page);
 
     List<Product> getProductsFiltered(
             String categoryName,

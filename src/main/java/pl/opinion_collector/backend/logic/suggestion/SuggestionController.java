@@ -1,8 +1,7 @@
 package pl.opinion_collector.backend.logic.suggestion;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -16,13 +15,15 @@ import pl.opinion_collector.backend.logic.user.UserFacade;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping("/suggestions")
 public class SuggestionController {
 
     @Autowired
     private Suggestions suggestionFacade;
+    // @Autowired
     private UserFacade userFacade;
+    // @Autowired
     private ProductFacade productFacade;
 
     /**
@@ -99,9 +100,11 @@ public class SuggestionController {
     /**
      * Helper classes used to avoid dumping huge JSON onto frontend
      */
-    @Data
     @AllArgsConstructor
-    private class SuggestionShortDto {
+    @NoArgsConstructor
+    @Getter
+    @Setter
+    private static class SuggestionShortDto {
         private Long suggestionId;
         private Review reviewId;
         private Long userId;
@@ -110,16 +113,20 @@ public class SuggestionController {
         private Long reviewerId;
     }
 
-    @Data
     @AllArgsConstructor
-    private class ArgHolder {
+    @NoArgsConstructor
+    @Getter
+    @Setter
+    private static class ArgHolder {
         private String description;
         private String sku;
     }
 
-    @Data
     @AllArgsConstructor
-    private class ArgHolderTwo {
+    @NoArgsConstructor
+    @Getter
+    @Setter
+    private static class ArgHolderTwo {
         Integer suggestionId;
         String suggestionStatus;
         String suggestionReply;

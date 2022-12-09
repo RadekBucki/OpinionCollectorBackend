@@ -1,7 +1,8 @@
 package pl.opinion_collector.backend.logic.user;
 
 
-import pl.opinion_collector.backend.database_communication.model.User;
+
+import pl.opinion_collector.backend.logic.user.model.User;
 
 import java.util.List;
 

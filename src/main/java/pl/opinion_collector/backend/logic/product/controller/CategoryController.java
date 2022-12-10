@@ -77,9 +77,9 @@ public class CategoryController {
             value = "Contains the name and visibility status of the added category",
             required = true)
     @PutMapping("/edit")
-    public ResponseEntity<?> editCategory(@RequestBody CategoryArg categoryArg) {
-        return new ResponseEntity<>(productFacade.editCategory(categoryArg.getName(),
-                categoryArg.getVisible()), HttpStatus.ACCEPTED);
+    public ResponseEntity<CategoryDto> editCategory(@RequestBody CategoryArg categoryArg) {
+        return new ResponseEntity<>(map.mapCategory(productFacade.editCategory(categoryArg.getName(),
+                categoryArg.getVisible())), HttpStatus.ACCEPTED);
     }
 
     /**
@@ -93,7 +93,7 @@ public class CategoryController {
             value = "Contains the name of the category",
             required = true)
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteCategory(@RequestBody String name) {
+    public ResponseEntity<CategoryDto> deleteCategory(@RequestBody String name) {
         return new ResponseEntity<>(map.mapCategory(productFacade.removeCategory(name)),
                 HttpStatus.ACCEPTED);
     }

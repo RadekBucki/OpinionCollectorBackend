@@ -137,7 +137,7 @@ public class ProductController {
             value = "products params",
             required = true)
     @PutMapping("/edit")
-    public ResponseEntity<?> editProduct(HttpServletRequest req, @RequestBody ProductArg arg) {
+    public ResponseEntity<ProductDto> editProduct(HttpServletRequest req, @RequestBody ProductArg arg) {
         return new ResponseEntity<>(map.mapProduct(productFacade.editProduct(userFacade.
                         getUserByToken(getToken(req)).getUserId(),
                 arg.getSku(),
@@ -159,7 +159,7 @@ public class ProductController {
             value = "Contains the sku of the Product",
             required = true)
     @DeleteMapping("/edit")
-    public ResponseEntity<?> deleteProduct(@RequestBody String sku) {
+    public ResponseEntity<ProductDto> deleteProduct(@RequestBody String sku) {
         return new ResponseEntity<>(map.mapProduct(productFacade.removeProduct(sku)),
                 HttpStatus.ACCEPTED);
     }

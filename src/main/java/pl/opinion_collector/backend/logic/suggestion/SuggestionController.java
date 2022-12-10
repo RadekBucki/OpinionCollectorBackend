@@ -65,7 +65,7 @@ public class SuggestionController {
      */
     @ApiParam(
             name = "addSuggestionDto",
-            type = "ArgHolder",
+            type = "AddSuggestionDto",
             value = "Contains crucial info about suggestion to be added: sku (product identifier), " +
                     "description (content of suggestion)",
             required = true)
@@ -88,13 +88,13 @@ public class SuggestionController {
 
     @ApiParam(
             name = "answerSuggestionDto",
-            type = "ArgHolderTwo",
+            type = "AnswerSuggestionDto",
             value = "Contains crucial reply to suggestion: suggestionId (what suggestion is being answered), " +
                     "suggestionStatus (what status should suggestion have (DECLINED / PENDING / DONE))" +
                     "suggestionReply (content of reply)",
             required = true)
     @PutMapping(value = "/reply", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> replyToSuggestion(@RequestBody AnswerSuggestionDto answerSuggestionDto) {
+    public ResponseEntity<Suggestion> replyToSuggestion(@RequestBody AnswerSuggestionDto answerSuggestionDto) {
 
         Integer suggestionId = answerSuggestionDto.getSuggestionId();
         String suggestionStatus = answerSuggestionDto.getSuggestionStatus().name();
@@ -105,17 +105,16 @@ public class SuggestionController {
         if (user == null) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
-                    .body("User authentication failed!");
+                    .body(null);
         }
         if (!user.getAdmin()) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
-                    .body("Only admin can reply to suggestions!");
+                    .body(null);
         }
 
-        suggestionFacade.replySuggestion(user.getUserId(), suggestionId, suggestionStatus, suggestionReply);
-
-        return ResponseEntity.ok().body("Successfully replied to suggestion");
+        return ResponseEntity.ok().body(suggestionFacade.replySuggestion(user.getUserId(), suggestionId,
+                suggestionStatus, suggestionReply));
     }
 
 

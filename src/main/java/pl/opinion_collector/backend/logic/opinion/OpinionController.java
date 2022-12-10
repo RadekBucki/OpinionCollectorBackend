@@ -1,5 +1,7 @@
 package pl.opinion_collector.backend.logic.opinion;
 
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,13 +35,15 @@ public class OpinionController {
      * @return list of all opinions of user
      */
     @GetMapping("/user")
-    public List<OpinionShortDto> getUserOpinions() {
+    public ResponseEntity<List<OpinionShortDto>> getUserOpinions() {
         User user = userFacade.getUserByToken(getBearerTokenHeader());
         if (user == null) {
-            throw new IllegalArgumentException("Authentication failed!");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
         List<Opinion> userOpinions = opinionsFacade.getUserOpinions(user.getUserId());
-        return userOpinions.stream().map(this::mapOpinionToDto).collect(Collectors.toList());
+        List<OpinionShortDto> collect = userOpinions.stream().
+                map(this::mapOpinionToDto).collect(Collectors.toList());
+        return ResponseEntity.ok().body(collect);
     }
 
     /**
@@ -48,10 +52,18 @@ public class OpinionController {
      * @param sku - identifier of a product
      * @return - list of all opinions of given products
      */
+    @ApiParam(
+            name = "sku",
+            type = "String",
+            value = "Product identifier (sku)",
+            example = "sku123",
+            required = true)
     @GetMapping("/product")
-    public List<OpinionShortDto> getProductOpinions(@RequestParam String sku) {
+    public ResponseEntity<List<OpinionShortDto>> getProductOpinions(@RequestParam String sku) {
         List<Opinion> productOpinions = opinionsFacade.getProductOpinions(sku);
-        return productOpinions.stream().map(this::mapOpinionToDto).collect(Collectors.toList());
+        List<OpinionShortDto> collect = productOpinions.stream().
+                map(this::mapOpinionToDto).collect(Collectors.toList());
+        return ResponseEntity.ok().body(collect);
     }
 
     /**
@@ -59,27 +71,33 @@ public class OpinionController {
      *
      * @param shortOpinionDto - opinion data transfer object
      */
+    @ApiParam(
+            name = "shortOpinionDto",
+            type = "OpinionShortDto",
+            value = "Vital information about Opinion: sku (product identifier), opinion value, description " +
+                    "(content of opinion), picture URL, list of advantages, list of disadvantages",
+            required = true)
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addOpinion(@RequestBody OpinionShortDto shortOpinionDto) {
+    public ResponseEntity<Opinion> addOpinion(@RequestBody OpinionShortDto shortOpinionDto) {
 
         // check whether user is valid
         User user = userFacade.getUserByToken(getBearerTokenHeader());
         if (user == null) {
             return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("User authentication failed!");
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(null);
         }
 
         // add opinion
         try {
-            opinionsFacade.addProductOpinion(user.getUserId(), shortOpinionDto.sku, shortOpinionDto.opinionValue,
+            Opinion opinion = opinionsFacade.addProductOpinion(user.getUserId(), shortOpinionDto.sku, shortOpinionDto.opinionValue,
                     shortOpinionDto.description, shortOpinionDto.pictureUrl, shortOpinionDto.advantages,
                     shortOpinionDto.disadvantages);
-            return ResponseEntity.ok("Successfully added opinion");
+            return ResponseEntity.ok().body(opinion);
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body("Incorrect request data");
+                    .body(null);
         }
     }
 
@@ -91,12 +109,17 @@ public class OpinionController {
     @Getter
     @Setter
     private static class OpinionShortDto {
-        private Long authorId;
+        @ApiModelProperty(notes = "Product identifier", example = "sku123", required = true)
         private String sku;
+        @ApiModelProperty(notes = "Opinion value, grade", example = "1", required = true)
         private Integer opinionValue;
+        @ApiModelProperty(notes = "Content of opinion", example = "dont like it at all", required = true)
         private String description;
+        @ApiModelProperty(notes = "URL of opinion picture", example = "1")
         private String pictureUrl;
+        @ApiModelProperty(notes = "List of advantages")
         private List<String> advantages;
+        @ApiModelProperty(notes = "List of disadvantages")
         private List<String> disadvantages;
 
     }
@@ -105,7 +128,7 @@ public class OpinionController {
      * Helper functions
      */
     private OpinionShortDto mapOpinionToDto(Opinion opinion) {
-        return new OpinionShortDto(opinion.getUserId().getUserId(), opinion.getProductId().getSku(),
+        return new OpinionShortDto(opinion.getProductId().getSku(),
                 opinion.getOpinionValue(), opinion.getDescription(),
                 opinion.getPictureUrl(), opinion.getAdvantages(), opinion.getDisadvantages());
     }

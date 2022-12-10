@@ -1,9 +1,13 @@
 package pl.opinion_collector.backend.logic.suggestion;
 
 
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiParam;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -28,13 +32,17 @@ public class SuggestionController {
      * @return list of all Suggestions of user
      */
     @GetMapping("/user")
-    public List<SuggestionShortDto> getUserSuggestions() {
+    public ResponseEntity<List<SuggestionShortDto>> getUserSuggestions() {
         User user = userFacade.getUserByToken(getBearerTokenHeader());
         if (user == null) {
-            throw new IllegalArgumentException("Authentication failed!");
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(null);
         }
         List<Suggestion> userSuggestions = suggestionFacade.getUserSuggestions(user.getUserId());
-        return userSuggestions.stream().map(this::mapSuggestionToDto).collect(Collectors.toList());
+        List<SuggestionShortDto> collect = userSuggestions.stream().
+                map(this::mapSuggestionToDto).collect(Collectors.toList());
+        return ResponseEntity.ok().body(collect);
     }
 
     /**
@@ -43,9 +51,10 @@ public class SuggestionController {
      * @return - list of all Suggestions
      */
     @GetMapping("/get")
-    public List<SuggestionShortDto> getAllSuggestions() {
-        return suggestionFacade.getAllSuggestions().stream().
+    public ResponseEntity<List<SuggestionShortDto>> getAllSuggestions() {
+        List<SuggestionShortDto> collect = suggestionFacade.getAllSuggestions().stream().
                 map(this::mapSuggestionToDto).collect(Collectors.toList());
+        return ResponseEntity.ok().body(collect);
     }
 
     /**
@@ -53,8 +62,14 @@ public class SuggestionController {
      *
      * @param argHolder - sku and description
      */
+    @ApiParam(
+            name = "argHolder",
+            type = "ArgHolder",
+            value = "Contains crucial info about suggestion to be added: sku (product identifier), " +
+                    "description (content of suggestion)",
+            required = true)
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addSuggestion(@RequestBody ArgHolder argHolder) {
+    public ResponseEntity<Suggestion> addSuggestion(@RequestBody ArgHolder argHolder) {
 
         String sku = argHolder.getSku();
         String description = argHolder.getDescription();
@@ -62,31 +77,46 @@ public class SuggestionController {
         // check whether user is valid
         User user = userFacade.getUserByToken(getBearerTokenHeader());
         if (user == null) {
-            throw new IllegalArgumentException("Authentication failed!");
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(null);
         }
 
         // add suggestion
-        suggestionFacade.addSuggestion(user.getUserId(), sku, description);
+        Suggestion suggestion = suggestionFacade.addSuggestion(user.getUserId(), sku, description);
+        return ResponseEntity.ok().body(suggestion);
     }
 
+    @ApiParam(
+            name = "argHolderTwo",
+            type = "ArgHolderTwo",
+            value = "Contains crucial reply to suggestion: suggestionId (what suggestion is being answered), " +
+                    "suggestionStatus (what status should suggestion have (DECLINED / PENDING / DONE))" +
+                    "suggestionReply (content of reply)",
+            required = true)
     @PutMapping(value = "/reply", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void replyToSuggestion(@RequestBody ArgHolderTwo argHolderTwo) {
+    public ResponseEntity<String> replyToSuggestion(@RequestBody ArgHolderTwo argHolderTwo) {
 
         Integer suggestionId = argHolderTwo.getSuggestionId();
-        String suggestionStatus = argHolderTwo.getSuggestionStatus();
+        String suggestionStatus = argHolderTwo.getSuggestionStatus().name();
         String suggestionReply = argHolderTwo.getSuggestionReply();
 
         // check whether user is valid
         User user = userFacade.getUserByToken(getBearerTokenHeader());
         if (user == null) {
-            throw new IllegalArgumentException("Authentication failed!");
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("User authentication failed!");
         }
         if (!user.getAdmin()) {
-            throw new IllegalArgumentException("Only admin can reply to suggestions!");
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("Only admin can reply to suggestions!");
         }
 
         suggestionFacade.replySuggestion(user.getUserId(), suggestionId, suggestionStatus, suggestionReply);
 
+        return ResponseEntity.ok().body("Successfully replied to suggestion");
     }
 
     /**
@@ -97,11 +127,18 @@ public class SuggestionController {
     @Getter
     @Setter
     private static class SuggestionShortDto {
+        @ApiModelProperty(notes = "ID of suggestion", example = "1", required = true)
         private Long suggestionId;
+        @ApiModelProperty(notes = "Suggestion reviewer", example = "5", required = true)
         private Review reviewId;
+        @ApiModelProperty(notes = "ID of user that created suggestion", example = "2", required = true)
         private Long userId;
+        @ApiModelProperty(notes = "Content of suggestion", example = "change the color of the toy!",
+                required = true)
         private String description;
+        @ApiModelProperty(notes = "ID of product addressed by suggestion", example = "1", required = true)
         private Long productId;
+        @ApiModelProperty(notes = "ID of suggestion reviewer", example = "1", required = true)
         private Long reviewerId;
     }
 
@@ -110,7 +147,9 @@ public class SuggestionController {
     @Getter
     @Setter
     private static class ArgHolder {
+        @ApiModelProperty(notes = "Content of suggestion", example = "Change the colors!", required = true)
         private String description;
+        @ApiModelProperty(notes = "Product identifier", example = "1", required = true)
         private String sku;
     }
 
@@ -119,8 +158,11 @@ public class SuggestionController {
     @Getter
     @Setter
     private static class ArgHolderTwo {
+        @ApiModelProperty(notes = "ID of answered suggestion", example = "1", required = true)
         Integer suggestionId;
-        String suggestionStatus;
+        @ApiModelProperty(notes = "New Status for suggestion", example = "DECLINED", required = true)
+        SuggestionStatus suggestionStatus;
+        @ApiModelProperty(notes = "Content of suggestion reply", example = "Thx for your suggestion", required = true)
         String suggestionReply;
     }
 
@@ -140,4 +182,7 @@ public class SuggestionController {
                 .getRequest().getHeader("Authorization");
     }
 
+    public enum SuggestionStatus {
+        DECLINED, PENDING, DONE
+    }
 }

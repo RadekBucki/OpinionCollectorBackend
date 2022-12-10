@@ -1,9 +1,6 @@
 package pl.opinion_collector.backend.database_communication.model;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +13,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Table(name = "suggestion")

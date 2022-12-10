@@ -1,9 +1,6 @@
 package pl.opinion_collector.backend.database_communication.model;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import pl.opinion_collector.backend.database_communication.listener.ProductListener;
 
 import javax.persistence.CascadeType;
@@ -24,7 +21,8 @@ import java.util.List;
 
 @Entity
 @EntityListeners(ProductListener.class)
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Table(name = "product")

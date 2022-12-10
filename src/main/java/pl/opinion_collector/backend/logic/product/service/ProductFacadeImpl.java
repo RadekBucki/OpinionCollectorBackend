@@ -3,6 +3,8 @@ package pl.opinion_collector.backend.logic.product.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
+import pl.opinion_collector.backend.database_communication.exception.type.InvalidBusinessArgumentException;
+import pl.opinion_collector.backend.database_communication.exception.type.ParameterException;
 import pl.opinion_collector.backend.database_communication.model.Category;
 import pl.opinion_collector.backend.database_communication.model.Product;
 import pl.opinion_collector.backend.logic.product.service.wrapper.ProductWrapper;
@@ -130,7 +132,7 @@ public class ProductFacadeImpl implements ProductFacade {
         int size = products.size();
         int pageCount = (size + PRODUCT_COUNT - 1) / PRODUCT_COUNT;
         if(page >= pageCount) {
-            throw new RuntimeException("the specified page is outside of the page range");
+            throw new ParameterException("the specified page is outside of the page range");
         }
         ProductWrapper.ProductWrapperBuilder builder = ProductWrapper.builder()
                 .numberOfPages(pageCount - 1)

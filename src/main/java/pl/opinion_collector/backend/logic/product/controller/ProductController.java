@@ -44,12 +44,8 @@ public class ProductController {
             required = true)
     @GetMapping("/{page}")
     public ResponseEntity<ProductWrapperDto> getProduct(@PathVariable int page) {
-        try {
-            return new ResponseEntity<>(map.mapProductWrapper(productFacade.getProducts(page)),
-                    HttpStatus.OK);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(map.mapProductWrapper(productFacade.getProducts(page)),
+                HttpStatus.OK);
     }
 
     /**
@@ -64,14 +60,9 @@ public class ProductController {
             value = "page number",
             required = true)
     @GetMapping("/all/{page}")
-    public ResponseEntity<?> getAllProduct(@PathVariable int page) {
-        try {
-            return new ResponseEntity<>(map.mapProductWrapper(productFacade.getAllProducts(page)),
-                    HttpStatus.OK);
-
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(map.mapException(e), HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<ProductWrapperDto> getAllProduct(@PathVariable int page) {
+        return new ResponseEntity<>(map.mapProductWrapper(productFacade.getAllProducts(page)),
+                HttpStatus.OK);
     }
 
     /**

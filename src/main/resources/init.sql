@@ -11,7 +11,7 @@ insert into product values (2,'Procesor Intel, dysk tysionc, cztery ka xD','MacB
 insert into product values(3,'Swietnie kopie bitkojna','GeForceRTX4090',null,'picture','sku321',false,3);
 
 insert into opinion values (1,'[{"advantage": "Super jest"}]',5,null,1,1);
-insert into opinion values (2,'[{"advantage": "No tak srednio bym powiedzial"}]',1,'[{"disadvantage": "zdjecieSlabegoProduktu".pl}]',2,1);
+insert into opinion values (2,'[{"advantage": "No tak srednio bym powiedzial"}]',1,'[{"disadvantage": "zdjecieSlabegoProduktu"}]',2,1);
 insert into opinion values (3,'[{"advantage": "Polecam serdecznie. Pieknie dogrzewa w domku"}]',5,null,3,2);
 
 insert into suggestion values (1,'No ja to bym dorzucil piaty aparat',1,null,1,2);

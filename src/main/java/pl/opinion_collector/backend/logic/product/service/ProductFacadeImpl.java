@@ -113,6 +113,19 @@ public class ProductFacadeImpl implements ProductFacade {
         databaseCommunication.removeCategory(categoryName);
     }
 
+    @Override
+    public List<Category> getCategories() {
+        return databaseCommunication.getAllCategories()
+                .stream()
+                .filter(Category::getVisible)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Category> getAllCategories() {
+        return databaseCommunication.getAllCategories();
+    }
+
     private List<Category> getCategories(List<String> names) {
         return databaseCommunication.getAllCategories()
                 .stream().filter(category -> names.stream()

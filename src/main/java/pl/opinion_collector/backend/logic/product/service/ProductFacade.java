@@ -48,4 +48,8 @@ public interface ProductFacade {
     Category editCategory(String categoryName, Boolean visible);
 
     void removeCategory(String categoryName);
+
+    List<Category> getCategories();
+
+    List<Category> getAllCategories();
 }

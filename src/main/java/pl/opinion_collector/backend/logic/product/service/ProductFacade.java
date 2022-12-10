@@ -32,13 +32,13 @@ public interface ProductFacade {
             Boolean visible
     );
 
-    Product editProduct(
-            String sku,
-            String name,
-            String pictureUrl,
-            String description,
-            List<String> categoryNames,
-            Boolean visible
+    void editProduct(Long authorId,
+                     String sku,
+                     String name,
+                     String pictureUrl,
+                     String description,
+                     List<String> categoryNames,
+                     Boolean visible
     );
 
     void removeProduct(String sku);

@@ -7,10 +7,15 @@ import pl.opinion_collector.backend.database_communication.model.Product;
 import java.util.stream.Collectors;
 
 /**
- * Helper class used to avoid dumping huge JSON onto frontend
+ * a class that maps objects from the database layer to the communication layer
  */
 public final class Mapper {
 
+    /**
+     * get converted Product class
+     * @param product - Product from dataBase layer
+     * @return ProductDto
+     */
     public ProductDto mapProduct(Product product) {
         return new ProductDto.ProductDtoBuilder()
                 .sku(product.getSku())
@@ -24,6 +29,11 @@ public final class Mapper {
                 .build();
     }
 
+    /**
+     * get converted Opinion class
+     * @param opinion - Opinion from dataBase layer
+     * @return OpinionDto
+     */
     public OpinionDto mapOpinion(Opinion opinion) {
         return new OpinionDto.OpinionDtoBuilder()
                 .opinionValue(opinion.getOpinionValue())
@@ -35,9 +45,15 @@ public final class Mapper {
                 .build();
     }
 
+    /**
+     * get converted Category class
+     * @param category - Category from dataBase layer
+     * @return CategoryDto
+     */
     public CategoryDto mapCategory(Category category) {
         return new CategoryDto.CategoryDtoBuilder()
                 .categoryName(category.getCategoryName())
                 .build();
     }
+
 }

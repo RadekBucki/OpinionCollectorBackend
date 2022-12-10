@@ -42,7 +42,7 @@ public class CategoryController {
      * @return - list of all Categories
      */
     @GetMapping("/all")
-    public ResponseEntity<Object> getAllCategories() {
+    public ResponseEntity<List<CategoryDto>> getAllCategories() {
         return new ResponseEntity<>(productFacade.getAllCategories().stream()
                 .map(map::mapCategory)
                 .collect(Collectors.toList()),
@@ -50,9 +50,9 @@ public class CategoryController {
     }
 
     /**
-     * Current user adds category
+     * adds category
      *
-     * @param categoryArg - name and visible
+     * @param categoryArg - {@link CategoryArg}
      */
     @ApiParam(
             name = "categoryArg",
@@ -60,16 +60,16 @@ public class CategoryController {
             value = "Contains the name and visibility status of the added category",
             required = true)
     @PostMapping("/add")
-    public ResponseEntity<Object> addCategory(@RequestBody CategoryArg categoryArg) {
+    public ResponseEntity<CategoryDto> addCategory(@RequestBody CategoryArg categoryArg) {
         return new ResponseEntity<>(map.mapCategory(productFacade.addCategory(categoryArg.getName(),
                 categoryArg.getVisible())),
                 HttpStatus.ACCEPTED);
     }
 
     /**
-     * Current user edit category visibility
+     * edit category visibility
      *
-     * @param categoryArg - name and visible
+     * @param categoryArg - {@link CategoryArg}
      */
     @ApiParam(
             name = "categoryArg",

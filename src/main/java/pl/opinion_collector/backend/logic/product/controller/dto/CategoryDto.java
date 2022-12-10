@@ -3,6 +3,9 @@ package pl.opinion_collector.backend.logic.product.controller.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+/**
+ * Category dto class
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

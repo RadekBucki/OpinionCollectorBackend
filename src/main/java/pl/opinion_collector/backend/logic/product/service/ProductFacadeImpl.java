@@ -30,8 +30,7 @@ public class ProductFacadeImpl implements ProductFacade {
 
     @Override
     public List<Product> getAllProducts(String page) {
-        List<Product> products = databaseCommunication.getAllProducts();
-        return products;
+        return databaseCommunication.getAllProducts();
     }
 
     @Override
@@ -72,23 +71,24 @@ public class ProductFacadeImpl implements ProductFacade {
                 pictureUrl,
                 description,
                 categoryNames,
-                visible );
+                visible);
     }
 
     @Override
-    public Product editProduct(String sku,
+    public void editProduct(Long authorId,
+                               String sku,
                                String name,
                                String pictureUrl,
                                String description,
                                List<String> categoryNames,
                                Boolean visible) {
-        Product product = databaseCommunication.getProductBySku(sku);
-        product.setName(name);
-        product.setPictureUrl(pictureUrl);
-        product.setDescription(description);
-        product.setCategories(getCategories(categoryNames));
-        product.setVisible(visible);
-        return product;
+        databaseCommunication.updateProduct(authorId,
+                sku,
+                name,
+                pictureUrl,
+                description,
+                categoryNames,
+                visible);
     }
 
     @Override

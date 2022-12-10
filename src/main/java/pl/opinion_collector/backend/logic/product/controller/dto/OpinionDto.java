@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.util.List;
 
+/**
+ * Opinion dto class
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

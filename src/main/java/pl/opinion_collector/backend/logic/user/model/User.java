@@ -1,14 +1,20 @@
 package pl.opinion_collector.backend.logic.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.HashSet;
 import java.util.Set;
 
 public class User {
+    @JsonIgnore
     private Long id;
     private String firstName;
     private String lastName;
     private String email;
+    @JsonIgnore
     private String password;
+    private boolean isAdmin;
+    @JsonIgnore
     private Set<Role> roles;
     private String pictureProfileUrl;
 
@@ -21,6 +27,7 @@ public class User {
         this.email = user.getEmail();
         this.password = user.getPasswordHash();
         this.roles = createRoles(user.getAdmin());
+        this.isAdmin = user.getAdmin();
         this.pictureProfileUrl = user.getProfilePictureUrl();
     }
 
@@ -64,13 +71,7 @@ public class User {
         return lastName;
     }
 
-//    public Role getRole() {
-//        return role;
-//    }
-
     public Set<Role> getRoles() {
-//        Set<Role> roles = Collections.emptySet();
-//        roles.add(getRole());
         return roles;
     }
 
@@ -98,9 +99,6 @@ public class User {
         this.password = password;
     }
 
-//    public void setRole(Role role) {
-//        this.role = role;
-//    }
 
     public Long getId() {
         return id;
@@ -116,5 +114,17 @@ public class User {
 
     public void setPictureProfileUrl(String pictureProfileUrl) {
         this.pictureProfileUrl = pictureProfileUrl;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

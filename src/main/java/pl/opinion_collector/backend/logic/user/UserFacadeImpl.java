@@ -46,7 +46,10 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     public User register(String firstName, String lastName, String email, String password, String profilePictureUrl) {
-        if (findByEmail(email) != null) {
+        if (email == null || password == null || email.isBlank() || password.isBlank()) {
+            logger.error("U HAVE TO INPUT EMAIL AND PASSWORD TO REGISTER");
+            return null;
+        } else if (findByEmail(email) != null) {
             logger.error("USER WITH THIS EMAIL IS ALREADY EXISTS");
             return null;
         }
@@ -80,6 +83,8 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     public String login(String email, String password) {
+        if (email == null || password == null || email.isBlank() || password.isBlank())
+            return "INCORRECT_INPUT";
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password));
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -97,14 +102,13 @@ public class UserFacadeImpl implements UserFacade {
         }
         if (userDatabaseCommunication.getUserById(Long.valueOf(userId)) != null) {
             if (findByEmail(email) == null || findByEmail(email).getId() == userId.longValue()) {
-                System.out.println(user.getPassword() + " " + passwordHash);
                 userDatabaseCommunication.updateUser(Long.valueOf(userId),
                         replaceIfDiffers(user.getFirstName(), firstName),
                         replaceIfDiffers(user.getLastName(), lastName),
                         replaceIfDiffers(user.getEmail(), email),
                         encoder.encode(replaceIfDiffers(user.getPassword(), passwordHash)),
                         replaceIfDiffers(user.getPictureProfileUrl(), profilePictureUrl),
-                        (user.getRoles().contains(Role.ROLE_ADMIN) || isAdmin) && isAdmin);
+                        (user.isAdmin() || isAdmin) && isAdmin);
             } else {
                 logger.error("U CANT CHANGE EMAIL THAT IS TAKEN");
                 return null;

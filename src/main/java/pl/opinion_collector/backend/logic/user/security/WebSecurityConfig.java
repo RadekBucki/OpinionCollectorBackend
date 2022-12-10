@@ -48,15 +48,31 @@ public class WebSecurityConfig {
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
+        final String[] allUsersPermissions = {
+                "/**/users/login", "/**/users/register",
+                "/**/products", "/**/products/all", "/**/products/search", "/**/products/details",
+                "/**/opinions/product"
+        };
+        final String[] standardUserPermissions = {
+                "/**/suggestions/user", "/**/suggestions/add", "/**/suggestions",
+                "/**/opinions/user", "/**/opinions/add"
+        };
+        final String[] adminPermissions = {
+                "/**/users", "/**/users/update",
+                "/**/products/add", "/**/products/edit", "/**/products/delete",
+                "/**/categories", "/**/categories/get", "/**/categories/add",
+                "/**/categories/edit", "/**/categories/delete",
+                "/**/suggestions/get", "/**/suggestions/reply"
+        };
+
         http
                 .cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                    .antMatchers("/**/users/login/**").permitAll()
-                    .antMatchers("/**/users/register/**").permitAll()
-                    .antMatchers("/**/users/**").hasRole("ADMIN")
-                    .antMatchers("/**/users/update/**").hasRole("ADMIN")
+                    .antMatchers(allUsersPermissions).permitAll()
+                    .antMatchers(standardUserPermissions).hasRole("USER")
+                    .antMatchers(adminPermissions).hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and().addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();

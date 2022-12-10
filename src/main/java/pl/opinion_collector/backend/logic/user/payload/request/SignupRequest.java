@@ -20,7 +20,7 @@ public class SignupRequest {
     @Size(max = 50)
     @Email
     private String email;
-
+    private boolean isAdmin;
     private Set<String> role;
     private String pictureUrl;
 
@@ -90,5 +90,13 @@ public class SignupRequest {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 }

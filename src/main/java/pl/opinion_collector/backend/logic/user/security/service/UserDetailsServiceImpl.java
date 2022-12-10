@@ -12,7 +12,6 @@ import pl.opinion_collector.backend.database_communication.communication.UserDat
 import pl.opinion_collector.backend.logic.user.model.User;
 import pl.opinion_collector.backend.logic.user.security.jwt.AuthTokenFilter;
 
-
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 

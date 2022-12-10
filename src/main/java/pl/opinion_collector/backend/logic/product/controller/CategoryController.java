@@ -78,9 +78,8 @@ public class CategoryController {
             required = true)
     @PutMapping("/edit")
     public ResponseEntity<?> editCategory(@RequestBody CategoryArg categoryArg) {
-        productFacade.editCategory(categoryArg.getName(),
-                categoryArg.getVisible());
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(productFacade.editCategory(categoryArg.getName(),
+                categoryArg.getVisible()), HttpStatus.ACCEPTED);
     }
 
     /**
@@ -95,8 +94,8 @@ public class CategoryController {
             required = true)
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteCategory(@RequestBody String name) {
-        productFacade.removeCategory(name);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(map.mapCategory(productFacade.removeCategory(name)),
+                HttpStatus.ACCEPTED);
     }
 
 }

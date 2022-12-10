@@ -28,7 +28,7 @@ public class ProductDto {
     @ApiModelProperty(notes = "the name of the person who added the product", example = "Will", required = true)
     private String firstName;
     @ApiModelProperty(notes = "product opinions list", example = "See footnote of Opinions")
-    private List<OpinionDto> opinions = new ArrayList<>();
+    private List<OpinionDto> opinions;
     @ApiModelProperty(notes = "product categories list", example = "See footnote of Categories", required = true)
     private List<CategoryDto> categories;
 }

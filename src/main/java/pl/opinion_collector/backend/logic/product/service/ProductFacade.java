@@ -32,7 +32,7 @@ public interface ProductFacade {
             Boolean visible
     );
 
-    void editProduct(Long authorId,
+    Product editProduct(Long authorId,
                      String sku,
                      String name,
                      String pictureUrl,
@@ -41,13 +41,13 @@ public interface ProductFacade {
                      Boolean visible
     );
 
-    void removeProduct(String sku);
+    Product removeProduct(String sku);
 
     Category addCategory(String categoryName, Boolean visible);
 
-    void editCategory(String categoryName, Boolean visible);
+    Category editCategory(String categoryName, Boolean visible);
 
-    void removeCategory(String categoryName);
+    Category removeCategory(String categoryName);
 
     List<Category> getCategories();
 

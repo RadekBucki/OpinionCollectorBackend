@@ -63,7 +63,7 @@ public class ProductFacadeImpl implements ProductFacade {
     }
 
     @Override
-    public void editProduct(Long authorId,
+    public Product editProduct(Long authorId,
                                String sku,
                                String name,
                                String pictureUrl,
@@ -77,11 +77,14 @@ public class ProductFacadeImpl implements ProductFacade {
                 description,
                 categoryNames,
                 visible);
+        return databaseCommunication.getProductBySku(sku);
     }
 
     @Override
-    public void removeProduct(String sku) {
+    public Product removeProduct(String sku) {
+        Product product = databaseCommunication.getProductBySku(sku);
         databaseCommunication.removeProduct(sku);
+        return product;
     }
 
     @Override
@@ -90,13 +93,16 @@ public class ProductFacadeImpl implements ProductFacade {
     }
 
     @Override
-    public void editCategory(String categoryName, Boolean visible) {
+    public Category editCategory(String categoryName, Boolean visible) {
         databaseCommunication.updateCategory(categoryName, visible);
+        return databaseCommunication.getCategoryByName(categoryName);
     }
 
     @Override
-    public void removeCategory(String categoryName) {
+    public Category removeCategory(String categoryName) {
+        Category category = databaseCommunication.getCategoryByName(categoryName);
         databaseCommunication.removeCategory(categoryName);
+        return category;
     }
 
     @Override

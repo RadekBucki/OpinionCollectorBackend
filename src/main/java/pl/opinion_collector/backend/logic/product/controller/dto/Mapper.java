@@ -14,6 +14,7 @@ public final class Mapper {
 
     /**
      * get converted Product class
+     *
      * @param product - Product from dataBase layer
      * @return ProductDto
      */
@@ -32,6 +33,7 @@ public final class Mapper {
 
     /**
      * get converted Opinion class
+     *
      * @param opinion - Opinion from dataBase layer
      * @return OpinionDto
      */
@@ -48,6 +50,7 @@ public final class Mapper {
 
     /**
      * get converted Category class
+     *
      * @param category - Category from dataBase layer
      * @return CategoryDto
      */
@@ -57,6 +60,12 @@ public final class Mapper {
                 .build();
     }
 
+    /**
+     * get converted ProductWrapper class
+     *
+     * @param productWrapper - ProductWrapper from Service layer
+     * @return ProductWrapperDto
+     */
     public ProductWrapperDto mapProductWrapper(ProductWrapper productWrapper) {
         return ProductWrapperDto.builder()
                 .actualPage(productWrapper.getActualPage())
@@ -66,4 +75,17 @@ public final class Mapper {
                         .collect(Collectors.toList()))
                 .build();
     }
+
+    /**
+     * get wrapped exception reason
+     *
+     * @param e - Exception
+     * @return ExceptionDto
+     */
+    public ExceptionDto mapException(Exception e){
+        return ExceptionDto.builder()
+                .message(e.getMessage())
+                .build();
+    }
+
 }

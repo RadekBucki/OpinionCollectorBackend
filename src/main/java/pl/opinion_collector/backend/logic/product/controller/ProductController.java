@@ -70,7 +70,7 @@ public class ProductController {
                     HttpStatus.OK);
 
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(map.mapException(e), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -147,15 +147,14 @@ public class ProductController {
             required = true)
     @PutMapping("/edit")
     public ResponseEntity<?> editProduct(HttpServletRequest req, @RequestBody ProductArg arg) {
-        productFacade.editProduct(userFacade.
+        return new ResponseEntity<>(map.mapProduct(productFacade.editProduct(userFacade.
                         getUserByToken(getToken(req)).getUserId(),
                 arg.getSku(),
                 arg.getName(),
                 arg.getPictureUrl(),
                 arg.getDescription(),
                 arg.getCategoryNames(),
-                arg.getVisible());
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+                arg.getVisible())), HttpStatus.ACCEPTED);
     }
 
     /**
@@ -170,8 +169,8 @@ public class ProductController {
             required = true)
     @DeleteMapping("/edit")
     public ResponseEntity<?> deleteProduct(@RequestBody String sku) {
-        productFacade.removeProduct(sku);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(map.mapProduct(productFacade.removeProduct(sku)),
+                HttpStatus.ACCEPTED);
     }
 
     private String getToken(HttpServletRequest request) {

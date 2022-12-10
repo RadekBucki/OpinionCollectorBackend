@@ -1,10 +1,7 @@
 package pl.opinion_collector.backend.database_communication.model;
 
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -13,7 +10,8 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @RequiredArgsConstructor
 @TypeDefs({

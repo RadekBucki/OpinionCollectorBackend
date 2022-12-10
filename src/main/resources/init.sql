@@ -10,9 +10,9 @@ insert into product  values(1,'Ekran "6,5cala 6/128GB"','Samsung Galaxy S20',nul
 insert into product values (2,'Procesor Intel, dysk tysionc, cztery ka xD','MacBook Air M1',null,'macbook.url','skuu',true,2);
 insert into product values(3,'Swietnie kopie bitkojna','GeForceRTX4090',null,'picture','sku321',false,3);
 
-insert into opinion values (1,'[{"advantage": "Super jest"}]',5,null,1,1);
-insert into opinion values (2,'[{"advantage": "No tak srednio bym powiedzial"}]',1,'[{"disadvantage": "zdjecieSlabegoProduktu"}]',2,1);
-insert into opinion values (3,'[{"advantage": "Polecam serdecznie. Pieknie dogrzewa w domku"}]',5,null,3,2);
+insert into opinion values (1,'["Super jest"]',5,null,1,1);
+insert into opinion values (2,'["No tak srednio bym powiedzial"]',1,'["zdjecieSlabegoProduktu.pl"]',2,1);
+insert into opinion values (3,'["Polecam serdecznie. Pieknie dogrzewa w domku"]',5,null,3,2);
 
 insert into suggestion values (1,'No ja to bym dorzucil piaty aparat',1,null,1,2);
 insert into suggestion values (2,'Moze troche drozej? Bo musze tylko 3 miesiace pracowac zeby kupic',2,null,1,2);
@@ -29,3 +29,11 @@ update suggestion set review_review_id=3 where suggestion_id=3;
 insert into category_products values (1,1);
 insert into category_products values (2,2);
 insert into category_products values (3,3);
+
+update opinion set product_id=1 where opinion_id=1;
+update opinion set product_id=2 where opinion_id=2;
+update opinion set product_id=3 where opinion_id=3;
+
+update opinion set user_id=1 where opinion_id=1;
+update opinion set user_id=2 where opinion_id=2;
+update opinion set user_id=3 where opinion_id=3;

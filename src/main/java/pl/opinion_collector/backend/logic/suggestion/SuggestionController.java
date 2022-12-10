@@ -4,12 +4,10 @@ package pl.opinion_collector.backend.logic.suggestion;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import pl.opinion_collector.backend.database_communication.model.*;
-import pl.opinion_collector.backend.logic.product.ProductFacade;
 import pl.opinion_collector.backend.logic.user.UserFacade;
 
 import java.util.List;
@@ -23,8 +21,6 @@ public class SuggestionController {
     private Suggestions suggestionFacade;
     // @Autowired
     private UserFacade userFacade;
-    // @Autowired
-    private ProductFacade productFacade;
 
     /**
      * All Suggestions endpoint
@@ -68,13 +64,9 @@ public class SuggestionController {
         if (user == null) {
             throw new IllegalArgumentException("Authentication failed!");
         }
-        // check whether product is valid
-        Product product = productFacade.getProductBySku(sku);
-        if (product == null) {
-            throw new IllegalArgumentException("Product with given SKU does not exist");
-        }
+
         // add suggestion
-        suggestionFacade.addSuggestion(user.getUserId(), product, description);
+        suggestionFacade.addSuggestion(user.getUserId(), sku, description);
     }
 
     @PutMapping(value = "/reply", consumes = MediaType.APPLICATION_JSON_VALUE)

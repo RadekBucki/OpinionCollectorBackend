@@ -119,13 +119,6 @@ public class ProductFacadeImpl implements ProductFacade {
         return databaseCommunication.getAllCategories();
     }
 
-    private List<Category> getCategories(List<String> names) {
-        return databaseCommunication.getAllCategories()
-                .stream().filter(category -> names.stream()
-                        .anyMatch(e -> category.getCategoryName().equals(e)))
-                .collect(Collectors.toList());
-    }
-
     private ProductWrapper wrapProductList(int page, List<Product> productList) {
         List<Product> products = new ArrayList<>(productList);
         int size = products.size();

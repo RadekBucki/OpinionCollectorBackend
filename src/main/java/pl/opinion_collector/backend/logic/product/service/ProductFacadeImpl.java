@@ -1,15 +1,19 @@
 package pl.opinion_collector.backend.logic.product.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
 import pl.opinion_collector.backend.database_communication.model.Category;
 import pl.opinion_collector.backend.database_communication.model.Product;
 import pl.opinion_collector.backend.logic.product.service.wrapper.ProductWrapper;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class ProductFacadeImpl implements ProductFacade {
@@ -21,55 +25,107 @@ public class ProductFacadeImpl implements ProductFacade {
 
     @Override
     public Product getProductBySku(String sku) {
-        return null;
+        return databaseCommunication.getProductBySku(sku);
     }
 
     @Override
     public List<Product> getAllProducts(String page) {
-        //TODO: wrap Product list with ProductWrapper.builder().build();
-        return null;
+        List<Product> products = databaseCommunication.getAllProducts();
+        return products;
     }
 
     @Override
-    public List<Product> getProducts(String page) {
-        //TODO: wrap Product list with ProductWrapper.builder().build();
-        return null;
+    public ProductWrapper getProducts(String page) {
+        List<Product> allProducts = databaseCommunication.getVisibleProducts();
+        int size = (int) Math.ceil(allProducts.size() / PRODUCT_COUNT);
+        List<Product> productList = new ArrayList<>(allProducts
+                .subList(Integer.parseInt(page)* PRODUCT_COUNT,
+                        Integer.parseInt(page)* PRODUCT_COUNT + PRODUCT_COUNT));
+        return ProductWrapper.builder()
+                .numberOfPages(String.valueOf(size))
+                .actualPage(page)
+                .products(productList).build();
     }
 
     @Override
-    public List<Product> getProductsFiltered(String categoryName, String searchPhrase, Integer opinionAvgMin, Integer opinionAvgMax) {
-        Set<Product> productSet = new HashSet<>();
-        return null;
+    public List<Product> getProductsFiltered(String categoryName,
+                                             String searchPhrase,
+                                             Integer opinionAvgMin,
+                                             Integer opinionAvgMax) {
+        return databaseCommunication.getProductsFilterProducts(categoryName,
+                searchPhrase,
+                opinionAvgMin,
+                opinionAvgMax);
     }
 
     @Override
-    public List<Product> addProduct(String sku, String name, String pictureUrl, String description, List<String> categoryNames, Boolean visible) {
-        return null;
+    public Product addProduct(Long authorId,
+                              String sku,
+                              String name,
+                              String pictureUrl,
+                              String description,
+                              List<String> categoryNames,
+                              Boolean visible) {
+        return databaseCommunication.createProduct(authorId,
+                sku,
+                name,
+                pictureUrl,
+                description,
+                categoryNames,
+                visible );
     }
 
     @Override
-    public Product editProduct(String sku, String name, String pictureUrl, String description, List<String> categoryNames, Boolean visible) {
-        return null;
+    public Product editProduct(String sku,
+                               String name,
+                               String pictureUrl,
+                               String description,
+                               List<String> categoryNames,
+                               Boolean visible) {
+        Product product = databaseCommunication.getProductBySku(sku);
+        product.setName(name);
+        product.setPictureUrl(pictureUrl);
+        product.setDescription(description);
+        product.setCategories(getCategories(categoryNames));
+        product.setVisible(visible);
+        return product;
     }
 
     @Override
     public void removeProduct(String sku) {
-
+        databaseCommunication.removeProduct(sku);
     }
 
     @Override
     public Category addCategory(String categoryName, Boolean visible) {
-        return null;
+        return databaseCommunication.createCategory(categoryName, visible);
     }
 
     @Override
     public Category editCategory(String categoryName, Boolean visible) {
-        return null;
+        Category category = databaseCommunication.getCategoryByName(categoryName);
+        category.setVisible(visible);
+        return category;
     }
 
     @Override
     public void removeCategory(String categoryName) {
+        databaseCommunication.removeCategory(categoryName);
+    }
 
+    private List<Category> getCategories(List<String> names) {
+        return databaseCommunication.getAllCategories()
+                .stream().filter(category -> names.stream()
+                        .anyMatch(e -> category.getCategoryName().equals(e)))
+                .collect(Collectors.toList());
+    }
+
+    private Page<?> toPage(List<?> list, Pageable pageable) {
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), list.size());
+        if(start > list.size())
+            return new PageImpl<>(new ArrayList<>(), pageable, list.size());
+        return new PageImpl<>(list.subList(start, end), pageable, list.size());
     }
 
 }

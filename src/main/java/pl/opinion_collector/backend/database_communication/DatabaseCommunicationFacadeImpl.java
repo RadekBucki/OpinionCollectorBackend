@@ -138,4 +138,15 @@ public class DatabaseCommunicationFacadeImpl implements DatabaseCommunicationFac
     public Suggestion replySuggestion(Long suggestionId, Long suggestionReviewerId, String suggestionStatus, String suggestionReply) {
         return suggestionDatabaseCommunication.replySuggestion(suggestionId, suggestionReviewerId, suggestionStatus, suggestionReply);
     }
+
+    @Override
+    public List<Category> getAllCategories() {
+        return categoryDatabaseCommunication.getAllCategories();
+    }
+
+    @Override
+    public Category getCategoryByName(String name) {
+        return categoryDatabaseCommunication.getCategoryByName(name);
+    }
+
 }

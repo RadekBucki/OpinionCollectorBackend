@@ -92,4 +92,7 @@ public interface DatabaseCommunicationFacade {
             String suggestionReply
     );
 
+    List<Category> getAllCategories();
+
+    Category getCategoryByName(String name);
 }

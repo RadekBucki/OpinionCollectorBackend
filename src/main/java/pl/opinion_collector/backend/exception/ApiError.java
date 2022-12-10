@@ -1,4 +1,4 @@
-package pl.opinion_collector.backend.database_communication.exception;
+package pl.opinion_collector.backend.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

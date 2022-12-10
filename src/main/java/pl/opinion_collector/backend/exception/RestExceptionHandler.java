@@ -1,4 +1,4 @@
-package pl.opinion_collector.backend.database_communication.exception;
+package pl.opinion_collector.backend.exception;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import pl.opinion_collector.backend.database_communication.exception.type.InvalidBusinessArgumentException;
-import pl.opinion_collector.backend.database_communication.exception.type.ParameterException;
+import pl.opinion_collector.backend.exception.type.InvalidBusinessArgumentException;
+import pl.opinion_collector.backend.exception.type.ParameterException;
 
 
 import java.util.ArrayList;

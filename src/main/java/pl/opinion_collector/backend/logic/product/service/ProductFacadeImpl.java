@@ -102,10 +102,8 @@ public class ProductFacadeImpl implements ProductFacade {
     }
 
     @Override
-    public Category editCategory(String categoryName, Boolean visible) {
-        Category category = databaseCommunication.getCategoryByName(categoryName);
-        category.setVisible(visible);
-        return category;
+    public void editCategory(String categoryName, Boolean visible) {
+        databaseCommunication.updateCategory(categoryName, visible);
     }
 
     @Override

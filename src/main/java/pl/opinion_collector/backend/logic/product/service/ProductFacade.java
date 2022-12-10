@@ -45,7 +45,7 @@ public interface ProductFacade {
 
     Category addCategory(String categoryName, Boolean visible);
 
-    Category editCategory(String categoryName, Boolean visible);
+    void editCategory(String categoryName, Boolean visible);
 
     void removeCategory(String categoryName);
 

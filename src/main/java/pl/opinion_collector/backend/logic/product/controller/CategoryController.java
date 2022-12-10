@@ -77,10 +77,10 @@ public class CategoryController {
             value = "Contains the name and visibility status of the added category",
             required = true)
     @PutMapping("/edit")
-    public ResponseEntity<Object> editCategory(@RequestBody CategoryArg categoryArg) {
-        return new ResponseEntity<>(map.mapCategory(productFacade.editCategory(categoryArg.getName(),
-                categoryArg.getVisible())),
-                HttpStatus.ACCEPTED);
+    public ResponseEntity<?> editCategory(@RequestBody CategoryArg categoryArg) {
+        productFacade.editCategory(categoryArg.getName(),
+                categoryArg.getVisible());
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     /**

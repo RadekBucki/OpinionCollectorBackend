@@ -1,11 +1,6 @@
 package pl.opinion_collector.backend.logic.opinion;
 
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,8 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import pl.opinion_collector.backend.database_communication.model.Opinion;
+import pl.opinion_collector.backend.logic.opinion.model.Opinion;
 import pl.opinion_collector.backend.database_communication.model.User;
+import pl.opinion_collector.backend.logic.opinion.dto.OpinionShortDto;
 import pl.opinion_collector.backend.logic.user.UserFacade;
 
 import java.util.List;
@@ -40,9 +36,9 @@ public class OpinionController {
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-        List<Opinion> userOpinions = opinionsFacade.getUserOpinions(user.getUserId());
-        List<OpinionShortDto> collect = userOpinions.stream().
-                map(this::mapOpinionToDto).collect(Collectors.toList());
+
+        List<OpinionShortDto> collect = opinionsFacade.getUserOpinions(user.getUserId()).stream()
+                .map(OpinionShortDto::map).collect(Collectors.toList());
         return ResponseEntity.ok().body(collect);
     }
 
@@ -60,10 +56,9 @@ public class OpinionController {
             required = true)
     @GetMapping("/product")
     public ResponseEntity<List<OpinionShortDto>> getProductOpinions(@RequestParam String sku) {
-        List<Opinion> productOpinions = opinionsFacade.getProductOpinions(sku);
-        List<OpinionShortDto> collect = productOpinions.stream().
-                map(this::mapOpinionToDto).collect(Collectors.toList());
-        return ResponseEntity.ok().body(collect);
+        List<OpinionShortDto> collected = opinionsFacade.getProductOpinions(sku).stream()
+                .map(OpinionShortDto::map).collect(Collectors.toList());
+        return ResponseEntity.ok().body(collected);
     }
 
     /**
@@ -90,10 +85,9 @@ public class OpinionController {
 
         // add opinion
         try {
-            Opinion opinion = opinionsFacade.addProductOpinion(user.getUserId(), shortOpinionDto.sku, shortOpinionDto.opinionValue,
-                    shortOpinionDto.description, shortOpinionDto.pictureUrl, shortOpinionDto.advantages,
-                    shortOpinionDto.disadvantages);
-            return ResponseEntity.ok().body(opinion);
+            return ResponseEntity.ok().body(opinionsFacade.addProductOpinion(user.getUserId(), shortOpinionDto.getSku(),
+                    shortOpinionDto.getOpinionValue(), shortOpinionDto.getDescription(), shortOpinionDto.getPictureUrl(),
+                    shortOpinionDto.getAdvantages(), shortOpinionDto.getDisadvantages()));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -101,37 +95,6 @@ public class OpinionController {
         }
     }
 
-    /**
-     * Helper class used to avoid dumping huge JSON onto frontend
-     */
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
-    @Setter
-    private static class OpinionShortDto {
-        @ApiModelProperty(notes = "Product identifier", example = "sku123", required = true)
-        private String sku;
-        @ApiModelProperty(notes = "Opinion value, grade", example = "1", required = true)
-        private Integer opinionValue;
-        @ApiModelProperty(notes = "Content of opinion", example = "dont like it at all", required = true)
-        private String description;
-        @ApiModelProperty(notes = "URL of opinion picture", example = "1")
-        private String pictureUrl;
-        @ApiModelProperty(notes = "List of advantages")
-        private List<String> advantages;
-        @ApiModelProperty(notes = "List of disadvantages")
-        private List<String> disadvantages;
-
-    }
-
-    /**
-     * Helper functions
-     */
-    private OpinionShortDto mapOpinionToDto(Opinion opinion) {
-        return new OpinionShortDto(opinion.getProductId().getSku(),
-                opinion.getOpinionValue(), opinion.getDescription(),
-                opinion.getPictureUrl(), opinion.getAdvantages(), opinion.getDisadvantages());
-    }
 
     public static String getBearerTokenHeader() {
         return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())

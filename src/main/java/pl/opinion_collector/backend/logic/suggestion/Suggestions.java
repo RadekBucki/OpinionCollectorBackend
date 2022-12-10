@@ -1,7 +1,7 @@
 package pl.opinion_collector.backend.logic.suggestion;
 
 
-import pl.opinion_collector.backend.database_communication.model.Suggestion;
+import pl.opinion_collector.backend.logic.suggestion.model.Suggestion;
 
 import java.util.List;
 

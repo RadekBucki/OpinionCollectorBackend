@@ -6,6 +6,9 @@ import pl.opinion_collector.backend.database_communication.model.Product;
 
 import java.util.stream.Collectors;
 
+/**
+ * Helper class used to avoid dumping huge JSON onto frontend
+ */
 public final class Mapper {
 
     public ProductDto mapProduct(Product product) {

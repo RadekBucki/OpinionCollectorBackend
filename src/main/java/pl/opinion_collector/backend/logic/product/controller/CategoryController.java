@@ -1,5 +1,6 @@
 package pl.opinion_collector.backend.logic.product.controller;
 
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.opinion_collector.backend.logic.product.controller.dto.CategoryDto;
 import pl.opinion_collector.backend.logic.product.controller.dto.Mapper;
+import pl.opinion_collector.backend.logic.product.controller.pojo.CategoryArg;
 import pl.opinion_collector.backend.logic.product.service.ProductFacade;
 
 import java.util.List;
@@ -21,6 +23,11 @@ public class CategoryController {
     @Autowired
     private ProductFacade productFacade;
 
+    /**
+     * Endpoint for all visible Categories
+     *
+     * @return - list of all visible Categories
+     */
     @GetMapping()
     public ResponseEntity<List<CategoryDto>> getCategories() {
         return new ResponseEntity<>(productFacade.getCategories().stream()
@@ -29,6 +36,11 @@ public class CategoryController {
                 HttpStatus.OK);
     }
 
+    /**
+     * Endpoint for all Categories
+     *
+     * @return - list of all Categories
+     */
     @GetMapping("/all")
     public ResponseEntity<Object> getAllCategories() {
         return new ResponseEntity<>(productFacade.getAllCategories().stream()
@@ -37,20 +49,50 @@ public class CategoryController {
                 HttpStatus.OK);
     }
 
+    /**
+     * Current user adds category
+     *
+     * @param categoryArg - name and visible
+     */
+    @ApiParam(
+            name = "categoryArg",
+            type = "CategoryArg",
+            value = "Contains the name and visibility status of the added category",
+            required = true)
     @PostMapping("/add")
-    public ResponseEntity<Object> addCategory(@RequestBody String name,
-                                              @RequestBody Boolean visible) {
-        return new ResponseEntity<>(map.mapCategory(productFacade.addCategory(name, visible)),
+    public ResponseEntity<Object> addCategory(@RequestBody CategoryArg categoryArg) {
+        return new ResponseEntity<>(map.mapCategory(productFacade.addCategory(categoryArg.getName(),
+                categoryArg.getVisible())),
                 HttpStatus.ACCEPTED);
     }
 
+    /**
+     * Current user edit category visibility
+     *
+     * @param categoryArg - name and visible
+     */
+    @ApiParam(
+            name = "categoryArg",
+            type = "CategoryArg",
+            value = "Contains the name and visibility status of the added category",
+            required = true)
     @PutMapping("/edit")
-    public ResponseEntity<Object> editCategory(@RequestBody String name,
-                                               @RequestBody Boolean visible) {
-        return new ResponseEntity<>(map.mapCategory(productFacade.editCategory(name, visible)),
+    public ResponseEntity<Object> editCategory(@RequestBody CategoryArg categoryArg) {
+        return new ResponseEntity<>(map.mapCategory(productFacade.editCategory(categoryArg.getName(),
+                categoryArg.getVisible())),
                 HttpStatus.ACCEPTED);
     }
 
+    /**
+     * delete Category
+     *
+     * @param name - name of Category
+     */
+    @ApiParam(
+            name = "name",
+            type = "String",
+            value = "Contains the name of the category",
+            required = true)
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteCategory(@RequestBody String name) {
         productFacade.removeCategory(name);

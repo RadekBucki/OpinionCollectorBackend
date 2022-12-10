@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.opinion_collector.backend.logic.product.controller.dto.Mapper;
 import pl.opinion_collector.backend.logic.product.controller.dto.ProductDto;
+import pl.opinion_collector.backend.logic.product.controller.dto.ProductWrapperDto;
 import pl.opinion_collector.backend.logic.product.controller.pojo.ProductArg;
 import pl.opinion_collector.backend.logic.product.controller.pojo.SearchArg;
 import pl.opinion_collector.backend.logic.product.service.ProductFacade;
@@ -31,27 +32,46 @@ public class ProductController {
     private UserFacade userFacade;
 
     /**
-     * Endpoint for all visible Product
+     * Get visible products list
      *
-     * @return - list of all visible Product
+     * @param page - number of page
+     * @return {@link ProductWrapperDto}
      */
-    @GetMapping()
-    public ResponseEntity<?> getProduct(int page) {
-//        return new ResponseEntity<>(productFacade.getAllProducts("1").stream()
-//                .map(map::mapProduct), HttpStatus.OK);
-        return null;
+    @ApiParam(
+            name = "page",
+            type = "Integer",
+            value = "page number",
+            required = true)
+    @GetMapping("/{page}")
+    public ResponseEntity<ProductWrapperDto> getProduct(@PathVariable int page) {
+        try {
+            return new ResponseEntity<>(map.mapProductWrapper(productFacade.getProducts(page)),
+                    HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
-     * Endpoint for all Product
+     * Get all products list
      *
-     * @return - list of all Product
+     * @param page - number of page
+     * @return {@link ProductWrapperDto}
      */
-    @GetMapping("/all")
-    public ResponseEntity<?> getAllProduct(int page) {
-//        return new ResponseEntity<>(productFacade.getAllProducts("1").stream()
-//                .map(map::mapProduct), HttpStatus.OK);
-        return null;
+    @ApiParam(
+            name = "page",
+            type = "Integer",
+            value = "page number",
+            required = true)
+    @GetMapping("/all/{page}")
+    public ResponseEntity<?> getAllProduct(@PathVariable int page) {
+        try {
+            return new ResponseEntity<>(map.mapProductWrapper(productFacade.getAllProducts(page)),
+                    HttpStatus.OK);
+
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**

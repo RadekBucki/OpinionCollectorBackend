@@ -11,9 +11,9 @@ public interface ProductFacade {
 
     Product getProductBySku(String sku);
 
-    List<Product> getAllProducts(String page);
+    ProductWrapper getAllProducts(int page);
 
-    ProductWrapper getProducts(String page);
+    ProductWrapper getProducts(int page);
 
     List<Product> getProductsFiltered(
             String categoryName,

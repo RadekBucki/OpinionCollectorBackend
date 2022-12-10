@@ -1,15 +1,17 @@
 package pl.opinion_collector.backend.logic.product.service.wrapper;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import pl.opinion_collector.backend.database_communication.model.Product;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductWrapper {
     private List<Product> products;
-    private String actualPage;
-    private String numberOfPages;
+    private int actualPage;
+    private int numberOfPages;
 }

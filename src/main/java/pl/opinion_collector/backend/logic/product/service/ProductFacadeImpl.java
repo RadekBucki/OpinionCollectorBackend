@@ -1,10 +1,6 @@
 package pl.opinion_collector.backend.logic.product.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
 import pl.opinion_collector.backend.database_communication.model.Category;
@@ -29,21 +25,13 @@ public class ProductFacadeImpl implements ProductFacade {
     }
 
     @Override
-    public List<Product> getAllProducts(String page) {
-        return databaseCommunication.getAllProducts();
+    public ProductWrapper getAllProducts(int page) {
+        return wrapProductList(page, databaseCommunication.getAllProducts());
     }
 
     @Override
-    public ProductWrapper getProducts(String page) {
-        List<Product> allProducts = databaseCommunication.getVisibleProducts();
-        int size = (int) Math.ceil(allProducts.size() / PRODUCT_COUNT);
-        List<Product> productList = new ArrayList<>(allProducts
-                .subList(Integer.parseInt(page)* PRODUCT_COUNT,
-                        Integer.parseInt(page)* PRODUCT_COUNT + PRODUCT_COUNT));
-        return ProductWrapper.builder()
-                .numberOfPages(String.valueOf(size))
-                .actualPage(page)
-                .products(productList).build();
+    public ProductWrapper getProducts(int page) {
+        return wrapProductList(page, databaseCommunication.getVisibleProducts());
     }
 
     @Override
@@ -131,12 +119,25 @@ public class ProductFacadeImpl implements ProductFacade {
                 .collect(Collectors.toList());
     }
 
-    private Page<?> toPage(List<?> list, Pageable pageable) {
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), list.size());
-        if(start > list.size())
-            return new PageImpl<>(new ArrayList<>(), pageable, list.size());
-        return new PageImpl<>(list.subList(start, end), pageable, list.size());
+    private ProductWrapper wrapProductList(int page, List<Product> productList) {
+        List<Product> products = new ArrayList<>(productList);
+        int size = products.size();
+        int pageCount = (size + PRODUCT_COUNT - 1) / PRODUCT_COUNT;
+        if(page >= pageCount) {
+            throw new RuntimeException("the specified page is outside of the page range");
+        }
+        ProductWrapper.ProductWrapperBuilder builder = ProductWrapper.builder()
+                .numberOfPages(pageCount - 1)
+                .actualPage(page);
+        if (size < PRODUCT_COUNT) {
+            builder.products(products);
+        } else if (products.size() > page * PRODUCT_COUNT + PRODUCT_COUNT) {
+            builder.products(products.subList(page == 0 ? 0 : page * PRODUCT_COUNT - 1,
+                            page * PRODUCT_COUNT + PRODUCT_COUNT)).build();
+        } else if (products.size() > page * PRODUCT_COUNT){
+            builder.products(products.subList(page * PRODUCT_COUNT - 1, size - 1)).build();
+        }
+        return builder.build();
     }
 
 }

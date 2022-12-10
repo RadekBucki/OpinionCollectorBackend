@@ -23,7 +23,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException exception,
                                                                   final HttpHeaders headers,
-                                                                  final HttpStatus status, final WebRequest request) {
+                                                                  final HttpStatus status,
+                                                                  final WebRequest request) {
         final List<String> errors = new ArrayList<>();
         for (final FieldError error : exception.getBindingResult().getFieldErrors()) {
             errors.add(error.getField() + " : " + error.getDefaultMessage());
@@ -41,9 +42,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             RuntimeException exception) {
         final String error = "Status Code: " + HttpStatus.NOT_ACCEPTABLE.value() + ", Exception: " + exception.getClass().getSimpleName();
 
-        return new ResponseEntity<>(new ApiError(HttpStatus.NOT_ACCEPTABLE, exception.getLocalizedMessage(), error)
-                , new HttpHeaders()
-                , HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(new ApiError(HttpStatus.NOT_ACCEPTABLE, exception.getLocalizedMessage(), error),
+                new HttpHeaders(),
+                HttpStatus.NOT_ACCEPTABLE);
     }
 
 }

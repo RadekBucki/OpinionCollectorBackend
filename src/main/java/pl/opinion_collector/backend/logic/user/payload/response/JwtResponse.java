@@ -1,9 +1,13 @@
 package pl.opinion_collector.backend.logic.user.payload.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
+@Getter
+@Setter
 public class JwtResponse {
     private String token;
     private String type = "Bearer";
@@ -16,33 +20,5 @@ public class JwtResponse {
         this.token = accessToken;
         this.email = email;
         this.roles = roles;
-    }
-
-    public String getAccessToken() {
-        return token;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.token = accessToken;
-    }
-
-    public String getTokenType() {
-        return type;
-    }
-
-    public void setTokenType(String tokenType) {
-        this.type = tokenType;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public List<String> getRoles() {
-        return roles;
     }
 }

@@ -9,8 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.opinion_collector.backend.database_communication.communication.UserDatabaseCommunication;
-import pl.opinion_collector.backend.logic.user.model.Role;
+import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
 import pl.opinion_collector.backend.logic.user.model.User;
 import pl.opinion_collector.backend.logic.user.security.jwt.JwtUtils;
 
@@ -20,7 +19,7 @@ import java.util.List;
 @Service
 public class UserFacadeImpl implements UserFacade {
     @Autowired
-    private UserDatabaseCommunication userDatabaseCommunication;
+    private DatabaseCommunicationFacade userDatabaseCommunication;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
@@ -46,13 +45,7 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     public User register(String firstName, String lastName, String email, String password, String profilePictureUrl) {
-        if (email == null || password == null || email.isBlank() || password.isBlank()) {
-            logger.error("U HAVE TO INPUT EMAIL AND PASSWORD TO REGISTER");
-            return null;
-        } else if (findByEmail(email) != null) {
-            logger.error("USER WITH THIS EMAIL IS ALREADY EXISTS");
-            return null;
-        }
+        if (validateRegisterInput(email, password)) return null;
         userDatabaseCommunication.createUser(
                 firstName,
                 lastName,
@@ -63,13 +56,9 @@ public class UserFacadeImpl implements UserFacade {
         );
         return new User(firstName, lastName, email, password, profilePictureUrl);
     }
-
     @Override
     public User registerAdmin(String firstName, String lastName, String email, String password, String profilePictureUrl) {
-        if (findByEmail(email) != null) {
-            logger.error("USER WITH THIS EMAIL IS ALREADY EXISTS");
-            return null;
-        }
+        if (validateRegisterInput(email, password)) return null;
         userDatabaseCommunication.createUser(
                 firstName,
                 lastName,
@@ -80,6 +69,8 @@ public class UserFacadeImpl implements UserFacade {
         );
         return new User(firstName, lastName, email, password, profilePictureUrl);
     }
+
+
 
     @Override
     public String login(String email, String password) {
@@ -110,7 +101,7 @@ public class UserFacadeImpl implements UserFacade {
                         replaceIfDiffers(user.getPictureProfileUrl(), profilePictureUrl),
                         (user.isAdmin() || isAdmin) && isAdmin);
             } else {
-                logger.error("U CANT CHANGE EMAIL THAT IS TAKEN");
+                logger.error("U cant change email that is taken");
                 return null;
             }
         }
@@ -129,5 +120,16 @@ public class UserFacadeImpl implements UserFacade {
         if (s1 == null) return s2;
         if (s2 == null) return s1;
         return s2.isBlank() ? s1 : s2;
+    }
+
+    private boolean validateRegisterInput(String email, String password) {
+        if (email == null || password == null || email.isBlank() || password.isBlank()) {
+            logger.error("U have to input email and password to register");
+            return true;
+        } else if (findByEmail(email) != null) {
+            logger.error("Email is already used");
+            return true;
+        }
+        return false;
     }
 }

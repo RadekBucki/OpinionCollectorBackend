@@ -1,10 +1,14 @@
 package pl.opinion_collector.backend.logic.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Getter
+@Setter
 public class User {
     @JsonIgnore
     private Long id;
@@ -17,8 +21,6 @@ public class User {
     @JsonIgnore
     private Set<Role> roles;
     private String pictureProfileUrl;
-
-    public User() {}
 
     public User(pl.opinion_collector.backend.database_communication.model.User user) {
         this.id = user.getUserId();
@@ -55,76 +57,12 @@ public class User {
         this.pictureProfileUrl = pictureProfileUrl;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
     public Set<Role> createRoles(boolean isAdmin) {
         Set<Role> roles = new HashSet<>();
         if (isAdmin) {
             roles.add(Role.ROLE_ADMIN);
-        } roles.add(Role.ROLE_USER);
+        }
+        roles.add(Role.ROLE_USER);
         return roles;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getPictureProfileUrl() {
-        return pictureProfileUrl;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setPictureProfileUrl(String pictureProfileUrl) {
-        this.pictureProfileUrl = pictureProfileUrl;
-    }
-
-    public boolean isAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
     }
 }

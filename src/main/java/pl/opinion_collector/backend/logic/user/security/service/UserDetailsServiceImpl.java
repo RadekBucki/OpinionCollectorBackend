@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
 import pl.opinion_collector.backend.database_communication.communication.UserDatabaseCommunication;
 import pl.opinion_collector.backend.logic.user.model.User;
 import pl.opinion_collector.backend.logic.user.security.jwt.AuthTokenFilter;
@@ -18,7 +19,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
     @Autowired
-    private UserDatabaseCommunication userDatabaseCommunication;
+    private DatabaseCommunicationFacade userDatabaseCommunication;
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

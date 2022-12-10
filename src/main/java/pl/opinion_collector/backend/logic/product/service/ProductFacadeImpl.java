@@ -3,7 +3,7 @@ package pl.opinion_collector.backend.logic.product.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
-import pl.opinion_collector.backend.exception.type.ParameterException;
+import pl.opinion_collector.backend.logic.exception.type.ParameterException;
 import pl.opinion_collector.backend.database_communication.model.Category;
 import pl.opinion_collector.backend.database_communication.model.Product;
 import pl.opinion_collector.backend.logic.product.service.wrapper.ProductWrapper;

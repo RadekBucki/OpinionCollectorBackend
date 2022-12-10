@@ -16,8 +16,6 @@ import java.util.List;
 @Getter
 @Setter
 public class ProductArg {
-    @ApiModelProperty(notes = "the id of the person who added the product", example = "123", required = true)
-    private Long authorId;
     @ApiModelProperty(notes = "product sku", example = "skusku", required = true)
     private String sku;
     @ApiModelProperty(notes = "Product name", example = "Iphone 15", required = true)

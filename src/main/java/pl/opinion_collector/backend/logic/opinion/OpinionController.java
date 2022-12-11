@@ -8,13 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import pl.opinion_collector.backend.logic.opinion.model.Opinion;
 import pl.opinion_collector.backend.database_communication.model.User;
-import pl.opinion_collector.backend.logic.opinion.dto.OpinionShortDto;
+import pl.opinion_collector.backend.logic.opinion.dto.OpinionDto;
 import pl.opinion_collector.backend.logic.user.UserFacade;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/opinions")
@@ -31,15 +29,13 @@ public class OpinionController {
      * @return list of all opinions of user
      */
     @GetMapping("/user")
-    public ResponseEntity<List<OpinionShortDto>> getUserOpinions() {
+    public ResponseEntity<List<OpinionDto>> getUserOpinions() {
         User user = userFacade.getUserByToken(getBearerTokenHeader());
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        List<OpinionShortDto> collect = opinionsFacade.getUserOpinions(user.getUserId()).stream()
-                .map(OpinionShortDto::map).collect(Collectors.toList());
-        return ResponseEntity.ok().body(collect);
+        return ResponseEntity.ok().body(opinionsFacade.getUserOpinions(user.getUserId()));
     }
 
     /**
@@ -55,25 +51,24 @@ public class OpinionController {
             example = "sku123",
             required = true)
     @GetMapping("/product")
-    public ResponseEntity<List<OpinionShortDto>> getProductOpinions(@RequestParam String sku) {
-        List<OpinionShortDto> collected = opinionsFacade.getProductOpinions(sku).stream()
-                .map(OpinionShortDto::map).collect(Collectors.toList());
-        return ResponseEntity.ok().body(collected);
+    public ResponseEntity<List<OpinionDto>> getProductOpinions(@RequestParam String sku) {
+        return ResponseEntity.ok().body(opinionsFacade.getProductOpinions(sku));
     }
 
     /**
      * Endpoint for Logged-in user to add his opinion.
      *
-     * @param shortOpinionDto - opinion data transfer object
+     * @param opinionDto - opinion data transfer object
      */
     @ApiParam(
-            name = "shortOpinionDto",
-            type = "OpinionShortDto",
-            value = "Vital information about Opinion: sku (product identifier), opinion value, description " +
-                    "(content of opinion), picture URL, list of advantages, list of disadvantages",
+            name = "opinionDto",
+            type = "OpinionDto",
+            value = "Vital information about Opinion: opinionId (id of opinion), sku (product identifier), opinion value," +
+                    " description (content of opinion), picture URL, list of advantages, list of disadvantages, " +
+                    "authorId, productId",
             required = true)
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Opinion> addOpinion(@RequestBody OpinionShortDto shortOpinionDto) {
+    public ResponseEntity<OpinionDto> addOpinion(@RequestBody OpinionDto opinionDto) {
 
         // check whether user is valid
         User user = userFacade.getUserByToken(getBearerTokenHeader());
@@ -85,9 +80,9 @@ public class OpinionController {
 
         // add opinion
         try {
-            return ResponseEntity.ok().body(opinionsFacade.addProductOpinion(user.getUserId(), shortOpinionDto.getSku(),
-                    shortOpinionDto.getOpinionValue(), shortOpinionDto.getDescription(), shortOpinionDto.getPictureUrl(),
-                    shortOpinionDto.getAdvantages(), shortOpinionDto.getDisadvantages()));
+            return ResponseEntity.ok().body(opinionsFacade.addProductOpinion(user.getUserId(), opinionDto.getSku(),
+                    opinionDto.getOpinionValue(), opinionDto.getDescription(), opinionDto.getPictureUrl(),
+                    opinionDto.getAdvantages(), opinionDto.getDisadvantages()));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)

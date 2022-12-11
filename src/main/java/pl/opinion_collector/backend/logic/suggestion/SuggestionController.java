@@ -12,12 +12,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import pl.opinion_collector.backend.database_communication.model.*;
 import pl.opinion_collector.backend.logic.suggestion.dto.AddSuggestionDto;
 import pl.opinion_collector.backend.logic.suggestion.dto.AnswerSuggestionDto;
-import pl.opinion_collector.backend.logic.suggestion.dto.SuggestionShortDto;
+import pl.opinion_collector.backend.logic.suggestion.dto.SuggestionDto;
 import pl.opinion_collector.backend.logic.user.UserFacade;
-import pl.opinion_collector.backend.logic.suggestion.model.Suggestion;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/suggestions")
@@ -34,16 +32,14 @@ public class SuggestionController {
      * @return list of all Suggestions of user
      */
     @GetMapping("/user")
-    public ResponseEntity<List<SuggestionShortDto>> getUserSuggestions() {
+    public ResponseEntity<List<SuggestionDto>> getUserSuggestions() {
         User user = userFacade.getUserByToken(getBearerTokenHeader());
         if (user == null) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(null);
         }
-        List<SuggestionShortDto> collect = suggestionFacade.getUserSuggestions(user.getUserId()).stream()
-                .map(SuggestionShortDto::map).collect(Collectors.toList());
-        return ResponseEntity.ok().body(collect);
+        return ResponseEntity.ok().body(suggestionFacade.getUserSuggestions(user.getUserId()));
     }
 
     /**
@@ -52,10 +48,8 @@ public class SuggestionController {
      * @return - list of all Suggestions
      */
     @GetMapping("/get")
-    public ResponseEntity<List<SuggestionShortDto>> getAllSuggestions() {
-        List<SuggestionShortDto> collect = suggestionFacade.getAllSuggestions().stream()
-                .map(SuggestionShortDto::map).collect(Collectors.toList());
-        return ResponseEntity.ok().body(collect);
+    public ResponseEntity<List<SuggestionDto>> getAllSuggestions() {
+        return ResponseEntity.ok().body(suggestionFacade.getAllSuggestions());
     }
 
     /**
@@ -70,7 +64,7 @@ public class SuggestionController {
                     "description (content of suggestion)",
             required = true)
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Suggestion> addSuggestion(@RequestBody AddSuggestionDto addSuggestionDto) {
+    public ResponseEntity<SuggestionDto> addSuggestion(@RequestBody AddSuggestionDto addSuggestionDto) {
 
         String sku = addSuggestionDto.getSku();
         String description = addSuggestionDto.getDescription();
@@ -94,7 +88,7 @@ public class SuggestionController {
                     "suggestionReply (content of reply)",
             required = true)
     @PutMapping(value = "/reply", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Suggestion> replyToSuggestion(@RequestBody AnswerSuggestionDto answerSuggestionDto) {
+    public ResponseEntity<SuggestionDto> replyToSuggestion(@RequestBody AnswerSuggestionDto answerSuggestionDto) {
 
         Integer suggestionId = answerSuggestionDto.getSuggestionId();
         String suggestionStatus = answerSuggestionDto.getSuggestionStatus().name();

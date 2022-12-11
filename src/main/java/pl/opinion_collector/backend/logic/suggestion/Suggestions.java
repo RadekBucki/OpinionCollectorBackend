@@ -1,17 +1,17 @@
 package pl.opinion_collector.backend.logic.suggestion;
 
 
-import pl.opinion_collector.backend.logic.suggestion.model.Suggestion;
+import pl.opinion_collector.backend.logic.suggestion.dto.SuggestionDto;
 
 import java.util.List;
 
 public interface Suggestions {
 
-    List<Suggestion> getUserSuggestions(Long userId);
+    List<SuggestionDto> getUserSuggestions(Long userId);
 
-    Suggestion addSuggestion(Long userId, String sku, String suggestionDescription);
+    SuggestionDto addSuggestion(Long userId, String sku, String suggestionDescription);
 
-    List<Suggestion> getAllSuggestions();
+    List<SuggestionDto> getAllSuggestions();
 
-    Suggestion replySuggestion(Long reviewerId, Integer suggestionId, String suggestionStatus, String suggestionReply);
+    SuggestionDto replySuggestion(Long reviewerId, Integer suggestionId, String suggestionStatus, String suggestionReply);
 }

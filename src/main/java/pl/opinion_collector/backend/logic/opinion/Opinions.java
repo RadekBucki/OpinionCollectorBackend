@@ -1,13 +1,13 @@
 package pl.opinion_collector.backend.logic.opinion;
 
-import pl.opinion_collector.backend.logic.opinion.model.Opinion;
+import pl.opinion_collector.backend.logic.opinion.dto.OpinionDto;
 
 import java.util.List;
 
 public interface Opinions {
-    List<Opinion> getProductOpinions(String sku);
+    List<OpinionDto> getProductOpinions(String sku);
 
-    Opinion addProductOpinion(
+    OpinionDto addProductOpinion(
             Long userId,
             String sku,
             Integer opinionValue,
@@ -16,5 +16,5 @@ public interface Opinions {
             List<String> advantages, List<String> disadvantages
     );
 
-    List<Opinion> getUserOpinions(Long userId);
+    List<OpinionDto> getUserOpinions(Long userId);
 }

@@ -9,7 +9,6 @@ import javax.persistence.PostUpdate;
 public class ProductListener {
 
     @PostUpdate
-    @PostLoad
     public void calculateAvgOpinion(Product product) {
         product.setOpinionAvg(product.getOpinions()
                 .stream()

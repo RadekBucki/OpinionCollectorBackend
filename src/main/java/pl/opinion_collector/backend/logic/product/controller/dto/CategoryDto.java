@@ -14,4 +14,6 @@ import lombok.*;
 public class CategoryDto {
     @ApiModelProperty(notes = "category name", example = "banana", required = true)
     private String categoryName;
+    @ApiModelProperty(notes = "category visibility", example = "true", required = true)
+    private boolean visible;
 }

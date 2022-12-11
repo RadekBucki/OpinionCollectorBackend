@@ -28,7 +28,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/users")
-public class UserFacadeController {
+public class UserController {
     @Autowired
     private UserFacade userFacade;
     private static final Mapper mapper = new Mapper();

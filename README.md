@@ -10,3 +10,5 @@ the [Coding Standards article](https://github.com/RadekBucki/OpinionCollectorBac
 [Local Swagger UI](http://localhost:8080/swagger-ui/index.html)
 
 Database setup instructions [WIKI](https://github.com/RadekBucki/OpinionCollectorBackend/wiki/Database-setup)
+
+Json Web Token (JWT) instruction [WIKI](https://github.com/RadekBucki/OpinionCollectorBackend/wiki/JWT-Configuration)

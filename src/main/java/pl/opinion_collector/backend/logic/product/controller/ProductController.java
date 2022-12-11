@@ -76,7 +76,7 @@ public class ProductController {
             type = "SearchArg",
             value = "contains search parameters",
             required = true)
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<List<ProductDto>> searchProducts(@RequestBody SearchArg searchArg) {
         return new ResponseEntity<>(productFacade.getProductsFiltered(searchArg.getCategoryName(),
                         searchArg.getSearchPhrase(),
@@ -160,8 +160,8 @@ public class ProductController {
             type = "String",
             value = "Contains the sku of the Product",
             required = true)
-    @DeleteMapping("/edit")
-    public ResponseEntity<ProductDto> deleteProduct(@RequestBody String sku) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<ProductDto> deleteProduct(@RequestParam(name = "sku") String sku) {
         return new ResponseEntity<>(map.mapProduct(productFacade.removeProduct(sku)),
                 HttpStatus.ACCEPTED);
     }

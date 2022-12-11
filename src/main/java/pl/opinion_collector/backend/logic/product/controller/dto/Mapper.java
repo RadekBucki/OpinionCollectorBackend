@@ -3,6 +3,7 @@ package pl.opinion_collector.backend.logic.product.controller.dto;
 import pl.opinion_collector.backend.database_communication.model.Category;
 import pl.opinion_collector.backend.database_communication.model.Opinion;
 import pl.opinion_collector.backend.database_communication.model.Product;
+import pl.opinion_collector.backend.logic.opinion.dto.OpinionDto;
 import pl.opinion_collector.backend.logic.product.service.wrapper.ProductWrapper;
 
 import java.util.stream.Collectors;
@@ -37,8 +38,8 @@ public final class Mapper {
      * @param opinion - Opinion from dataBase layer
      * @return OpinionDto
      */
-    public OpinionDto mapOpinion(Opinion opinion) {
-        return new OpinionDto.OpinionDtoBuilder()
+    public OpinionProductDto mapOpinion(Opinion opinion) {
+        return new OpinionProductDto.OpinionProductDtoBuilder()
                 .opinionValue(opinion.getOpinionValue())
                 .description(opinion.getDescription())
                 .pictureUrl(opinion.getPictureUrl())

@@ -36,6 +36,7 @@ public class ProductDatabaseCommunication {
     }
 
     public List<Product> getProductsFilterProducts(String categoryName, String searchPhrase, Double opinionAvgMin, Double opinionAvgMax) {
+        //TODO: Allow using only some parameters (some of them are null)
         List<Product> jpaFilteredProducts = productRepository.findAllByNameContainingIgnoreCaseAndOpinionAvgIsBetweenAndVisibleTrue(searchPhrase, opinionAvgMin, opinionAvgMax);
         Category category = categoryDatabaseCommunication.getCategoryByName(categoryName);
         return jpaFilteredProducts.stream()
@@ -43,13 +44,18 @@ public class ProductDatabaseCommunication {
     }
 
     public Product createProduct(Long authorId, String sku, String name, String pictureUrl, String description, List<String> categoryNames, Boolean visible) {
+        //TODO: NOT ALLOW SKU DUPLICATES
+        //TODO: NOT ALLOW CATEGORIES DUPLICATES
         User author = userDatabaseCommunication.getUserById(authorId);
         Product product = new Product(sku, name, pictureUrl, description, visible, author, mapNamesToCategories(categoryNames));
         return productRepository.save(product);
     }
 
     public void updateProduct(Long authorId, String sku, String name, String pictureUrl, String description, List<String> categoryNames, Boolean visible) {
-        productRepository.updateProduct(authorId, sku, name, pictureUrl, description, visible, mapNamesToCategories(categoryNames));
+        //TODO: TO FIX
+        User author = userDatabaseCommunication.getUserById(authorId);
+        List<Category> categories = mapNamesToCategories(categoryNames);
+        productRepository.updateProduct(author, sku, name, pictureUrl, description, visible, categories);
     }
 
     public void removeProduct(String sku) {

@@ -94,7 +94,7 @@ public class CategoryController {
             value = "Contains the name of the category",
             required = true)
     @DeleteMapping("/delete")
-    public ResponseEntity<CategoryDto> deleteCategory(@RequestBody String name) {
+    public ResponseEntity<CategoryDto> deleteCategory(@RequestParam("name") String name) {
         return new ResponseEntity<>(map.mapCategory(productFacade.removeCategory(name)),
                 HttpStatus.ACCEPTED);
     }

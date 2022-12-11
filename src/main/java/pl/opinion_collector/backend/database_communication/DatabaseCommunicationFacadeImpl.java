@@ -1,6 +1,7 @@
 package pl.opinion_collector.backend.database_communication;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import pl.opinion_collector.backend.database_communication.communication.CategoryDatabaseCommunication;
 import pl.opinion_collector.backend.database_communication.communication.OpinionDatabaseCommunication;
@@ -70,8 +71,10 @@ public class DatabaseCommunicationFacadeImpl implements DatabaseCommunicationFac
     }
 
     @Override
-    public List<Product> getProductsFilterProducts(String categoryName, String searchPhrase, Integer opinionAvgMin, Integer opinionAvgMax) {
-        return productDatabaseCommunication.getProductsFilterProducts(categoryName, searchPhrase, Double.valueOf(opinionAvgMin), Double.valueOf(opinionAvgMax));
+    public List<Product> getProductsFilterProducts(String categoryName, String searchPhrase, @Nullable Integer opinionAvgMin, @Nullable Integer opinionAvgMax) {
+        return productDatabaseCommunication.getProductsFilterProducts(categoryName, searchPhrase,
+                opinionAvgMin == null ? opinionAvgMin : Double.valueOf(opinionAvgMin),
+                opinionAvgMax == null ? opinionAvgMax :Double.valueOf(opinionAvgMax));
     }
 
     @Override

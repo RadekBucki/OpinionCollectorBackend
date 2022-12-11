@@ -160,8 +160,8 @@ public class ProductController {
             type = "String",
             value = "Contains the sku of the Product",
             required = true)
-    @DeleteMapping("/edit")
-    public ResponseEntity<ProductDto> deleteProduct(@RequestBody String sku) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<ProductDto> deleteProduct(@RequestParam(name = "sku") String sku) {
         return new ResponseEntity<>(map.mapProduct(productFacade.removeProduct(sku)),
                 HttpStatus.ACCEPTED);
     }

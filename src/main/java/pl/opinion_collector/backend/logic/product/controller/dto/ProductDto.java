@@ -2,6 +2,7 @@ package pl.opinion_collector.backend.logic.product.controller.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import pl.opinion_collector.backend.logic.opinion.dto.OpinionDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ public class ProductDto {
     @ApiModelProperty(notes = "the name of the person who added the product", example = "Will", required = true)
     private String firstName;
     @ApiModelProperty(notes = "product opinions list", example = "See footnote of Opinions")
-    private List<OpinionDto> opinions;
+    private List<OpinionProductDto> opinions;
     @ApiModelProperty(notes = "product categories list", example = "See footnote of Categories", required = true)
     private List<CategoryDto> categories;
 }

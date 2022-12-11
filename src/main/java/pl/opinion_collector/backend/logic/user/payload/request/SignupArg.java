@@ -13,9 +13,6 @@ import javax.validation.constraints.Size;
 @Setter
 public class SignupArg {
 
-    @ApiModelProperty(notes = "User id", example = "1")
-    private int id;
-
     @NotBlank
     @NonNull
     @ApiModelProperty(notes = "User first name")

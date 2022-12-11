@@ -1,7 +1,5 @@
-package pl.opinion_collector.backend.logic.user.wrapper;
+package pl.opinion_collector.backend.logic.user.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import pl.opinion_collector.backend.database_communication.model.User;
 
@@ -13,7 +11,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserWrapper {
+public class AppUser {
     private Long id;
     private String firstName;
     private String lastName;
@@ -23,7 +21,7 @@ public class UserWrapper {
     private Set<Role> roles;
     private String pictureProfileUrl;
 
-    public UserWrapper(User user) {
+    public AppUser(User user) {
         this.id = user.getUserId();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
@@ -34,23 +32,13 @@ public class UserWrapper {
         this.pictureProfileUrl = user.getProfilePictureUrl();
     }
 
-    public UserWrapper(String firstName, String lastName, String email, String password, String pictureProfileUrl) {
+    public AppUser(String firstName, String lastName, String email, String password, String pictureProfileUrl) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.pictureProfileUrl = pictureProfileUrl;
     }
-
-    public UserWrapper(Long id, String firstName, String lastName, String email, String password, String pictureProfileUrl) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.pictureProfileUrl = pictureProfileUrl;
-    }
-
     public Set<Role> createRoles(boolean isAdmin) {
         Set<Role> roles = new HashSet<>();
         if (isAdmin) {
@@ -59,6 +47,7 @@ public class UserWrapper {
         roles.add(Role.ROLE_USER);
         return roles;
     }
+    @Deprecated
     public Long getUserId() {
         return id;
     }

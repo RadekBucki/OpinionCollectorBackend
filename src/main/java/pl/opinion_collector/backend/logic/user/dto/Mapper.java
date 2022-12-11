@@ -1,10 +1,10 @@
 package pl.opinion_collector.backend.logic.user.dto;
 
-import pl.opinion_collector.backend.logic.user.wrapper.UserWrapper;
+import pl.opinion_collector.backend.logic.user.model.AppUser;
 
 public class Mapper {
 
-    public UserDto mapUser(UserWrapper userWrapper) {
+    public UserDto mapUser(AppUser userWrapper) {
         return new UserDto.UserDtoBuilder()
                 .firstName(userWrapper.getFirstName())
                 .lastName(userWrapper.getLastName())

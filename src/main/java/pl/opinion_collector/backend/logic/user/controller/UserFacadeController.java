@@ -1,7 +1,10 @@
 package pl.opinion_collector.backend.logic.user.controller;
 
 
-import io.swagger.annotations.*;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,18 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import pl.opinion_collector.backend.logic.user.UserFacade;
 import pl.opinion_collector.backend.logic.user.dto.Mapper;
 import pl.opinion_collector.backend.logic.user.dto.UserDto;
-import pl.opinion_collector.backend.logic.user.wrapper.Role;
-import pl.opinion_collector.backend.logic.user.wrapper.UserWrapper;
 import pl.opinion_collector.backend.logic.user.payload.request.LoginArg;
 import pl.opinion_collector.backend.logic.user.payload.request.SignupArg;
 import pl.opinion_collector.backend.logic.user.payload.response.JwtArg;
-import pl.opinion_collector.backend.logic.user.payload.response.MessageArg;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -53,39 +51,32 @@ public class UserFacadeController {
             @ApiResponse(code = 401, message = "U are not authorized")
     })
     @PostMapping("/register")
-    public ResponseEntity<MessageArg> register(@ApiParam(name = "Registration request body",
+    public ResponseEntity<UserDto> register(@ApiParam(name = "Registration request body",
                                                         value = "Body of the request")
                                           @RequestBody SignupArg registerRequest
             , @ApiParam(name = "HTTP Servlet Request", value = "Request information for HTTP servlets")
                                           HttpServletRequest httpServletRequest) {
-        String headerToken = "";
-        if (httpServletRequest.getHeader("Authorization") != null)
-            headerToken = httpServletRequest.getHeader("Authorization").substring(7);
+        try {
+            String headerToken = "";
+            if (httpServletRequest.getHeader("Authorization") != null)
+                headerToken = httpServletRequest.getHeader("Authorization").substring(7);
 
-        if (registerRequest.isAdmin() && !headerToken.isBlank()
-                && userFacade.getUserByToken(headerToken) != null) {
-            if (userFacade.getUserByToken(headerToken).isAdmin()) {
-                UserWrapper user = userFacade.registerAdmin(registerRequest.getFirstName(),
+            if (registerRequest.isAdmin() && userFacade.getUserByToken(headerToken).isAdmin()) {
+                return ResponseEntity.ok().body(mapper.mapUser(userFacade.registerAdmin(registerRequest.getFirstName(),
                         registerRequest.getLastName(),
                         registerRequest.getEmail(),
                         registerRequest.getPassword(),
-                        registerRequest.getPictureUrl());
-                return user != null
-                        ? ResponseEntity.ok().body(new MessageArg("Admin has been registered"))
-                        : ResponseEntity.badRequest().body(new MessageArg("Incorrect register input or email is taken"));
+                        registerRequest.getPictureUrl())));
+            } else {
+                return ResponseEntity.ok().body(mapper.mapUser(userFacade.register(registerRequest.getFirstName(),
+                        registerRequest.getLastName(),
+                        registerRequest.getEmail(),
+                        registerRequest.getPassword(),
+                        registerRequest.getPictureUrl())));
             }
+        } catch (NullPointerException | IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
         }
-        if (registerRequest.isAdmin()) {
-            return ResponseEntity.badRequest().body(new MessageArg("U have no permissions to add new admin"));
-        }
-
-        UserWrapper user = userFacade.register(registerRequest.getFirstName(),
-                registerRequest.getLastName(),
-                registerRequest.getEmail(),
-                registerRequest.getPassword(),
-                registerRequest.getPictureUrl());
-        return  user != null ? ResponseEntity.ok().body(new MessageArg("Standard user has been registered"))
-                             : ResponseEntity.badRequest().body(new MessageArg("Incorrect register input or email is taken"));
     }
     @ApiOperation(value = "Login to the user")
     @ApiResponses(value = {
@@ -94,11 +85,15 @@ public class UserFacadeController {
             @ApiResponse(code = 403, message = "U are not allowed to this resource"),
             @ApiResponse(code = 401, message = "U are not authorized")
     })
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<JwtArg> login(@ApiParam(name = "Login request", value = "Login request information")
                                        @Valid @RequestBody LoginArg loginRequest) {
-        String token = userFacade.login(loginRequest.getEmail(), loginRequest.getPassword());
-        return ResponseEntity.ok().body(new JwtArg(token));
+        try {
+            String token = userFacade.login(loginRequest.getEmail(), loginRequest.getPassword());
+            return ResponseEntity.ok().body(new JwtArg(token));
+        } catch (NullPointerException | IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
     @ApiOperation(value = "Update the user")
     @ApiResponses(value = {
@@ -107,16 +102,19 @@ public class UserFacadeController {
             @ApiResponse(code = 403, message = "U are not allowed to this resource"),
             @ApiResponse(code = 401, message = "U are not authorized")
     })
-    @PutMapping("/update")
-    public ResponseEntity<MessageArg> update(@ApiParam(name = "Update request",
+    @PutMapping("/update/{id}")
+    public ResponseEntity<UserDto> update(@ApiParam(name = "Update request",
             value = "Update request body needed to update user")
-            @RequestBody SignupArg updateRequest) {
-        UserWrapper user = userFacade.updateUser(updateRequest.getId(), updateRequest.getFirstName(),
-                updateRequest.getLastName(), updateRequest.getEmail(),
-                updateRequest.getPassword(), updateRequest.getPictureUrl(),
-                updateRequest.isAdmin());
-        return user == null ? ResponseEntity.badRequest().body(new MessageArg("User data has not been modified"))
-                            : ResponseEntity.ok().body(new MessageArg("User data has been modified"));
+            @RequestBody SignupArg updateRequest,
+            @PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok().body(mapper.mapUser(userFacade.updateUser(id, updateRequest.getFirstName(),
+                    updateRequest.getLastName(), updateRequest.getEmail(),
+                    updateRequest.getPassword(), updateRequest.getPictureUrl(),
+                    updateRequest.isAdmin())));
+        } catch (NullPointerException | IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
 }

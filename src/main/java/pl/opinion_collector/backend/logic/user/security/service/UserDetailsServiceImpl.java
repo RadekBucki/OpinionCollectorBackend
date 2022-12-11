@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
 import pl.opinion_collector.backend.database_communication.model.User;
-import pl.opinion_collector.backend.logic.user.wrapper.UserWrapper;
+import pl.opinion_collector.backend.logic.user.model.AppUser;
 import pl.opinion_collector.backend.logic.user.security.jwt.AuthTokenFilter;
 
 @Service
@@ -22,7 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
-            UserWrapper user = new UserWrapper(findUserByUsername(username));
+            AppUser user = new AppUser(findUserByUsername(username));
             return UserDetailsImpl.build(user);
         } catch (UsernameNotFoundException e) {
             logger.error("Error while loading user: {}", e.getMessage());

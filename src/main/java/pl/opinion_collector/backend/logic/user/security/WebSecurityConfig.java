@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -48,21 +49,28 @@ public class WebSecurityConfig {
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        final String[] allUsersPermissions = {
+        final String[] ALL_USERS_PERMISSIONS = {
                 "/**/users/login", "/**/users/register",
-                "/**/products", "/**/products/all", "/**/products/search", "/**/products/details",
+                "/**/products/**", "/**/products/search", "/**/products/details",
                 "/**/opinions/product"
         };
-        final String[] standardUserPermissions = {
+        final String[] STD_USER_PERMISSIONS = {
                 "/**/suggestions/user", "/**/suggestions/add", "/**/suggestions",
                 "/**/opinions/user", "/**/opinions/add"
         };
-        final String[] adminPermissions = {
+        final String[] ADMIN_PERMISSIONS = {
                 "/**/users", "/**/users/update",
                 "/**/products/add", "/**/products/edit", "/**/products/delete",
                 "/**/categories", "/**/categories/get", "/**/categories/add",
                 "/**/categories/edit", "/**/categories/delete",
                 "/**/suggestions/get", "/**/suggestions/reply"
+        };
+        final String[] SWAGGER_WHITELIST = {
+                "/**/swagger-ui/**", "/**/swagger-ui/index.html",
+                "/**/v2/api-docs", "/**/swagger-resources",
+                "/**/swagger-resources/**", "/**/configuration/ui",
+                "/**/configuration/security", "/**/swagger-ui.html",
+                "/**/webjars/**", "/**/v3/api-docs/**", "/**/swagger-ui/**"
         };
 
         http
@@ -70,9 +78,10 @@ public class WebSecurityConfig {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                    .antMatchers(allUsersPermissions).permitAll()
-                    .antMatchers(standardUserPermissions).hasRole("USER")
-                    .antMatchers(adminPermissions).hasRole("ADMIN")
+                    .antMatchers(SWAGGER_WHITELIST).permitAll()
+                    .antMatchers(ALL_USERS_PERMISSIONS).permitAll()
+                    .antMatchers(STD_USER_PERMISSIONS).hasRole("USER")
+                    .antMatchers(ADMIN_PERMISSIONS).hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and().addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();

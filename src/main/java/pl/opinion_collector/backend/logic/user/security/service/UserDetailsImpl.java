@@ -2,9 +2,7 @@ package pl.opinion_collector.backend.logic.user.security.service;
 
 import java.io.Serial;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -12,7 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import pl.opinion_collector.backend.logic.user.model.User;
+import pl.opinion_collector.backend.logic.user.wrapper.UserWrapper;
 
 public class UserDetailsImpl implements UserDetails {
     @Serial
@@ -31,7 +29,7 @@ public class UserDetailsImpl implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static UserDetailsImpl build(User user) {
+    public static UserDetailsImpl build(UserWrapper user) {
         List<GrantedAuthority> authorities =
                 user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.name()))

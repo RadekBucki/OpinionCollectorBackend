@@ -10,16 +10,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
-import pl.opinion_collector.backend.logic.user.model.User;
+import pl.opinion_collector.backend.database_communication.model.User;
+import pl.opinion_collector.backend.logic.user.dto.Mapper;
+import pl.opinion_collector.backend.logic.user.wrapper.UserWrapper;
 import pl.opinion_collector.backend.logic.user.security.jwt.JwtUtils;
 
+import javax.persistence.EntityNotFoundException;
+import java.sql.SQLDataException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserFacadeImpl implements UserFacade {
     @Autowired
-    private DatabaseCommunicationFacade userDatabaseCommunication;
+    private DatabaseCommunicationFacade databaseCommunicationFacade;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
@@ -29,24 +33,23 @@ public class UserFacadeImpl implements UserFacade {
 
     private static final Logger logger = LoggerFactory.getLogger(UserFacadeImpl.class);
     @Override
-    public List<User> getAllUsers() {
-        List<User> users = new ArrayList<>();
-        for (pl.opinion_collector.backend.database_communication.model.User user :
-                userDatabaseCommunication.getAllUsers()) {
-            users.add(new User(user));
+    public List<UserWrapper> getAllUsers() {
+        List<UserWrapper> users = new ArrayList<>();
+        for (User user : databaseCommunicationFacade.getAllUsers()) {
+            users.add(new UserWrapper(user));
         }
         return users;
     }
 
     @Override
-    public User getUserByToken(String token) {
+    public UserWrapper getUserByToken(String token) {
         return findByEmail(jwtUtils.getUserNameFromJwtToken(token));
     }
 
     @Override
-    public User register(String firstName, String lastName, String email, String password, String profilePictureUrl) {
+    public UserWrapper register(String firstName, String lastName, String email, String password, String profilePictureUrl) {
         if (validateRegisterInput(email, password)) return null;
-        userDatabaseCommunication.createUser(
+        databaseCommunicationFacade.createUser(
                 firstName,
                 lastName,
                 email,
@@ -54,12 +57,12 @@ public class UserFacadeImpl implements UserFacade {
                 profilePictureUrl,
                 false
         );
-        return new User(firstName, lastName, email, password, profilePictureUrl);
+        return new UserWrapper(firstName, lastName, email, password, profilePictureUrl);
     }
     @Override
-    public User registerAdmin(String firstName, String lastName, String email, String password, String profilePictureUrl) {
+    public UserWrapper registerAdmin(String firstName, String lastName, String email, String password, String profilePictureUrl) {
         if (validateRegisterInput(email, password)) return null;
-        userDatabaseCommunication.createUser(
+        databaseCommunicationFacade.createUser(
                 firstName,
                 lastName,
                 email,
@@ -67,15 +70,11 @@ public class UserFacadeImpl implements UserFacade {
                 profilePictureUrl,
                 true
         );
-        return new User(firstName, lastName, email, password, profilePictureUrl);
+        return new UserWrapper(firstName, lastName, email, password, profilePictureUrl);
     }
-
-
 
     @Override
     public String login(String email, String password) {
-        if (email == null || password == null || email.isBlank() || password.isBlank())
-            return "INCORRECT_INPUT";
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password));
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -83,17 +82,18 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public User updateUser(Integer userId, String firstName, String lastName, String email, String passwordHash, String profilePictureUrl, Boolean isAdmin) {
-        User user;
-        if (userDatabaseCommunication.getUserById(Long.valueOf(userId)) != null) {
-            user = new User(userDatabaseCommunication.getUserById(Long.valueOf(userId)));
-        } else {
-            logger.error("USER WITH THIS ID DOESNT EXIST");
+    public UserWrapper updateUser(Integer userId, String firstName, String lastName, String email, String passwordHash, String profilePictureUrl, Boolean isAdmin) {
+        UserWrapper user;
+        try {
+            user = new UserWrapper(databaseCommunicationFacade.getUserById(Long.valueOf(userId)));
+        } catch (EntityNotFoundException e) {
+            logger.error("User with this id doesnt exist or u didnt provided any");
             return null;
         }
-        if (userDatabaseCommunication.getUserById(Long.valueOf(userId)) != null) {
-            if (findByEmail(email) == null || findByEmail(email).getId() == userId.longValue()) {
-                userDatabaseCommunication.updateUser(Long.valueOf(userId),
+
+        if (databaseCommunicationFacade.getUserById(Long.valueOf(userId)) != null) {
+            if (findByEmail(email) == null) {
+                databaseCommunicationFacade.updateUser(Long.valueOf(userId),
                         replaceIfDiffers(user.getFirstName(), firstName),
                         replaceIfDiffers(user.getLastName(), lastName),
                         replaceIfDiffers(user.getEmail(), email),
@@ -105,13 +105,13 @@ public class UserFacadeImpl implements UserFacade {
                 return null;
             }
         }
-        return new User(Long.valueOf(userId), firstName, lastName, email, passwordHash, profilePictureUrl);
+        return new UserWrapper(Long.valueOf(userId), firstName, lastName, email, passwordHash, profilePictureUrl);
     }
-    public User findByEmail(String email) {
+    public UserWrapper findByEmail(String email) {
         if (email == null || email.isBlank()) return null;
-        for (pl.opinion_collector.backend.database_communication.model.User user : userDatabaseCommunication.getAllUsers()) {
+        for (User user : databaseCommunicationFacade.getAllUsers()) {
             if (user.getEmail().equals(email)) {
-                return new User(user);
+                return new UserWrapper(user);
             }
         }
         return null;

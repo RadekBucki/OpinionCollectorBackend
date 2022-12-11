@@ -1,28 +1,29 @@
-package pl.opinion_collector.backend.logic.user.model;
+package pl.opinion_collector.backend.logic.user.wrapper;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.Setter;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
+import pl.opinion_collector.backend.database_communication.model.User;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Getter
 @Setter
-public class User {
-    @JsonIgnore
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserWrapper {
     private Long id;
     private String firstName;
     private String lastName;
     private String email;
-    @JsonIgnore
     private String password;
     private boolean isAdmin;
-    @JsonIgnore
     private Set<Role> roles;
     private String pictureProfileUrl;
 
-    public User(pl.opinion_collector.backend.database_communication.model.User user) {
+    public UserWrapper(User user) {
         this.id = user.getUserId();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
@@ -33,14 +34,7 @@ public class User {
         this.pictureProfileUrl = user.getProfilePictureUrl();
     }
 
-    public User(String firstName, String lastName, String email, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-    }
-
-    public User(String firstName, String lastName, String email, String password, String pictureProfileUrl) {
+    public UserWrapper(String firstName, String lastName, String email, String password, String pictureProfileUrl) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -48,7 +42,7 @@ public class User {
         this.pictureProfileUrl = pictureProfileUrl;
     }
 
-    public User(Long id, String firstName, String lastName, String email, String password, String pictureProfileUrl) {
+    public UserWrapper(Long id, String firstName, String lastName, String email, String password, String pictureProfileUrl) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

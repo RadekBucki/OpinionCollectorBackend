@@ -9,30 +9,28 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
-import pl.opinion_collector.backend.database_communication.communication.UserDatabaseCommunication;
-import pl.opinion_collector.backend.logic.user.model.User;
+import pl.opinion_collector.backend.database_communication.model.User;
+import pl.opinion_collector.backend.logic.user.wrapper.UserWrapper;
 import pl.opinion_collector.backend.logic.user.security.jwt.AuthTokenFilter;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
-
     @Autowired
-    private DatabaseCommunicationFacade userDatabaseCommunication;
+    private DatabaseCommunicationFacade databaseCommunicationFacade;
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
-            User user = new User(findUserByUsername(username));
+            UserWrapper user = new UserWrapper(findUserByUsername(username));
             return UserDetailsImpl.build(user);
         } catch (UsernameNotFoundException e) {
             logger.error("Error while loading user: {}", e.getMessage());
         }
         return null;
     }
-    public pl.opinion_collector.backend.database_communication.model.User findUserByUsername(String email) {
-        return  userDatabaseCommunication.getAllUsers().stream().filter(u -> u.getEmail().equals(email))
+    public User findUserByUsername(String email) {
+        return  databaseCommunicationFacade.getAllUsers().stream().filter(u -> u.getEmail().equals(email))
                 .findFirst()
                 .orElseThrow(() -> new UsernameNotFoundException("No user was found"));
     }

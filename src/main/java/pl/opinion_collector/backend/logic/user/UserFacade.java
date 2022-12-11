@@ -2,18 +2,18 @@ package pl.opinion_collector.backend.logic.user;
 
 
 
-import pl.opinion_collector.backend.logic.user.model.User;
+import pl.opinion_collector.backend.logic.user.wrapper.UserWrapper;
 
 import java.util.List;
 
 public interface UserFacade {
-    List<User> getAllUsers();
+    List<UserWrapper> getAllUsers();
 
-    User getUserByToken(String token);
+    UserWrapper getUserByToken(String token);
 
-    User register(String firstName, String lastName, String email, String password, String profilePictureUrl);
+    UserWrapper register(String firstName, String lastName, String email, String password, String profilePictureUrl);
 
-    User registerAdmin(
+    UserWrapper registerAdmin(
             String firstName,
             String lastName,
             String email,
@@ -23,7 +23,7 @@ public interface UserFacade {
 
     String login(String email, String password);
 
-    User updateUser(
+    UserWrapper updateUser(
             Integer userId,
             String firstName,
             String lastName,

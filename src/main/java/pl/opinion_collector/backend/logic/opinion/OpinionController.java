@@ -12,7 +12,10 @@ import pl.opinion_collector.backend.database_communication.model.User;
 import pl.opinion_collector.backend.logic.opinion.dto.OpinionDto;
 import pl.opinion_collector.backend.logic.user.UserFacade;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
 @RequestMapping("/opinions")
@@ -82,8 +85,9 @@ public class OpinionController {
 
 
     public static String getBearerTokenHeader() {
-        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest().getHeader("Authorization");
+        String authorizationHeader = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getRequest().getHeader(AUTHORIZATION);
+        return authorizationHeader.substring("Bearer ".length());
     }
 
 }

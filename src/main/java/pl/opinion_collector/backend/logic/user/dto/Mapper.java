@@ -1,16 +1,15 @@
 package pl.opinion_collector.backend.logic.user.dto;
 
-import pl.opinion_collector.backend.logic.user.model.AppUser;
+import pl.opinion_collector.backend.database_communication.model.User;
 
 public class Mapper {
-
-    public UserDto mapUser(AppUser userWrapper) {
+    public UserDto mapUser(User user) {
         return new UserDto.UserDtoBuilder()
-                .firstName(userWrapper.getFirstName())
-                .lastName(userWrapper.getLastName())
-                .email(userWrapper.getEmail())
-                .isAdmin(userWrapper.isAdmin())
-                .profilePictureUrl(userWrapper.getPictureProfileUrl())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .isAdmin(user.getAdmin())
+                .profilePictureUrl(user.getProfilePictureUrl())
                 .build();
     }
 }

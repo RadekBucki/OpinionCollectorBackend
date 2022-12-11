@@ -18,7 +18,7 @@ public class UserDto {
     @ApiModelProperty(notes = "User email")
     private String email;
 
-    @ApiModelProperty(notes = "Is user admin")
+    @ApiModelProperty(notes = "Is user admin or standard user", example = "true")
     private Boolean isAdmin;
 
     @ApiModelProperty(notes = "Profile picture url")

@@ -11,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
 import pl.opinion_collector.backend.database_communication.model.User;
-import pl.opinion_collector.backend.logic.user.model.AppUser;
 import pl.opinion_collector.backend.logic.user.security.jwt.JwtUtils;
 
 import javax.persistence.EntityNotFoundException;
@@ -31,40 +30,36 @@ public class UserFacadeImpl implements UserFacade {
 
     private static final Logger logger = LoggerFactory.getLogger(UserFacadeImpl.class);
     @Override
-    public List<AppUser> getAllUsers() {
-        List<AppUser> users = new ArrayList<>();
-        for (User user : databaseCommunicationFacade.getAllUsers()) {
-            users.add(new AppUser(user));
-        }
-        return users;
+    public List<User> getAllUsers() {
+        return new ArrayList<>(databaseCommunicationFacade.getAllUsers());
     }
 
     @Override
-    public AppUser getUserByToken(String token) {
+    public User getUserByToken(String token) {
         return findByEmail(jwtUtils.getUserNameFromJwtToken(token));
     }
 
     @Override
-    public AppUser register(String firstName, String lastName, String email, String password, String profilePictureUrl) {
+    public User register(String firstName, String lastName, String email, String password, String profilePictureUrl) {
         if (validateRegisterInput(email, password)) return null;
-        return new AppUser(databaseCommunicationFacade.createUser(
+        return databaseCommunicationFacade.createUser(
                 firstName,
                 lastName,
                 email,
                 encoder.encode(password),
                 profilePictureUrl,
-                false));
+                false);
     }
     @Override
-    public AppUser registerAdmin(String firstName, String lastName, String email, String password, String profilePictureUrl) {
+    public User registerAdmin(String firstName, String lastName, String email, String password, String profilePictureUrl) {
         if (validateRegisterInput(email, password)) return null;
-        return new AppUser(databaseCommunicationFacade.createUser(
+        return databaseCommunicationFacade.createUser(
                 firstName,
                 lastName,
                 email,
                 encoder.encode(password),
                 profilePictureUrl,
-                true));
+                true);
     }
 
     @Override
@@ -76,48 +71,51 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public AppUser updateUser(Integer userId, String firstName, String lastName, String email, String passwordHash, String profilePictureUrl, Boolean isAdmin) {
-        AppUser user;
+    public User updateUser(Integer userId, String firstName, String lastName, String email, String passwordHash, String profilePictureUrl, Boolean isAdmin) {
+        User user;
         try {
-            user = new AppUser(databaseCommunicationFacade.getUserById(Long.valueOf(userId)));
+            user = databaseCommunicationFacade.getUserById(Long.valueOf(userId));
         } catch (EntityNotFoundException e) {
             logger.error("User with this id doesnt exist or u didnt provided any");
             return null;
         }
         if (databaseCommunicationFacade.getUserById(Long.valueOf(userId)) != null) {
             if (findByEmail(email) == null) {
-                user = updateUserData(user, firstName, lastName, email, passwordHash, profilePictureUrl);
+                user = updateUserData(user, firstName, lastName, email, passwordHash, profilePictureUrl, isAdmin);
                 databaseCommunicationFacade.updateUser(Long.valueOf(userId),
                         user.getFirstName(),
                         user.getLastName(),
                         user.getEmail(),
-                        user.getPassword(),
-                        user.getPictureProfileUrl(),
-                        (user.isAdmin() || isAdmin) && isAdmin);
+                        user.getPasswordHash(),
+                        user.getProfilePictureUrl(),
+                        user.getAdmin());
             } else {
                 logger.error("U cant change email that is taken");
                 return null;
             }
         }
+        User use = new User("123", "123 ", "123", " 12","123",  true);
         return user;
     }
-    public AppUser findByEmail(String email) {
+    public User findByEmail(String email) {
         if (email == null || email.isBlank()) return null;
         for (User user : databaseCommunicationFacade.getAllUsers()) {
             if (user.getEmail().equals(email)) {
-                return new AppUser(user);
+                return user;
             }
         }
         return null;
     }
-    public AppUser updateUserData(AppUser user1, String firstName,
+    public User updateUserData(User user, String firstName,
                                   String lastName, String email,
-                                  String passwordHash, String profilePictureUrl) {
-        return new AppUser(replaceIfDiffers(user1.getFirstName(), firstName),
-                replaceIfDiffers(user1.getLastName(), lastName),
-                replaceIfDiffers(user1.getEmail(), email),
-                replaceIfDiffers(user1.getPassword(), passwordHash),
-                replaceIfDiffers(user1.getPictureProfileUrl(), profilePictureUrl));
+                                  String passwordHash, String profilePictureUrl,
+                                    Boolean isAdmin) {
+        return new User(replaceIfDiffers(user.getFirstName(), firstName),
+                replaceIfDiffers(user.getLastName(), lastName),
+                replaceIfDiffers(user.getEmail(), email),
+                replaceIfDiffers(user.getPasswordHash(), passwordHash),
+                replaceIfDiffers(user.getProfilePictureUrl(), profilePictureUrl),
+                (user.getAdmin() || isAdmin) && isAdmin);
     }
     public String replaceIfDiffers(String s1, String s2) {
         if (s1 == null) return s2;

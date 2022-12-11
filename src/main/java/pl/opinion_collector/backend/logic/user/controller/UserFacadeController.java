@@ -61,14 +61,16 @@ public class UserFacadeController {
             if (httpServletRequest.getHeader("Authorization") != null)
                 headerToken = httpServletRequest.getHeader("Authorization").substring(7);
 
-            if (registerRequest.isAdmin() && userFacade.getUserByToken(headerToken).isAdmin()) {
-                return ResponseEntity.ok().body(mapper.mapUser(userFacade.registerAdmin(registerRequest.getFirstName(),
+            if (registerRequest.isAdmin() && userFacade.getUserByToken(headerToken).getAdmin()) {
+                return ResponseEntity.ok().body(mapper.mapUser(
+                        userFacade.registerAdmin(registerRequest.getFirstName(),
                         registerRequest.getLastName(),
                         registerRequest.getEmail(),
                         registerRequest.getPassword(),
                         registerRequest.getPictureUrl())));
             } else {
-                return ResponseEntity.ok().body(mapper.mapUser(userFacade.register(registerRequest.getFirstName(),
+                return ResponseEntity.ok().body(mapper.mapUser(
+                        userFacade.register(registerRequest.getFirstName(),
                         registerRequest.getLastName(),
                         registerRequest.getEmail(),
                         registerRequest.getPassword(),
@@ -108,7 +110,8 @@ public class UserFacadeController {
             @RequestBody SignupArg updateRequest,
             @PathVariable Integer id) {
         try {
-            return ResponseEntity.ok().body(mapper.mapUser(userFacade.updateUser(id, updateRequest.getFirstName(),
+            return ResponseEntity.ok().body(mapper.mapUser(
+                    userFacade.updateUser(id, updateRequest.getFirstName(),
                     updateRequest.getLastName(), updateRequest.getEmail(),
                     updateRequest.getPassword(), updateRequest.getPictureUrl(),
                     updateRequest.isAdmin())));

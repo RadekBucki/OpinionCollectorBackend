@@ -47,13 +47,13 @@ public class WebSecurityConfig {
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
         final String[] ALL_USERS_PERMISSIONS = {
-                "/**/users/login", "/**/users/register"
-                , "/**/products/search", "/**/products/details",
+                "/**/users/login", "/**/users/register",
+                "/**/products/**" , "/**/products/search", "/**/products/details",
                 "/**/opinions/product"
         };
         final String[] STD_USER_PERMISSIONS = {
                 "/**/suggestions/user", "/**/suggestions/add", "/**/suggestions",
-                "/**/opinions/user", "/**/opinions/add","/**/products/**"
+                "/**/opinions/user", "/**/opinions/add"
         };
         final String[] ADMIN_PERMISSIONS = {
                 "/**/users", "/**/users/update/**",

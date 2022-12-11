@@ -29,7 +29,7 @@ public class ProductController {
     private static final Mapper map = new Mapper();
     @Autowired
     private ProductFacade productFacade;
-    //    @Autowired
+    @Autowired
     private UserFacade userFacade;
 
     /**

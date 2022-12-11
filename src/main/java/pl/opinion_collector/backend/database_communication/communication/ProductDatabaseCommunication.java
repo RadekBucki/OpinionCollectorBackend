@@ -9,6 +9,7 @@ import pl.opinion_collector.backend.database_communication.model.User;
 import pl.opinion_collector.backend.database_communication.repository.ProductRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @Transactional
@@ -36,10 +37,24 @@ public class ProductDatabaseCommunication {
     }
 
     public List<Product> getProductsFilterProducts(String categoryName, String searchPhrase, Double opinionAvgMin, Double opinionAvgMax) {
-        List<Product> jpaFilteredProducts = productRepository.findAllByNameContainingIgnoreCaseAndOpinionAvgIsBetweenAndVisibleTrue(searchPhrase, opinionAvgMin, opinionAvgMax);
-        Category category = categoryDatabaseCommunication.getCategoryByName(categoryName);
-        return jpaFilteredProducts.stream()
-                .filter(product -> product.getCategories().contains(category)).toList();
+        List<Product> filteredProducts = getAllProducts();
+        if (categoryName != null) {
+            Category category = categoryDatabaseCommunication.getCategoryByName(categoryName);
+            filteredProducts = filteredProducts.stream()
+                    .filter(product -> product.getCategories().contains(category))
+                    .toList();
+        }
+        if (searchPhrase != null) {
+            filteredProducts = filteredProducts.stream()
+                    .filter(product -> product.getName().toLowerCase().contains(searchPhrase.toLowerCase()))
+                    .toList();
+        }
+        Double minAvg = Objects.requireNonNullElse(opinionAvgMin, 0.0);
+        Double maxAvg = Objects.requireNonNullElse(opinionAvgMax, 5.0);
+        filteredProducts = filteredProducts.stream()
+                .filter(product -> ((product.getOpinionAvg() >= minAvg) && (product.getOpinionAvg() <= maxAvg)))
+                .toList();
+        return filteredProducts;
     }
 
     public Product createProduct(Long authorId, String sku, String name, String pictureUrl, String description, List<String> categoryNames, Boolean visible) {
@@ -49,7 +64,13 @@ public class ProductDatabaseCommunication {
     }
 
     public void updateProduct(Long authorId, String sku, String name, String pictureUrl, String description, List<String> categoryNames, Boolean visible) {
-        productRepository.updateProduct(authorId, sku, name, pictureUrl, description, visible, mapNamesToCategories(categoryNames));
+        List<Category> categories = mapNamesToCategories(categoryNames);
+        Product product = getProductBySku(sku);
+        product.getCategories().clear();
+        product.getCategories().addAll(categories);
+        productRepository.save(product);
+        User author = userDatabaseCommunication.getUserById(authorId);
+        productRepository.updateProduct(author, sku, name, pictureUrl, description, visible);
     }
 
     public void removeProduct(String sku) {
@@ -58,9 +79,13 @@ public class ProductDatabaseCommunication {
 
     private List<Category> mapNamesToCategories(List<String> categoryNames) {
         return categoryNames.stream()
-                .map(categoryName -> categoryDatabaseCommunication.createCategory(categoryName, true))
+                .map(categoryName -> {
+                    Category category = categoryDatabaseCommunication.getCategoryByName(categoryName);
+                    if (category == null) {
+                        return categoryDatabaseCommunication.createCategory(categoryName, true);
+                    }
+                    return category;
+                })
                 .toList();
     }
-
-
 }

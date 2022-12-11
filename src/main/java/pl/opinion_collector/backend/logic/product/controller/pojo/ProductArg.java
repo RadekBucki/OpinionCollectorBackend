@@ -34,7 +34,7 @@ public class ProductArg {
     @Size(min = 10, message = "The product description does not meet the text length requirements")
     @NotNull(message = "The product description cannot be empty")
     private String description;
-    @ApiModelProperty(notes = "product categories list", example = "See footnote of Categories",
+    @ApiModelProperty(notes = "product categories list", example = "[\"Smartfony\"]",
             required = true)
     @Size(min = 1, message = "the product must be added to at least one category")
     @NotNull(message = "the product must be added to at least one category")

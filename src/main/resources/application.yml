@@ -17,4 +17,4 @@ spring:
 jwt:
   variables:
     jwtSecret:
-    jwtExpirationMs:
+    jwtExpirationMs: 

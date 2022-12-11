@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class OpinionDto {
+public class OpinionProductDto {
     @ApiModelProperty(notes = "average opinion rating", example = "6", required = true)
     private Integer opinionValue;
     @ApiModelProperty(notes = "description of the opinion", example = "amazing product recommend!",

@@ -20,8 +20,6 @@ import java.util.List;
 @Setter
 public class OpinionDto {
 
-    @ApiModelProperty(notes = "Opinion ID", example = "5")
-    private Long opinionId;
     @ApiModelProperty(notes = "Product identifier", example = "sku123")
     private String sku;
     @ApiModelProperty(notes = "Opinion value, grade", example = "1")
@@ -34,10 +32,6 @@ public class OpinionDto {
     private List<String> advantages;
     @ApiModelProperty(notes = "List of disadvantages")
     private List<String> disadvantages;
-    @ApiModelProperty(notes = "ID of opinion author", example = "3")
-    private Long userId;
-    @ApiModelProperty(notes = "ID of a product", example = "1")
-    private Long productId;
 
 
     /**
@@ -47,9 +41,8 @@ public class OpinionDto {
      * @return mapped dto
      */
     public static OpinionDto map(Opinion opinion) {
-        return new OpinionDto(opinion.getOpinionId(), opinion.getProductId().getSku(), opinion.getOpinionValue(),
-                opinion.getDescription(), opinion.getPictureUrl(), opinion.getAdvantages(), opinion.getDisadvantages(),
-                opinion.getUserId().getUserId(), opinion.getProductId().getProductId());
+        return new OpinionDto(opinion.getProductId().getSku(), opinion.getOpinionValue(),
+                opinion.getDescription(), opinion.getPictureUrl(), opinion.getAdvantages(), opinion.getDisadvantages());
     }
 
 }

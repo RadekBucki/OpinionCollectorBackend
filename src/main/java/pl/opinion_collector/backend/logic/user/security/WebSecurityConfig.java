@@ -47,13 +47,13 @@ public class WebSecurityConfig {
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
         final String[] ALL_USERS_PERMISSIONS = {
-                "/**/users/login", "/**/users/register"
-                , "/**/products/search", "/**/products/details",
+                "/**/users/login", "/**/users/register",
+                "/**/products/**", "/**/products/search", "/**/products/details",
                 "/**/opinions/product"
         };
         final String[] STD_USER_PERMISSIONS = {
                 "/**/suggestions/user", "/**/suggestions/add", "/**/suggestions",
-                "/**/opinions/user", "/**/opinions/add","/**/products/**"
+                "/**/opinions/user", "/**/opinions/add",
         };
         final String[] ADMIN_PERMISSIONS = {
                 "/**/users", "/**/users/update/**",
@@ -72,19 +72,15 @@ public class WebSecurityConfig {
 
         http
                 .cors().and().csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
-                .and()
+                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-
-                .antMatchers(SWAGGER_WHITELIST).permitAll()
-                .antMatchers(ALL_USERS_PERMISSIONS).permitAll()
-                .antMatchers(STD_USER_PERMISSIONS).hasRole("USER")
-                .antMatchers(ADMIN_PERMISSIONS).hasRole("ADMIN")
-                .antMatchers("/**").permitAll()
+                    .antMatchers(SWAGGER_WHITELIST).permitAll()
+                    .antMatchers(ALL_USERS_PERMISSIONS).permitAll()
+                    .antMatchers(STD_USER_PERMISSIONS).hasRole("USER")
+                    .antMatchers(ADMIN_PERMISSIONS).hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and().addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 

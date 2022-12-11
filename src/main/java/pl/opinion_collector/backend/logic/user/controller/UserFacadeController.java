@@ -103,7 +103,6 @@ public class UserFacadeController {
     public ResponseEntity<JwtArg> login(@ApiParam(name = "Login request", value = "Login request information")
                                        @Valid @RequestBody LoginArg loginRequest) {
         String token = userFacade.login(loginRequest.getEmail(), loginRequest.getPassword());
-
         return ResponseEntity.ok().body(new JwtArg(token));
     }
     @ApiOperation(value = "Update the user")

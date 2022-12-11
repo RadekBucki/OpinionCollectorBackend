@@ -70,7 +70,7 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     public String login(String email, String password) {
-        Authentication authentication =  authenticationManager.authenticate(
+        Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return jwtUtils.generateJwtToken(authentication);

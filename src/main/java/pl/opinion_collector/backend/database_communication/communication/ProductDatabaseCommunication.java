@@ -44,18 +44,19 @@ public class ProductDatabaseCommunication {
     }
 
     public Product createProduct(Long authorId, String sku, String name, String pictureUrl, String description, List<String> categoryNames, Boolean visible) {
-        //TODO: NOT ALLOW SKU DUPLICATES
-        //TODO: NOT ALLOW CATEGORIES DUPLICATES
         User author = userDatabaseCommunication.getUserById(authorId);
         Product product = new Product(sku, name, pictureUrl, description, visible, author, mapNamesToCategories(categoryNames));
         return productRepository.save(product);
     }
 
     public void updateProduct(Long authorId, String sku, String name, String pictureUrl, String description, List<String> categoryNames, Boolean visible) {
-        //TODO: TO FIX
-        User author = userDatabaseCommunication.getUserById(authorId);
         List<Category> categories = mapNamesToCategories(categoryNames);
-        productRepository.updateProduct(author, sku, name, pictureUrl, description, visible, categories);
+        Product product = getProductBySku(sku);
+        product.getCategories().clear();
+        product.getCategories().addAll(categories);
+        productRepository.save(product);
+        User author = userDatabaseCommunication.getUserById(authorId);
+        productRepository.updateProduct(author, sku, name, pictureUrl, description, visible);
     }
 
     public void removeProduct(String sku) {
@@ -64,9 +65,13 @@ public class ProductDatabaseCommunication {
 
     private List<Category> mapNamesToCategories(List<String> categoryNames) {
         return categoryNames.stream()
-                .map(categoryName -> categoryDatabaseCommunication.createCategory(categoryName, true))
+                .map(categoryName -> {
+                    Category category = categoryDatabaseCommunication.getCategoryByName(categoryName);
+                    if (category == null) {
+                        return categoryDatabaseCommunication.createCategory(categoryName, true);
+                    }
+                    return category;
+                })
                 .toList();
     }
-
-
 }

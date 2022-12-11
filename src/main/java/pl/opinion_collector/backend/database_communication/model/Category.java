@@ -18,6 +18,7 @@ public class Category {
     @Column(name = "category_id")
     private Long categoryId;
 
+    @Column(unique = true)
     @NonNull
     private String categoryName;
 

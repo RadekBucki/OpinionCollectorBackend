@@ -33,6 +33,7 @@ public class Product {
     @Column(name = "product_id")
     private Long productId;
 
+    @Column(unique = true)
     @NonNull
     private String sku;
 

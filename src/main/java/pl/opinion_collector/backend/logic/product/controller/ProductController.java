@@ -76,7 +76,7 @@ public class ProductController {
             type = "SearchArg",
             value = "contains search parameters",
             required = true)
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<List<ProductDto>> searchProducts(@RequestBody SearchArg searchArg) {
         return new ResponseEntity<>(productFacade.getProductsFiltered(searchArg.getCategoryName(),
                         searchArg.getSearchPhrase(),

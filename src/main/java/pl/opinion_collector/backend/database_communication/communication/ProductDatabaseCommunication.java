@@ -9,6 +9,7 @@ import pl.opinion_collector.backend.database_communication.model.User;
 import pl.opinion_collector.backend.database_communication.repository.ProductRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @Transactional
@@ -48,11 +49,11 @@ public class ProductDatabaseCommunication {
                     .filter(product -> product.getName().toLowerCase().contains(searchPhrase.toLowerCase()))
                     .toList();
         }
-        if (opinionAvgMin != null && opinionAvgMax != null) {
-            filteredProducts = filteredProducts.stream()
-                    .filter(product -> (product.getOpinionAvg() >= opinionAvgMin && product.getOpinionAvg() <= opinionAvgMax))
-                    .toList();
-        }
+        Double minAvg = Objects.requireNonNullElse(opinionAvgMin, 0.0);
+        Double maxAvg = Objects.requireNonNullElse(opinionAvgMax, 5.0);
+        filteredProducts = filteredProducts.stream()
+                .filter(product -> ((product.getOpinionAvg() >= minAvg) && (product.getOpinionAvg() <= maxAvg)))
+                .toList();
         return filteredProducts;
     }
 

@@ -20,7 +20,7 @@ public class OpinionController {
 
     @Autowired
     private Opinions opinionsFacade;
-    //    @Autowired
+    @Autowired
     private UserFacade userFacade;
 
     /**

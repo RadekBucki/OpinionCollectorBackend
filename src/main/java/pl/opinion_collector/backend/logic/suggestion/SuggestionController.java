@@ -23,7 +23,7 @@ public class SuggestionController {
 
     @Autowired
     private Suggestions suggestionFacade;
-    // @Autowired
+    @Autowired
     private UserFacade userFacade;
 
     /**

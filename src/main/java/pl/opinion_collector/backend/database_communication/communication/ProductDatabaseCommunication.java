@@ -36,11 +36,24 @@ public class ProductDatabaseCommunication {
     }
 
     public List<Product> getProductsFilterProducts(String categoryName, String searchPhrase, Double opinionAvgMin, Double opinionAvgMax) {
-        //TODO: Allow using only some parameters (some of them are null)
-        List<Product> jpaFilteredProducts = productRepository.findAllByNameContainingIgnoreCaseAndOpinionAvgIsBetweenAndVisibleTrue(searchPhrase, opinionAvgMin, opinionAvgMax);
-        Category category = categoryDatabaseCommunication.getCategoryByName(categoryName);
-        return jpaFilteredProducts.stream()
-                .filter(product -> product.getCategories().contains(category)).toList();
+        List<Product> filteredProducts = getAllProducts();
+        if (categoryName != null) {
+            Category category = categoryDatabaseCommunication.getCategoryByName(categoryName);
+            filteredProducts = filteredProducts.stream()
+                    .filter(product -> product.getCategories().contains(category))
+                    .toList();
+        }
+        if (searchPhrase != null) {
+            filteredProducts = filteredProducts.stream()
+                    .filter(product -> product.getName().toLowerCase().contains(searchPhrase.toLowerCase()))
+                    .toList();
+        }
+        if (opinionAvgMin != null && opinionAvgMax != null) {
+            filteredProducts = filteredProducts.stream()
+                    .filter(product -> (product.getOpinionAvg() >= opinionAvgMin && product.getOpinionAvg() <= opinionAvgMax))
+                    .toList();
+        }
+        return filteredProducts;
     }
 
     public Product createProduct(Long authorId, String sku, String name, String pictureUrl, String description, List<String> categoryNames, Boolean visible) {

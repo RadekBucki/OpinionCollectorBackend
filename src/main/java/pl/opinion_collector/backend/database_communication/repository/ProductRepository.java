@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import pl.opinion_collector.backend.database_communication.model.Category;
 import pl.opinion_collector.backend.database_communication.model.Product;
 import pl.opinion_collector.backend.database_communication.model.User;
 
@@ -16,9 +15,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Product findBySku(String sku);
 
     List<Product> findAllByVisibleTrue();
-
-    List<Product> findAllByNameContainingIgnoreCaseAndOpinionAvgIsBetweenAndVisibleTrue(
-            String searchPhrase, Double opinionAvgMin, Double opinionAvgMax);
 
     void deleteAllBySku(String sku);
 

@@ -40,39 +40,27 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({InvalidBusinessArgumentException.class, ParameterException.class})
-    public final ResponseEntity<Object> handleException(
-            RuntimeException exception) {
-        final String error = "Status Code: " + HttpStatus.NOT_ACCEPTABLE.value() + ", Exception: " + exception.getClass().getSimpleName();
-
-        return new ResponseEntity<>(new ApiError(HttpStatus.NOT_ACCEPTABLE, exception.getLocalizedMessage(), error),
-                new HttpHeaders(),
-                HttpStatus.NOT_ACCEPTABLE);
+    public final ResponseEntity<Object> handleException(RuntimeException exception) {
+        return handleResponse(HttpStatus.NOT_ACCEPTABLE, exception);
     }
-
     @ExceptionHandler({AuthException.class})
     public final ResponseEntity<Object> handleAuth(RuntimeException exception) {
-        final String error = "Status Code: " + HttpStatus.UNAUTHORIZED.value() + ", Exception: " + exception.getClass().getSimpleName();
-
-        return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, exception.getLocalizedMessage(), error),
-                new HttpHeaders(),
-                HttpStatus.UNAUTHORIZED);
+        return handleResponse(HttpStatus.UNAUTHORIZED, exception);
     }
-
     @ExceptionHandler({ForbiddenException.class})
     public final ResponseEntity<Object> handleForbiddenException(RuntimeException exception) {
-        final String error = "Status Code: " + HttpStatus.FORBIDDEN.value() + ", Exception: " + exception.getClass().getSimpleName();
-
-        return new ResponseEntity<>(new ApiError(HttpStatus.FORBIDDEN, exception.getLocalizedMessage(), error),
-                new HttpHeaders(),
-                HttpStatus.FORBIDDEN);
+        return handleResponse(HttpStatus.FORBIDDEN, exception);
     }
     @ExceptionHandler({EntityNotFoundException.class})
     public final ResponseEntity<Object> handleNotFound(RuntimeException exception) {
-        final String error = "Status Code: " + HttpStatus.NOT_FOUND.value() + ", Exception: " + exception.getClass().getSimpleName();
+        return handleResponse(HttpStatus.NOT_FOUND, exception);
+    }
 
-        return new ResponseEntity<>(new ApiError(HttpStatus.NOT_FOUND, exception.getLocalizedMessage(), error),
+    public final ResponseEntity<Object> handleResponse(HttpStatus httpStatus, RuntimeException exception) {
+        final String error = "Status Code: " + httpStatus.value() + ", Exception: " + exception.getClass().getSimpleName();
+        return new ResponseEntity<>(new ApiError(httpStatus, exception.getLocalizedMessage(), error),
                 new HttpHeaders(),
-                HttpStatus.NOT_FOUND);
+                httpStatus);
     }
 
 

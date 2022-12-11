@@ -3,6 +3,7 @@ package pl.opinion_collector.backend.logic.exception;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -54,6 +55,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({EntityNotFoundException.class})
     public final ResponseEntity<Object> handleNotFound(RuntimeException exception) {
         return handleResponse(HttpStatus.NOT_FOUND, exception);
+    }
+    @ExceptionHandler({AuthenticationException.class})
+    public ResponseEntity<Object> handleAuthenticationException(RuntimeException exception) {
+        return handleResponse(HttpStatus.BAD_REQUEST, exception);
     }
 
     public final ResponseEntity<Object> handleResponse(HttpStatus httpStatus, RuntimeException exception) {

@@ -2,9 +2,7 @@ package pl.opinion_collector.backend.logic.product.controller.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import pl.opinion_collector.backend.logic.opinion.dto.OpinionDto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

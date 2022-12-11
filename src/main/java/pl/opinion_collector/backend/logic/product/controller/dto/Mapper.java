@@ -3,7 +3,6 @@ package pl.opinion_collector.backend.logic.product.controller.dto;
 import pl.opinion_collector.backend.database_communication.model.Category;
 import pl.opinion_collector.backend.database_communication.model.Opinion;
 import pl.opinion_collector.backend.database_communication.model.Product;
-import pl.opinion_collector.backend.logic.opinion.dto.OpinionDto;
 import pl.opinion_collector.backend.logic.product.service.wrapper.ProductWrapper;
 
 import java.util.stream.Collectors;

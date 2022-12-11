@@ -34,11 +34,6 @@ public class SuggestionController {
     @GetMapping("/user")
     public ResponseEntity<List<SuggestionDto>> getUserSuggestions() {
         User user = userFacade.getUserByToken(getBearerTokenHeader());
-        if (user == null) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(null);
-        }
         return ResponseEntity.ok().body(suggestionFacade.getUserSuggestions(user.getUserId()));
     }
 
@@ -68,15 +63,7 @@ public class SuggestionController {
 
         String sku = addSuggestionDto.getSku();
         String description = addSuggestionDto.getDescription();
-
-        // check whether user is valid
         User user = userFacade.getUserByToken(getBearerTokenHeader());
-        if (user == null) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(null);
-        }
-
         return ResponseEntity.ok().body(suggestionFacade.addSuggestion(user.getUserId(), sku, description));
     }
 
@@ -94,13 +81,9 @@ public class SuggestionController {
         String suggestionStatus = answerSuggestionDto.getSuggestionStatus().name();
         String suggestionReply = answerSuggestionDto.getSuggestionReply();
 
-        // check whether user is valid
+
         User user = userFacade.getUserByToken(getBearerTokenHeader());
-        if (user == null) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(null);
-        }
+        
         if (!user.getAdmin()) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)

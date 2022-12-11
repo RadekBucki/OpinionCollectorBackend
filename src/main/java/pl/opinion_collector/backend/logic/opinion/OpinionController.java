@@ -31,10 +31,6 @@ public class OpinionController {
     @GetMapping("/user")
     public ResponseEntity<List<OpinionDto>> getUserOpinions() {
         User user = userFacade.getUserByToken(getBearerTokenHeader());
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
-
         return ResponseEntity.ok().body(opinionsFacade.getUserOpinions(user.getUserId()));
     }
 
@@ -70,13 +66,7 @@ public class OpinionController {
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OpinionDto> addOpinion(@RequestBody OpinionDto opinionDto) {
 
-        // check whether user is valid
         User user = userFacade.getUserByToken(getBearerTokenHeader());
-        if (user == null) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(null);
-        }
 
         // add opinion
         try {

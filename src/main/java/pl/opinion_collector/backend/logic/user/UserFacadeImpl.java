@@ -11,9 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
 import pl.opinion_collector.backend.database_communication.model.User;
-import pl.opinion_collector.backend.logic.user.exception.type.ForbiddenException;
-import pl.opinion_collector.backend.logic.user.exception.type.NotFoundException;
-import pl.opinion_collector.backend.logic.user.exception.type.ParameterException;
+import pl.opinion_collector.backend.logic.exception.type.ForbiddenException;
+import pl.opinion_collector.backend.logic.exception.type.NotFoundException;
+import pl.opinion_collector.backend.logic.exception.type.ParameterException;
 import pl.opinion_collector.backend.logic.user.security.jwt.JwtUtils;
 
 import java.util.ArrayList;

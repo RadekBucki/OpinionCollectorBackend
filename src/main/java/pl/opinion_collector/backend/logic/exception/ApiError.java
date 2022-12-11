@@ -1,4 +1,4 @@
-package pl.opinion_collector.backend.logic.user.exception;
+package pl.opinion_collector.backend.logic.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

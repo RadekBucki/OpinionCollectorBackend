@@ -64,8 +64,9 @@ public class UserFacadeController {
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(@ApiParam(name = "Registration request body",
                                                         value = "Body of the request")
-                                         @Valid @RequestBody SignupArg registerRequest
-            , @ApiParam(name = "HTTP Servlet Request", value = "Request information for HTTP servlets")
+                                                @Valid @RequestBody SignupArg registerRequest,
+                                            @ApiParam(name = "HTTP Servlet Request",
+                                                    value = "Request information for HTTP servlets")
                                           HttpServletRequest httpServletRequest) {
         String headerToken = "";
         if (httpServletRequest.getHeader("Authorization") != null)

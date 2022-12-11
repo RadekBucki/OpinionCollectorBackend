@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import pl.opinion_collector.backend.logic.exception.type.AuthException;
+import pl.opinion_collector.backend.logic.exception.type.ForbiddenException;
 import pl.opinion_collector.backend.logic.exception.type.InvalidBusinessArgumentException;
 import pl.opinion_collector.backend.logic.exception.type.ParameterException;
 
-
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,5 +48,32 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 new HttpHeaders(),
                 HttpStatus.NOT_ACCEPTABLE);
     }
+
+    @ExceptionHandler({AuthException.class})
+    public final ResponseEntity<Object> handleAuth(RuntimeException exception) {
+        final String error = "Status Code: " + HttpStatus.UNAUTHORIZED.value() + ", Exception: " + exception.getClass().getSimpleName();
+
+        return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, exception.getLocalizedMessage(), error),
+                new HttpHeaders(),
+                HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler({ForbiddenException.class})
+    public final ResponseEntity<Object> handleForbiddenException(RuntimeException exception) {
+        final String error = "Status Code: " + HttpStatus.FORBIDDEN.value() + ", Exception: " + exception.getClass().getSimpleName();
+
+        return new ResponseEntity<>(new ApiError(HttpStatus.FORBIDDEN, exception.getLocalizedMessage(), error),
+                new HttpHeaders(),
+                HttpStatus.FORBIDDEN);
+    }
+    @ExceptionHandler({EntityNotFoundException.class})
+    public final ResponseEntity<Object> handleNotFound(RuntimeException exception) {
+        final String error = "Status Code: " + HttpStatus.NOT_FOUND.value() + ", Exception: " + exception.getClass().getSimpleName();
+
+        return new ResponseEntity<>(new ApiError(HttpStatus.NOT_FOUND, exception.getLocalizedMessage(), error),
+                new HttpHeaders(),
+                HttpStatus.NOT_FOUND);
+    }
+
 
 }

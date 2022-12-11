@@ -41,6 +41,6 @@ public class SignupArg {
     @NotBlank
     @NonNull
     @Size(min = 6, max = 40)
-    @ApiModelProperty(notes = "User password", example = "1234567")
+    @ApiModelProperty(notes = "User password", example = "123abC#")
     private String password;
 }

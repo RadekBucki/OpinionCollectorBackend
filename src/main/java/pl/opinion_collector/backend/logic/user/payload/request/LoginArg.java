@@ -21,7 +21,7 @@ public class LoginArg {
     @NotBlank
     @Email
     private String email;
-    @ApiModelProperty(notes = "User password", example = "123")
+    @ApiModelProperty(notes = "User password", example = "123abC#")
     @NonNull
     @NotBlank
     private String password;

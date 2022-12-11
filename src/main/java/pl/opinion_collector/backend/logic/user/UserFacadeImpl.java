@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
 import pl.opinion_collector.backend.database_communication.model.User;
 import pl.opinion_collector.backend.logic.exception.type.ForbiddenException;
-import pl.opinion_collector.backend.logic.exception.type.NotFoundException;
 import pl.opinion_collector.backend.logic.exception.type.ParameterException;
 import pl.opinion_collector.backend.logic.user.security.jwt.JwtUtils;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,7 +79,7 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public User updateUser(Integer userId, String firstName, String lastName, String email, String passwordHash, String profilePictureUrl, Boolean isAdmin) {
         if (databaseCommunicationFacade.getUserById(Long.valueOf(userId)) == null) {
-            throw new NotFoundException("User with this id doesnt exist");
+            throw new EntityNotFoundException("User with this id doesnt exist");
         }
         User user = databaseCommunicationFacade.getUserById(Long.valueOf(userId));
 

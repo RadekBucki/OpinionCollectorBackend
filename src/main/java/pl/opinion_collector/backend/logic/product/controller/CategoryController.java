@@ -11,6 +11,7 @@ import pl.opinion_collector.backend.logic.product.controller.dto.Mapper;
 import pl.opinion_collector.backend.logic.product.controller.pojo.CategoryArg;
 import pl.opinion_collector.backend.logic.product.service.ProductFacade;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,7 +61,7 @@ public class CategoryController {
             value = "Contains the name and visibility status of the added category",
             required = true)
     @PostMapping("/add")
-    public ResponseEntity<CategoryDto> addCategory(@RequestBody CategoryArg categoryArg) {
+    public ResponseEntity<CategoryDto> addCategory(@RequestBody @Valid CategoryArg categoryArg) {
         return new ResponseEntity<>(map.mapCategory(productFacade.addCategory(categoryArg.getName(),
                 categoryArg.getVisible())),
                 HttpStatus.ACCEPTED);
@@ -77,7 +78,7 @@ public class CategoryController {
             value = "Contains the name and visibility status of the added category",
             required = true)
     @PutMapping("/edit")
-    public ResponseEntity<CategoryDto> editCategory(@RequestBody CategoryArg categoryArg) {
+    public ResponseEntity<CategoryDto> editCategory(@RequestBody @Valid CategoryArg categoryArg) {
         return new ResponseEntity<>(map.mapCategory(productFacade.editCategory(categoryArg.getName(),
                 categoryArg.getVisible())), HttpStatus.ACCEPTED);
     }

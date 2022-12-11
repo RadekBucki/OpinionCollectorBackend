@@ -15,6 +15,7 @@ import pl.opinion_collector.backend.logic.product.service.ProductFacade;
 import pl.opinion_collector.backend.logic.user.UserFacade;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -114,7 +115,7 @@ public class ProductController {
             required = true)
     @PostMapping("/add")
     public ResponseEntity<ProductDto> addProduct(HttpServletRequest req,
-                                                 @RequestBody ProductArg arg) {
+                                                 @RequestBody @Valid ProductArg arg) {
         return new ResponseEntity<>(map.mapProduct(productFacade.addProduct(userFacade.
                         getUserByToken(getToken(req)).getUserId(),
                 arg.getSku(),
@@ -137,7 +138,8 @@ public class ProductController {
             value = "products params",
             required = true)
     @PutMapping("/edit")
-    public ResponseEntity<ProductDto> editProduct(HttpServletRequest req, @RequestBody ProductArg arg) {
+    public ResponseEntity<ProductDto> editProduct(HttpServletRequest req,
+                                                  @RequestBody @Valid ProductArg arg) {
         return new ResponseEntity<>(map.mapProduct(productFacade.editProduct(userFacade.
                         getUserByToken(getToken(req)).getUserId(),
                 arg.getSku(),

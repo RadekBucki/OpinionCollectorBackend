@@ -17,6 +17,8 @@ import pl.opinion_collector.backend.logic.user.UserFacade;
 
 import java.util.List;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 @RestController
 @RequestMapping("/suggestions")
 public class SuggestionController {
@@ -96,8 +98,9 @@ public class SuggestionController {
 
 
     public static String getBearerTokenHeader() {
-        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest().getHeader("Authorization");
+        String authorizationHeader = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getRequest().getHeader(AUTHORIZATION);
+        return authorizationHeader.substring("Bearer ".length());
     }
 
 }

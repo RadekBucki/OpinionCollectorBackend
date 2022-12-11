@@ -15,33 +15,32 @@ public class SignupArg {
 
     @NotBlank
     @NonNull
-    @ApiModelProperty(notes = "User first name")
+    @ApiModelProperty(notes = "User first name", example = "John")
     private String firstName;
 
     @NotBlank
     @NonNull
-    @ApiModelProperty(notes = "User last name")
+    @ApiModelProperty(notes = "User last name", example = "Smith")
     private String lastName;
 
     @NotBlank
     @NonNull
     @Size(max = 50)
     @Email
-    @ApiModelProperty(notes = "User email")
+    @ApiModelProperty(notes = "User email", example = "example@gmail.com")
     private String email;
 
-    @NotBlank
-    @ApiModelProperty(notes = "Is user admin")
-    private boolean isAdmin;
+    @ApiModelProperty(notes = "Is user admin", example = "false")
+    private Boolean isAdmin = false;
 
     @NotBlank
     @NonNull
-    @ApiModelProperty(notes = "User profile picture Url")
+    @ApiModelProperty(notes = "User profile picture Url", example = "https://pl.pinterest.com/pin/327848047887112192/")
     private String pictureUrl;
 
     @NotBlank
     @NonNull
     @Size(min = 6, max = 40)
-    @ApiModelProperty(notes = "User password")
+    @ApiModelProperty(notes = "User password", example = "1234567")
     private String password;
 }

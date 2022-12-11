@@ -11,9 +11,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
 import pl.opinion_collector.backend.database_communication.model.User;
+import pl.opinion_collector.backend.logic.exception.type.ForbiddenException;
+import pl.opinion_collector.backend.logic.exception.type.NotFoundException;
+import pl.opinion_collector.backend.logic.exception.type.ParameterException;
 import pl.opinion_collector.backend.logic.user.security.jwt.JwtUtils;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +43,9 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     public User register(String firstName, String lastName, String email, String password, String profilePictureUrl) {
-        if (validateRegisterInput(email, password)) return null;
+        if (validateRegisterInput(email, password)) {
+            throw new ParameterException("Wrong register input or email is taken");
+        }
         return databaseCommunicationFacade.createUser(
                 firstName,
                 lastName,
@@ -52,7 +56,9 @@ public class UserFacadeImpl implements UserFacade {
     }
     @Override
     public User registerAdmin(String firstName, String lastName, String email, String password, String profilePictureUrl) {
-        if (validateRegisterInput(email, password)) return null;
+        if (validateRegisterInput(email, password)) {
+            throw new ParameterException("Wrong register input or email is taken");
+        }
         return databaseCommunicationFacade.createUser(
                 firstName,
                 lastName,
@@ -72,29 +78,25 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     public User updateUser(Integer userId, String firstName, String lastName, String email, String passwordHash, String profilePictureUrl, Boolean isAdmin) {
-        User user;
-        try {
-            user = databaseCommunicationFacade.getUserById(Long.valueOf(userId));
-        } catch (EntityNotFoundException e) {
-            logger.error("User with this id doesnt exist or u didnt provided any");
-            return null;
+        if (databaseCommunicationFacade.getUserById(Long.valueOf(userId)) == null) {
+            throw new NotFoundException("User with this id doesnt exist");
         }
-        if (databaseCommunicationFacade.getUserById(Long.valueOf(userId)) != null) {
-            if (findByEmail(email) == null) {
-                user = updateUserData(user, firstName, lastName, email, passwordHash, profilePictureUrl, isAdmin);
-                databaseCommunicationFacade.updateUser(Long.valueOf(userId),
-                        user.getFirstName(),
-                        user.getLastName(),
-                        user.getEmail(),
-                        user.getPasswordHash(),
-                        user.getProfilePictureUrl(),
-                        user.getAdmin());
-            } else {
-                logger.error("U cant change email that is taken");
-                return null;
-            }
+        User user = databaseCommunicationFacade.getUserById(Long.valueOf(userId));
+
+        if (findByEmail(email) == null) {
+            user = updateUserData(user, firstName, lastName, email, passwordHash, profilePictureUrl, isAdmin);
+            databaseCommunicationFacade.updateUser(Long.valueOf(userId),
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getEmail(),
+                    user.getPasswordHash(),
+                    user.getProfilePictureUrl(),
+                    user.getAdmin());
+        } else {
+            logger.error("U cant change email that is taken");
+            throw new ForbiddenException("U cant change to email that is taken");
         }
-        User use = new User("123", "123 ", "123", " 12","123",  true);
+
         return user;
     }
     public User findByEmail(String email) {
@@ -124,8 +126,7 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     private boolean validateRegisterInput(String email, String password) {
-        if (email != null && !email.contains("@") && !email.contains(".")
-                && password != null && !password.isBlank()) {
+        if (!email.contains("@") && !email.contains(".") || password == null) {
             logger.error("U have to input valid email and password to register");
             return true;
         } else if (findByEmail(email) != null) {

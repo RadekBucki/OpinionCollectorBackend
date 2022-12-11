@@ -16,12 +16,12 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 public class LoginArg {
-    @ApiModelProperty(notes = "User username")
+    @ApiModelProperty(notes = "User username", example = "example@gmail.com")
     @NonNull
     @NotBlank
     @Email
     private String email;
-    @ApiModelProperty(notes = "User password")
+    @ApiModelProperty(notes = "User password", example = "123")
     @NonNull
     @NotBlank
     private String password;

@@ -59,4 +59,7 @@ public class UserWrapper {
         roles.add(Role.ROLE_USER);
         return roles;
     }
+    public Long getUserId() {
+        return id;
+    }
 }

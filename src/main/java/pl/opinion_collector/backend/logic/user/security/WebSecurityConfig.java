@@ -56,7 +56,7 @@ public class WebSecurityConfig {
         };
         final String[] STD_USER_PERMISSIONS = {
                 "/**/suggestions/user", "/**/suggestions/add", "/**/suggestions",
-                "/**/opinions/user", "/**/opinions/add"
+                "/**/opinions/user", "/**/opinions/add",
         };
         final String[] ADMIN_PERMISSIONS = {
                 "/**/users", "/**/users/update",

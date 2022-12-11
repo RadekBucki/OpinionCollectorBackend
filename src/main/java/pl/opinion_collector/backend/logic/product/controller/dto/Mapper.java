@@ -57,6 +57,7 @@ public final class Mapper {
     public CategoryDto mapCategory(Category category) {
         return new CategoryDto.CategoryDtoBuilder()
                 .categoryName(category.getCategoryName())
+                .visible(category.getVisible())
                 .build();
     }
 

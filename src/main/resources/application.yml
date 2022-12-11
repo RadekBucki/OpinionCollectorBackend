@@ -2,8 +2,8 @@ spring:
   application:
     name: opinioncollectorbackend
   datasource:
-    username: kambed
-    password: kambed
+    username:
+    password:
     url: jdbc:postgresql://localhost:5432/opinioncollector
   jpa:
     hibernate:
@@ -16,5 +16,5 @@ spring:
         globally_quoted_identifiers: true
 jwt:
   variables:
-    jwtSecret: eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY3MDc2NjE2NiwiaWF0IjoxNjcwNzY2MTY2fQ.crGTCj7Zw6XJNngC5rRbPPCAD0glbahOayMa0GtynVQ
-    jwtExpirationMs: 86400000
+    jwtSecret:
+    jwtExpirationMs: 

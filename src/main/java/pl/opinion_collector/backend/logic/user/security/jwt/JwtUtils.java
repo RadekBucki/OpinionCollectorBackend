@@ -1,15 +1,14 @@
 package pl.opinion_collector.backend.logic.user.security.jwt;
 
-import java.util.Date;
-
+import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-
-import io.jsonwebtoken.*;
 import pl.opinion_collector.backend.logic.user.security.service.UserDetailsImpl;
+
+import java.util.Date;
 
 @Component
 public class JwtUtils {
@@ -51,7 +50,6 @@ public class JwtUtils {
         } catch (IllegalArgumentException e) {
             logger.error("JWT claims string is empty: {}", e.getMessage());
         }
-
         return false;
     }
 }

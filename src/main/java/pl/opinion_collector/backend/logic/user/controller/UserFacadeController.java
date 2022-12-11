@@ -23,13 +23,15 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/users")
 public class UserFacadeController {
     @Autowired
     private UserFacade userFacade;
-    private final static Mapper mapper = new Mapper();
+    private static final Mapper mapper = new Mapper();
     @ApiOperation(value = "Get all users and their data")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved"),
@@ -42,7 +44,7 @@ public class UserFacadeController {
     public ResponseEntity<List<UserDto>> getUsers(@ApiParam(name = "HTTP Servlet Request",
             value = "Request information for HTTP servlets")
                                                       HttpServletRequest httpServletRequest) {
-        if (!userFacade.getUserByToken(httpServletRequest.getHeader("Authorization")
+        if (!userFacade.getUserByToken(httpServletRequest.getHeader(AUTHORIZATION)
                 .substring(7)).getAdmin()) {
             throw new AuthException("Unauthorized");
         }
@@ -69,8 +71,8 @@ public class UserFacadeController {
                                                     value = "Request information for HTTP servlets")
                                           HttpServletRequest httpServletRequest) {
         String headerToken = "";
-        if (httpServletRequest.getHeader("Authorization") != null)
-            headerToken = httpServletRequest.getHeader("Authorization").substring(7);
+        if (httpServletRequest.getHeader(AUTHORIZATION) != null)
+            headerToken = httpServletRequest.getHeader(AUTHORIZATION).substring(7);
 
         if (registerRequest.getIsAdmin() && !headerToken.isBlank() &&
                 userFacade.getUserByToken(headerToken).getAdmin()) {
@@ -80,7 +82,7 @@ public class UserFacadeController {
                     registerRequest.getEmail(),
                     registerRequest.getPassword(),
                     registerRequest.getPictureUrl())));
-        } else if (registerRequest.getIsAdmin()) {
+        } else if (Boolean.TRUE.equals(registerRequest.getIsAdmin())) {
             throw new ForbiddenException("U are not authorized to register new admin");
         } else {
             return ResponseEntity.ok().body(mapper.mapUser(

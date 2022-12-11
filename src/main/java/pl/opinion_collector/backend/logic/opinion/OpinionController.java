@@ -6,13 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import pl.opinion_collector.backend.database_communication.model.User;
 import pl.opinion_collector.backend.logic.opinion.dto.OpinionDto;
 import pl.opinion_collector.backend.logic.user.UserFacade;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
 @RequestMapping("/opinions")
@@ -29,8 +30,8 @@ public class OpinionController {
      * @return list of all opinions of user
      */
     @GetMapping("/user")
-    public ResponseEntity<List<OpinionDto>> getUserOpinions() {
-        User user = userFacade.getUserByToken(getBearerTokenHeader());
+    public ResponseEntity<List<OpinionDto>> getUserOpinions(HttpServletRequest req) {
+        User user = userFacade.getUserByToken(getBearerTokenHeader(req));
         return ResponseEntity.ok().body(opinionsFacade.getUserOpinions(user.getUserId()));
     }
 
@@ -64,9 +65,9 @@ public class OpinionController {
                     "authorId, productId",
             required = true)
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OpinionDto> addOpinion(@RequestBody OpinionDto opinionDto) {
+    public ResponseEntity<OpinionDto> addOpinion(HttpServletRequest req, @RequestBody OpinionDto opinionDto) {
 
-        User user = userFacade.getUserByToken(getBearerTokenHeader());
+        User user = userFacade.getUserByToken(getBearerTokenHeader(req));
 
         // add opinion
         try {
@@ -80,10 +81,8 @@ public class OpinionController {
         }
     }
 
-
-    public static String getBearerTokenHeader() {
-        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest().getHeader("Authorization");
+    public static String getBearerTokenHeader(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader(AUTHORIZATION);
+        return authorizationHeader.substring("Bearer ".length());
     }
-
 }

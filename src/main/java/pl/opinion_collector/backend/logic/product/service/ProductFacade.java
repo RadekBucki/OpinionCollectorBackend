@@ -1,6 +1,5 @@
 package pl.opinion_collector.backend.logic.product.service;
 
-import org.springframework.data.domain.Page;
 import pl.opinion_collector.backend.database_communication.model.Category;
 import pl.opinion_collector.backend.database_communication.model.Product;
 import pl.opinion_collector.backend.logic.product.service.wrapper.ProductWrapper;

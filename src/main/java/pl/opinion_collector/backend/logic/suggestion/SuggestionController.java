@@ -7,15 +7,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import pl.opinion_collector.backend.database_communication.model.*;
+import pl.opinion_collector.backend.database_communication.model.User;
 import pl.opinion_collector.backend.logic.suggestion.dto.AddSuggestionDto;
 import pl.opinion_collector.backend.logic.suggestion.dto.AnswerSuggestionDto;
 import pl.opinion_collector.backend.logic.suggestion.dto.SuggestionDto;
 import pl.opinion_collector.backend.logic.user.UserFacade;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
 @RequestMapping("/suggestions")
@@ -32,8 +33,8 @@ public class SuggestionController {
      * @return list of all Suggestions of user
      */
     @GetMapping("/user")
-    public ResponseEntity<List<SuggestionDto>> getUserSuggestions() {
-        User user = userFacade.getUserByToken(getBearerTokenHeader());
+    public ResponseEntity<List<SuggestionDto>> getUserSuggestions(HttpServletRequest req) {
+        User user = userFacade.getUserByToken(getBearerTokenHeader(req));
         return ResponseEntity.ok().body(suggestionFacade.getUserSuggestions(user.getUserId()));
     }
 
@@ -59,11 +60,14 @@ public class SuggestionController {
                     "description (content of suggestion)",
             required = true)
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SuggestionDto> addSuggestion(@RequestBody AddSuggestionDto addSuggestionDto) {
+    public ResponseEntity<SuggestionDto> addSuggestion(
+            HttpServletRequest req,
+            @RequestBody AddSuggestionDto addSuggestionDto
+    ) {
 
         String sku = addSuggestionDto.getSku();
         String description = addSuggestionDto.getDescription();
-        User user = userFacade.getUserByToken(getBearerTokenHeader());
+        User user = userFacade.getUserByToken(getBearerTokenHeader(req));
         return ResponseEntity.ok().body(suggestionFacade.addSuggestion(user.getUserId(), sku, description));
     }
 
@@ -75,14 +79,17 @@ public class SuggestionController {
                     "suggestionReply (content of reply)",
             required = true)
     @PutMapping(value = "/reply", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SuggestionDto> replyToSuggestion(@RequestBody AnswerSuggestionDto answerSuggestionDto) {
+    public ResponseEntity<SuggestionDto> replyToSuggestion(
+            HttpServletRequest req,
+            @RequestBody AnswerSuggestionDto answerSuggestionDto
+    ) {
 
         Integer suggestionId = answerSuggestionDto.getSuggestionId();
         String suggestionStatus = answerSuggestionDto.getSuggestionStatus().name();
         String suggestionReply = answerSuggestionDto.getSuggestionReply();
 
 
-        User user = userFacade.getUserByToken(getBearerTokenHeader());
+        User user = userFacade.getUserByToken(getBearerTokenHeader(req));
         
         if (!user.getAdmin()) {
             return ResponseEntity
@@ -95,9 +102,9 @@ public class SuggestionController {
     }
 
 
-    public static String getBearerTokenHeader() {
-        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest().getHeader("Authorization");
+    public static String getBearerTokenHeader(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader(AUTHORIZATION);
+        return authorizationHeader.substring("Bearer ".length());
     }
 
 }

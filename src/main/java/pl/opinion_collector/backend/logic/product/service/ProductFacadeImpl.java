@@ -73,6 +73,9 @@ public class ProductFacadeImpl implements ProductFacade {
                                String description,
                                List<String> categoryNames,
                                Boolean visible) {
+        Optional.ofNullable(databaseCommunication.getProductBySku(sku)).orElseThrow(() -> {
+            throw new InvalidDataIdException("The product with the given sku is not in the system");
+        });
         databaseCommunication.updateProduct(authorId,
                 sku,
                 name,

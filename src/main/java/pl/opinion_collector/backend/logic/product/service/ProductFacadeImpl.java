@@ -107,6 +107,9 @@ public class ProductFacadeImpl implements ProductFacade {
 
     @Override
     public Category editCategory(String categoryName, Boolean visible) {
+        Optional.ofNullable(databaseCommunication.getCategoryByName(categoryName)).orElseThrow(() -> {
+            throw new InvalidDataIdException("The Category with the given name is not in the system");
+        });
         databaseCommunication.updateCategory(categoryName, visible);
         return databaseCommunication.getCategoryByName(categoryName);
     }

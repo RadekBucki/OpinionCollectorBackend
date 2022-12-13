@@ -3,6 +3,7 @@ package pl.opinion_collector.backend.logic.product.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
+import pl.opinion_collector.backend.logic.exception.type.DuplicatedDataException;
 import pl.opinion_collector.backend.logic.exception.type.InvalidDataIdException;
 import pl.opinion_collector.backend.logic.exception.type.ParameterException;
 import pl.opinion_collector.backend.database_communication.model.Category;
@@ -102,6 +103,9 @@ public class ProductFacadeImpl implements ProductFacade {
 
     @Override
     public Category addCategory(String categoryName, Boolean visible) {
+        Optional.ofNullable(databaseCommunication.getCategoryByName(categoryName)).orElseThrow(() -> {
+            throw new DuplicatedDataException("The category with the given name already exists");
+        });
         return databaseCommunication.createCategory(categoryName, visible);
     }
 

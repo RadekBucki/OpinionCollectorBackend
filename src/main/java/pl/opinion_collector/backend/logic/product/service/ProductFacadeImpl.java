@@ -103,8 +103,10 @@ public class ProductFacadeImpl implements ProductFacade {
 
     @Override
     public Category addCategory(String categoryName, Boolean visible) {
-        Optional.ofNullable(databaseCommunication.getCategoryByName(categoryName)).orElseThrow(() -> {
-            throw new DuplicatedDataException("The category with the given name already exists");
+        Optional.ofNullable(databaseCommunication.getCategoryByName(categoryName)).ifPresent(category -> {
+            throw new DuplicatedDataException("The category with the given name " +
+                    category.getCategoryName() +
+                    " already exists");
         });
         return databaseCommunication.createCategory(categoryName, visible);
     }

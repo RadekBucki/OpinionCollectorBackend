@@ -5,8 +5,6 @@ import pl.opinion_collector.backend.database_communication.model.Opinion;
 import pl.opinion_collector.backend.database_communication.model.Product;
 import pl.opinion_collector.backend.logic.product.service.wrapper.ProductWrapper;
 
-import java.util.stream.Collectors;
-
 /**
  * a class that maps objects from the database layer to the communication layer
  */
@@ -26,8 +24,8 @@ public final class Mapper {
                 .description(product.getDescription())
                 .opinionAvg(product.getOpinionAvg())
                 .firstName(product.getAuthorId().getFirstName())
-                .opinions(product.getOpinions().stream().map(this::mapOpinion).collect(Collectors.toList()))
-                .categories(product.getCategories().stream().map(this::mapCategory).collect(Collectors.toList()))
+                .opinions(product.getOpinions().stream().map(this::mapOpinion).toList())
+                .categories(product.getCategories().stream().map(this::mapCategory).toList())
                 .build();
     }
 
@@ -73,7 +71,7 @@ public final class Mapper {
                 .numberOfPages(productWrapper.getNumberOfPages())
                 .products(productWrapper.getProducts().stream()
                         .map(this::mapProduct)
-                        .collect(Collectors.toList()))
+                        .toList())
                 .build();
     }
 

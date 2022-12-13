@@ -17,7 +17,6 @@ import pl.opinion_collector.backend.logic.user.UserFacade;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -83,7 +82,7 @@ public class ProductController {
                         searchArg.getOpinionAvgMin(),
                         searchArg.getOpinionAvgMax()).stream()
                 .map(map::mapProduct)
-                .collect(Collectors.toList()), HttpStatus.OK);
+                .toList(), HttpStatus.OK);
     }
 
     /**

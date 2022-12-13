@@ -13,7 +13,6 @@ import pl.opinion_collector.backend.logic.product.service.wrapper.ProductWrapper
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class ProductFacadeImpl implements ProductFacade {
@@ -27,11 +26,10 @@ public class ProductFacadeImpl implements ProductFacade {
 
     @Override
     public Product getProductBySku(String sku) {
-        Product product = databaseCommunication.getProductBySku(sku);
-        Optional.ofNullable(product).orElseThrow(() -> {
-            throw new InvalidDataIdException(INVALID_SKU);
-        });
-        return product;
+        return Optional.ofNullable(databaseCommunication.getProductBySku(sku))
+                .orElseThrow(() -> {
+                    throw new InvalidDataIdException(INVALID_SKU);
+                });
     }
 
     @Override
@@ -85,7 +83,7 @@ public class ProductFacadeImpl implements ProductFacade {
                                String description,
                                List<String> categoryNames,
                                Boolean visible) {
-        Optional.ofNullable(databaseCommunication.getProductBySku(sku)).orElseThrow(() -> {
+        Product product = Optional.ofNullable(databaseCommunication.getProductBySku(sku)).orElseThrow(() -> {
             throw new InvalidDataIdException(INVALID_SKU);
         });
         databaseCommunication.updateProduct(authorId,
@@ -95,13 +93,13 @@ public class ProductFacadeImpl implements ProductFacade {
                 description,
                 categoryNames,
                 visible);
-        return databaseCommunication.getProductBySku(sku);
+        return product;
     }
 
     @Override
     public Product removeProduct(String sku) {
-        Product product = databaseCommunication.getProductBySku(sku);
-        Optional.ofNullable(product).orElseThrow(() -> {
+        Product product = Optional.ofNullable(databaseCommunication.getProductBySku(sku))
+                .orElseThrow(() -> {
             throw new InvalidDataIdException(INVALID_SKU);
         });
         databaseCommunication.removeProduct(sku);
@@ -120,17 +118,16 @@ public class ProductFacadeImpl implements ProductFacade {
 
     @Override
     public Category editCategory(String categoryName, Boolean visible) {
-        Optional.ofNullable(databaseCommunication.getCategoryByName(categoryName)).orElseThrow(() -> {
+        Category category = Optional.ofNullable(databaseCommunication.getCategoryByName(categoryName)).orElseThrow(() -> {
             throw new InvalidDataIdException(INVALID_NAME);
         });
         databaseCommunication.updateCategory(categoryName, visible);
-        return databaseCommunication.getCategoryByName(categoryName);
+        return category;
     }
 
     @Override
     public Category removeCategory(String categoryName) {
-        Category category = databaseCommunication.getCategoryByName(categoryName);
-        Optional.ofNullable(category).orElseThrow(() -> {
+        Category category = Optional.ofNullable(databaseCommunication.getCategoryByName(categoryName)).orElseThrow(() -> {
             throw new InvalidDataIdException(INVALID_NAME);
         });
         databaseCommunication.removeCategory(categoryName);
@@ -142,7 +139,7 @@ public class ProductFacadeImpl implements ProductFacade {
         return databaseCommunication.getAllCategories()
                 .stream()
                 .filter(Category::getVisible)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

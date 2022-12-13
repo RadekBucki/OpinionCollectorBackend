@@ -13,7 +13,6 @@ import pl.opinion_collector.backend.logic.product.service.ProductFacade;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @CrossOrigin
 @Controller
@@ -33,7 +32,7 @@ public class CategoryController {
     public ResponseEntity<List<CategoryDto>> getCategories() {
         return new ResponseEntity<>(productFacade.getCategories().stream()
                 .map(map::mapCategory)
-                .collect(Collectors.toList()),
+                .toList(),
                 HttpStatus.OK);
     }
 
@@ -46,7 +45,7 @@ public class CategoryController {
     public ResponseEntity<List<CategoryDto>> getAllCategories() {
         return new ResponseEntity<>(productFacade.getAllCategories().stream()
                 .map(map::mapCategory)
-                .collect(Collectors.toList()),
+                .toList(),
                 HttpStatus.OK);
     }
 

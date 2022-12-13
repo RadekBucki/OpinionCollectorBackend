@@ -24,7 +24,11 @@ public class ProductFacadeImpl implements ProductFacade {
 
     @Override
     public Product getProductBySku(String sku) {
-        return databaseCommunication.getProductBySku(sku);
+        Product product = databaseCommunication.getProductBySku(sku);
+        Optional.ofNullable(product).orElseThrow(() -> {
+            throw new InvalidDataIdException("The product with the given sku is not in the system");
+        });
+        return product;
     }
 
     @Override

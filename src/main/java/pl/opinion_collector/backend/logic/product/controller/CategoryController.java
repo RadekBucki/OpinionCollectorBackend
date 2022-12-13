@@ -26,7 +26,7 @@ public class CategoryController {
     /**
      * Endpoint for all visible Categories
      *
-     * @return - list of all visible Categories
+     * @return {@link List<CategoryDto>}
      */
     @GetMapping()
     public ResponseEntity<List<CategoryDto>> getCategories() {
@@ -39,7 +39,7 @@ public class CategoryController {
     /**
      * Endpoint for all Categories
      *
-     * @return - list of all Categories
+     * @return {@link List<CategoryDto>}
      */
     @GetMapping("/all")
     public ResponseEntity<List<CategoryDto>> getAllCategories() {
@@ -53,6 +53,7 @@ public class CategoryController {
      * adds category
      *
      * @param categoryArg - {@link CategoryArg}
+     * @return {@link CategoryDto}
      */
     @ApiParam(
             name = "categoryArg",
@@ -70,6 +71,7 @@ public class CategoryController {
      * edit category visibility
      *
      * @param categoryArg - {@link CategoryArg}
+     * @return {@link CategoryDto}
      */
     @ApiParam(
             name = "categoryArg",
@@ -86,6 +88,7 @@ public class CategoryController {
      * delete Category
      *
      * @param name - name of Category
+     * @return {@link CategoryDto}
      */
     @ApiParam(
             name = "name",

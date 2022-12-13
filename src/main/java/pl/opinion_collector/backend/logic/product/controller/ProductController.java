@@ -68,7 +68,7 @@ public class ProductController {
     /**
      * get filtered products
      * @param searchArg - {@link SearchArg}
-     * @return
+     * @return {@link List<ProductWrapperDto>}
      */
     @ApiParam(
             name = "searchArg",
@@ -89,6 +89,7 @@ public class ProductController {
      * get Product details
      *
      * @param sku - product sku
+     * @return {@link ProductDto}
      */
     @ApiParam(
             name = "sku",
@@ -106,6 +107,7 @@ public class ProductController {
      *
      * @param req - servlet container
      * @param arg - {@link ProductArg}
+     * @return {@link ProductDto}
      */
     @ApiParam(
             name = "arg",
@@ -130,6 +132,7 @@ public class ProductController {
      *
      * @param req - servlet container
      * @param arg - {@link ProductArg}
+     * @return {@link ProductDto}
      */
     @ApiParam(
             name = "arg",
@@ -153,6 +156,7 @@ public class ProductController {
      * delete Product
      *
      * @param sku - sku of Product
+     * @return {@link ProductDto}
      */
     @ApiParam(
             name = "sku",

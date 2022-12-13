@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 public class ProductFacadeImpl implements ProductFacade {
 
     private static final int PRODUCT_COUNT = 20;
+    private static final String INVALID_SKU = "The product with the given sku is not in the system";
+    private static final String INVALID_NAME = "The Category with the given name is not in the system";
 
     @Autowired
     private DatabaseCommunicationFacade databaseCommunication;
@@ -27,7 +29,7 @@ public class ProductFacadeImpl implements ProductFacade {
     public Product getProductBySku(String sku) {
         Product product = databaseCommunication.getProductBySku(sku);
         Optional.ofNullable(product).orElseThrow(() -> {
-            throw new InvalidDataIdException("The product with the given sku is not in the system");
+            throw new InvalidDataIdException(INVALID_SKU);
         });
         return product;
     }
@@ -84,7 +86,7 @@ public class ProductFacadeImpl implements ProductFacade {
                                List<String> categoryNames,
                                Boolean visible) {
         Optional.ofNullable(databaseCommunication.getProductBySku(sku)).orElseThrow(() -> {
-            throw new InvalidDataIdException("The product with the given sku is not in the system");
+            throw new InvalidDataIdException(INVALID_SKU);
         });
         databaseCommunication.updateProduct(authorId,
                 sku,
@@ -100,7 +102,7 @@ public class ProductFacadeImpl implements ProductFacade {
     public Product removeProduct(String sku) {
         Product product = databaseCommunication.getProductBySku(sku);
         Optional.ofNullable(product).orElseThrow(() -> {
-            throw new InvalidDataIdException("The product with the given sku is not in the system");
+            throw new InvalidDataIdException(INVALID_SKU);
         });
         databaseCommunication.removeProduct(sku);
         return product;
@@ -119,7 +121,7 @@ public class ProductFacadeImpl implements ProductFacade {
     @Override
     public Category editCategory(String categoryName, Boolean visible) {
         Optional.ofNullable(databaseCommunication.getCategoryByName(categoryName)).orElseThrow(() -> {
-            throw new InvalidDataIdException("The Category with the given name is not in the system");
+            throw new InvalidDataIdException(INVALID_NAME);
         });
         databaseCommunication.updateCategory(categoryName, visible);
         return databaseCommunication.getCategoryByName(categoryName);
@@ -129,7 +131,7 @@ public class ProductFacadeImpl implements ProductFacade {
     public Category removeCategory(String categoryName) {
         Category category = databaseCommunication.getCategoryByName(categoryName);
         Optional.ofNullable(category).orElseThrow(() -> {
-            throw new InvalidDataIdException("The Category with the given name is not in the system");
+            throw new InvalidDataIdException(INVALID_NAME);
         });
         databaseCommunication.removeCategory(categoryName);
         return category;

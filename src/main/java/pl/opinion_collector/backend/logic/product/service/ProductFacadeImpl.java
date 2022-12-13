@@ -114,6 +114,9 @@ public class ProductFacadeImpl implements ProductFacade {
     @Override
     public Category removeCategory(String categoryName) {
         Category category = databaseCommunication.getCategoryByName(categoryName);
+        Optional.ofNullable(category).orElseThrow(() -> {
+            throw new InvalidDataIdException("The Category with the given name is not in the system");
+        });
         databaseCommunication.removeCategory(categoryName);
         return category;
     }

@@ -61,6 +61,11 @@ public class ProductFacadeImpl implements ProductFacade {
                               String description,
                               List<String> categoryNames,
                               Boolean visible) {
+        Optional.ofNullable(databaseCommunication.getProductBySku(sku)).ifPresent(product -> {
+            throw new DuplicatedDataException("The product with the given sku " +
+                    product.getSku()+
+                    " already exists");
+        });
         return databaseCommunication.createProduct(authorId,
                 sku,
                 name,

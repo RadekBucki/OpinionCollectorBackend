@@ -3,6 +3,7 @@ package pl.opinion_collector.backend.logic.product.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
+import pl.opinion_collector.backend.logic.exception.type.InvalidDataIdException;
 import pl.opinion_collector.backend.logic.exception.type.ParameterException;
 import pl.opinion_collector.backend.database_communication.model.Category;
 import pl.opinion_collector.backend.database_communication.model.Product;
@@ -10,6 +11,7 @@ import pl.opinion_collector.backend.logic.product.service.wrapper.ProductWrapper
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -84,6 +86,9 @@ public class ProductFacadeImpl implements ProductFacade {
     @Override
     public Product removeProduct(String sku) {
         Product product = databaseCommunication.getProductBySku(sku);
+        Optional.ofNullable(product).orElseThrow(() -> {
+            throw new InvalidDataIdException("The product with the given sku is not in the system");
+        });
         databaseCommunication.removeProduct(sku);
         return product;
     }

@@ -10,7 +10,6 @@ import pl.opinion_collector.backend.logic.product.controller.dto.Mapper;
 import pl.opinion_collector.backend.logic.product.controller.dto.ProductDto;
 import pl.opinion_collector.backend.logic.product.controller.dto.ProductWrapperDto;
 import pl.opinion_collector.backend.logic.product.controller.pojo.ProductArg;
-import pl.opinion_collector.backend.logic.product.controller.pojo.SearchArg;
 import pl.opinion_collector.backend.logic.product.service.ProductFacade;
 import pl.opinion_collector.backend.logic.user.UserFacade;
 
@@ -67,7 +66,11 @@ public class ProductController {
 
     /**
      * get filtered products
-     * @param searchArg - {@link SearchArg}
+     *
+     * @param categoryName category Name
+     * @param searchPhrase searched key phrase
+     * @param opinionAvgMin lower opinion range
+     * @param opinionAvgMax upper range of opinions
      * @return {@link List<ProductWrapperDto>}
      */
     @ApiParam(
@@ -75,12 +78,19 @@ public class ProductController {
             type = "SearchArg",
             value = "contains search parameters",
             required = true)
-    @PostMapping("/search")
-    public ResponseEntity<List<ProductDto>> searchProducts(@RequestBody SearchArg searchArg) {
-        return new ResponseEntity<>(productFacade.getProductsFiltered(searchArg.getCategoryName(),
-                        searchArg.getSearchPhrase(),
-                        searchArg.getOpinionAvgMin(),
-                        searchArg.getOpinionAvgMax()).stream()
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductDto>> searchProducts(@RequestParam(name = "categoryName",
+                                                                   required = false) String categoryName,
+                                                           @RequestParam(name = "searchPhrase",
+                                                                   required = false) String searchPhrase,
+                                                           @RequestParam(name = "opinionAvgMin",
+                                                                   required = false) Integer opinionAvgMin,
+                                                           @RequestParam(name = "opinionAvgMax",
+                                                                   required = false) Integer opinionAvgMax) {
+        return new ResponseEntity<>(productFacade.getProductsFiltered(categoryName,
+                        searchPhrase,
+                        opinionAvgMin,
+                        opinionAvgMax).stream()
                 .map(map::mapProduct)
                 .toList(), HttpStatus.OK);
     }
@@ -97,7 +107,7 @@ public class ProductController {
             value = "product sku",
             required = true)
     @GetMapping("/details")
-    public ResponseEntity<ProductDto> getProductsDetails(String sku) {
+    public ResponseEntity<ProductDto> getProductsDetails(@RequestParam(name = "sku") String sku) {
         return new ResponseEntity<>(map.mapProduct(productFacade.getProductBySku(sku)),
                 HttpStatus.OK);
     }

@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import pl.opinion_collector.backend.logic.exception.type.AuthException;
-import pl.opinion_collector.backend.logic.exception.type.ForbiddenException;
-import pl.opinion_collector.backend.logic.exception.type.InvalidBusinessArgumentException;
-import pl.opinion_collector.backend.logic.exception.type.ParameterException;
+import pl.opinion_collector.backend.logic.exception.type.*;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -40,7 +37,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception, apiError, headers, HttpStatus.BAD_REQUEST, request);
     }
 
-    @ExceptionHandler({InvalidBusinessArgumentException.class, ParameterException.class})
+    @ExceptionHandler({InvalidBusinessArgumentException.class,
+            ParameterException.class,
+            InvalidDataIdException.class,
+            DuplicatedDataException.class})
     public final ResponseEntity<Object> handleException(RuntimeException exception) {
         return handleResponse(HttpStatus.NOT_ACCEPTABLE, exception);
     }
@@ -62,7 +62,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     public final ResponseEntity<Object> handleResponse(HttpStatus httpStatus, RuntimeException exception) {
-        final String error = "Status Code: " + httpStatus.value() + ", Exception: " + exception.getClass().getSimpleName();
+        final String error = "Status Code: " + httpStatus.value() +
+                ", Exception: " + exception.getClass().getSimpleName();
         return new ResponseEntity<>(new ApiError(httpStatus, exception.getLocalizedMessage(), error),
                 new HttpHeaders(),
                 httpStatus);

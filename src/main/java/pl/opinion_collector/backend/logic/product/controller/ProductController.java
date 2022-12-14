@@ -10,14 +10,12 @@ import pl.opinion_collector.backend.logic.product.controller.dto.Mapper;
 import pl.opinion_collector.backend.logic.product.controller.dto.ProductDto;
 import pl.opinion_collector.backend.logic.product.controller.dto.ProductWrapperDto;
 import pl.opinion_collector.backend.logic.product.controller.pojo.ProductArg;
-import pl.opinion_collector.backend.logic.product.controller.pojo.SearchArg;
 import pl.opinion_collector.backend.logic.product.service.ProductFacade;
 import pl.opinion_collector.backend.logic.user.UserFacade;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -68,28 +66,40 @@ public class ProductController {
 
     /**
      * get filtered products
-     * @param searchArg - {@link SearchArg}
-     * @return
+     *
+     * @param categoryName category Name
+     * @param searchPhrase searched key phrase
+     * @param opinionAvgMin lower opinion range
+     * @param opinionAvgMax upper range of opinions
+     * @return {@link List<ProductWrapperDto>}
      */
     @ApiParam(
             name = "searchArg",
             type = "SearchArg",
             value = "contains search parameters",
             required = true)
-    @PostMapping("/search")
-    public ResponseEntity<List<ProductDto>> searchProducts(@RequestBody SearchArg searchArg) {
-        return new ResponseEntity<>(productFacade.getProductsFiltered(searchArg.getCategoryName(),
-                        searchArg.getSearchPhrase(),
-                        searchArg.getOpinionAvgMin(),
-                        searchArg.getOpinionAvgMax()).stream()
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductDto>> searchProducts(@RequestParam(name = "categoryName",
+                                                                   required = false) String categoryName,
+                                                           @RequestParam(name = "searchPhrase",
+                                                                   required = false) String searchPhrase,
+                                                           @RequestParam(name = "opinionAvgMin",
+                                                                   required = false) Integer opinionAvgMin,
+                                                           @RequestParam(name = "opinionAvgMax",
+                                                                   required = false) Integer opinionAvgMax) {
+        return new ResponseEntity<>(productFacade.getProductsFiltered(categoryName,
+                        searchPhrase,
+                        opinionAvgMin,
+                        opinionAvgMax).stream()
                 .map(map::mapProduct)
-                .collect(Collectors.toList()), HttpStatus.OK);
+                .toList(), HttpStatus.OK);
     }
 
     /**
      * get Product details
      *
      * @param sku - product sku
+     * @return {@link ProductDto}
      */
     @ApiParam(
             name = "sku",
@@ -97,7 +107,7 @@ public class ProductController {
             value = "product sku",
             required = true)
     @GetMapping("/details")
-    public ResponseEntity<ProductDto> getProductsDetails(String sku) {
+    public ResponseEntity<ProductDto> getProductsDetails(@RequestParam(name = "sku") String sku) {
         return new ResponseEntity<>(map.mapProduct(productFacade.getProductBySku(sku)),
                 HttpStatus.OK);
     }
@@ -107,6 +117,7 @@ public class ProductController {
      *
      * @param req - servlet container
      * @param arg - {@link ProductArg}
+     * @return {@link ProductDto}
      */
     @ApiParam(
             name = "arg",
@@ -131,6 +142,7 @@ public class ProductController {
      *
      * @param req - servlet container
      * @param arg - {@link ProductArg}
+     * @return {@link ProductDto}
      */
     @ApiParam(
             name = "arg",
@@ -154,6 +166,7 @@ public class ProductController {
      * delete Product
      *
      * @param sku - sku of Product
+     * @return {@link ProductDto}
      */
     @ApiParam(
             name = "sku",

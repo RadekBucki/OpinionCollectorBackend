@@ -13,7 +13,6 @@ import pl.opinion_collector.backend.logic.product.service.ProductFacade;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @CrossOrigin
 @Controller
@@ -27,26 +26,26 @@ public class CategoryController {
     /**
      * Endpoint for all visible Categories
      *
-     * @return - list of all visible Categories
+     * @return {@link List<CategoryDto>}
      */
     @GetMapping()
     public ResponseEntity<List<CategoryDto>> getCategories() {
         return new ResponseEntity<>(productFacade.getCategories().stream()
                 .map(map::mapCategory)
-                .collect(Collectors.toList()),
+                .toList(),
                 HttpStatus.OK);
     }
 
     /**
      * Endpoint for all Categories
      *
-     * @return - list of all Categories
+     * @return {@link List<CategoryDto>}
      */
     @GetMapping("/all")
     public ResponseEntity<List<CategoryDto>> getAllCategories() {
         return new ResponseEntity<>(productFacade.getAllCategories().stream()
                 .map(map::mapCategory)
-                .collect(Collectors.toList()),
+                .toList(),
                 HttpStatus.OK);
     }
 
@@ -54,6 +53,7 @@ public class CategoryController {
      * adds category
      *
      * @param categoryArg - {@link CategoryArg}
+     * @return {@link CategoryDto}
      */
     @ApiParam(
             name = "categoryArg",
@@ -71,6 +71,7 @@ public class CategoryController {
      * edit category visibility
      *
      * @param categoryArg - {@link CategoryArg}
+     * @return {@link CategoryDto}
      */
     @ApiParam(
             name = "categoryArg",
@@ -87,6 +88,7 @@ public class CategoryController {
      * delete Category
      *
      * @param name - name of Category
+     * @return {@link CategoryDto}
      */
     @ApiParam(
             name = "name",

@@ -3,6 +3,8 @@ package pl.opinion_collector.backend.logic.product.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
+import pl.opinion_collector.backend.logic.exception.type.DuplicatedDataException;
+import pl.opinion_collector.backend.logic.exception.type.InvalidDataIdException;
 import pl.opinion_collector.backend.logic.exception.type.ParameterException;
 import pl.opinion_collector.backend.database_communication.model.Category;
 import pl.opinion_collector.backend.database_communication.model.Product;
@@ -10,19 +12,22 @@ import pl.opinion_collector.backend.logic.product.service.wrapper.ProductWrapper
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Component
 public class ProductFacadeImpl implements ProductFacade {
 
     private static final int PRODUCT_COUNT = 20;
+    private static final String INVALID_SKU = "The product with the given sku is not in the system";
+    private static final String INVALID_NAME = "The Category with the given name is not in the system";
 
     @Autowired
     private DatabaseCommunicationFacade databaseCommunication;
 
     @Override
     public Product getProductBySku(String sku) {
-        return databaseCommunication.getProductBySku(sku);
+        return Optional.ofNullable(databaseCommunication.getProductBySku(sku))
+                .orElseThrow(() -> new InvalidDataIdException(INVALID_SKU));
     }
 
     @Override
@@ -54,6 +59,11 @@ public class ProductFacadeImpl implements ProductFacade {
                               String description,
                               List<String> categoryNames,
                               Boolean visible) {
+        Optional.ofNullable(databaseCommunication.getProductBySku(sku)).ifPresent(product -> {
+            throw new DuplicatedDataException("The product with the given sku " +
+                    product.getSku()+
+                    " already exists");
+        });
         return databaseCommunication.createProduct(authorId,
                 sku,
                 name,
@@ -71,6 +81,8 @@ public class ProductFacadeImpl implements ProductFacade {
                                String description,
                                List<String> categoryNames,
                                Boolean visible) {
+        Product product = Optional.ofNullable(databaseCommunication.getProductBySku(sku))
+                .orElseThrow(() -> new InvalidDataIdException(INVALID_SKU));
         databaseCommunication.updateProduct(authorId,
                 sku,
                 name,
@@ -78,30 +90,39 @@ public class ProductFacadeImpl implements ProductFacade {
                 description,
                 categoryNames,
                 visible);
-        return databaseCommunication.getProductBySku(sku);
+        return product;
     }
 
     @Override
     public Product removeProduct(String sku) {
-        Product product = databaseCommunication.getProductBySku(sku);
+        Product product = Optional.ofNullable(databaseCommunication.getProductBySku(sku))
+                .orElseThrow(() -> new InvalidDataIdException(INVALID_SKU));
         databaseCommunication.removeProduct(sku);
         return product;
     }
 
     @Override
     public Category addCategory(String categoryName, Boolean visible) {
+        Optional.ofNullable(databaseCommunication.getCategoryByName(categoryName)).ifPresent(category -> {
+            throw new DuplicatedDataException("The category with the given name " +
+                    category.getCategoryName() +
+                    " already exists");
+        });
         return databaseCommunication.createCategory(categoryName, visible);
     }
 
     @Override
     public Category editCategory(String categoryName, Boolean visible) {
+        Category category = Optional.ofNullable(databaseCommunication.getCategoryByName(categoryName))
+                .orElseThrow(() -> new InvalidDataIdException(INVALID_NAME));
         databaseCommunication.updateCategory(categoryName, visible);
-        return databaseCommunication.getCategoryByName(categoryName);
+        return category;
     }
 
     @Override
     public Category removeCategory(String categoryName) {
-        Category category = databaseCommunication.getCategoryByName(categoryName);
+        Category category = Optional.ofNullable(databaseCommunication.getCategoryByName(categoryName))
+                .orElseThrow(() -> new InvalidDataIdException(INVALID_NAME));
         databaseCommunication.removeCategory(categoryName);
         return category;
     }
@@ -111,7 +132,7 @@ public class ProductFacadeImpl implements ProductFacade {
         return databaseCommunication.getAllCategories()
                 .stream()
                 .filter(Category::getVisible)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

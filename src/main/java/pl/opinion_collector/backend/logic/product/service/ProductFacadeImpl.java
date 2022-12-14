@@ -27,9 +27,7 @@ public class ProductFacadeImpl implements ProductFacade {
     @Override
     public Product getProductBySku(String sku) {
         return Optional.ofNullable(databaseCommunication.getProductBySku(sku))
-                .orElseThrow(() -> {
-                    throw new InvalidDataIdException(INVALID_SKU);
-                });
+                .orElseThrow(() -> new InvalidDataIdException(INVALID_SKU));
     }
 
     @Override
@@ -83,9 +81,8 @@ public class ProductFacadeImpl implements ProductFacade {
                                String description,
                                List<String> categoryNames,
                                Boolean visible) {
-        Product product = Optional.ofNullable(databaseCommunication.getProductBySku(sku)).orElseThrow(() -> {
-            throw new InvalidDataIdException(INVALID_SKU);
-        });
+        Product product = Optional.ofNullable(databaseCommunication.getProductBySku(sku))
+                .orElseThrow(() -> new InvalidDataIdException(INVALID_SKU));
         databaseCommunication.updateProduct(authorId,
                 sku,
                 name,
@@ -99,9 +96,7 @@ public class ProductFacadeImpl implements ProductFacade {
     @Override
     public Product removeProduct(String sku) {
         Product product = Optional.ofNullable(databaseCommunication.getProductBySku(sku))
-                .orElseThrow(() -> {
-            throw new InvalidDataIdException(INVALID_SKU);
-        });
+                .orElseThrow(() -> new InvalidDataIdException(INVALID_SKU));
         databaseCommunication.removeProduct(sku);
         return product;
     }
@@ -118,18 +113,16 @@ public class ProductFacadeImpl implements ProductFacade {
 
     @Override
     public Category editCategory(String categoryName, Boolean visible) {
-        Category category = Optional.ofNullable(databaseCommunication.getCategoryByName(categoryName)).orElseThrow(() -> {
-            throw new InvalidDataIdException(INVALID_NAME);
-        });
+        Category category = Optional.ofNullable(databaseCommunication.getCategoryByName(categoryName))
+                .orElseThrow(() -> new InvalidDataIdException(INVALID_NAME));
         databaseCommunication.updateCategory(categoryName, visible);
         return category;
     }
 
     @Override
     public Category removeCategory(String categoryName) {
-        Category category = Optional.ofNullable(databaseCommunication.getCategoryByName(categoryName)).orElseThrow(() -> {
-            throw new InvalidDataIdException(INVALID_NAME);
-        });
+        Category category = Optional.ofNullable(databaseCommunication.getCategoryByName(categoryName))
+                .orElseThrow(() -> new InvalidDataIdException(INVALID_NAME));
         databaseCommunication.removeCategory(categoryName);
         return category;
     }

@@ -11,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
 import pl.opinion_collector.backend.database_communication.model.User;
-import pl.opinion_collector.backend.logic.exception.type.ForbiddenException;
 import pl.opinion_collector.backend.logic.exception.type.ParameterException;
 import pl.opinion_collector.backend.logic.user.security.jwt.JwtUtils;
 
@@ -77,47 +76,30 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public User updateUser(Integer userId, String firstName, String lastName, String email, String passwordHash, String profilePictureUrl, Boolean isAdmin) {
-        if (databaseCommunicationFacade.getUserById(Long.valueOf(userId)) == null) {
+    public User updateUser(Integer userId, String firstName, String lastName, String email, String passwordHash,
+                           String profilePictureUrl, Boolean isAdmin) {
+        User user = findByEmail(email);
+        if (user == null)
             throw new EntityNotFoundException("User with this id doesnt exist");
-        }
-        User user = databaseCommunicationFacade.getUserById(Long.valueOf(userId));
 
-        if (findByEmail(email) == null) {
-            user = updateUserData(user, firstName, lastName, email, passwordHash, profilePictureUrl, isAdmin);
-            databaseCommunicationFacade.updateUser(Long.valueOf(userId),
-                    user.getFirstName(),
-                    user.getLastName(),
-                    user.getEmail(),
-                    user.getPasswordHash(),
-                    user.getProfilePictureUrl(),
-                    user.getAdmin());
-        } else {
-            logger.error("U cant change email that is taken");
-            throw new ForbiddenException("U cant change to email that is taken");
-        }
+        user.setFirstName(replaceIfDiffers(user.getFirstName(), firstName));
+        user.setLastName(replaceIfDiffers(user.getLastName(), lastName));
+        user.setPasswordHash(replaceIfDiffers(user.getPasswordHash(), passwordHash));
+        user.setProfilePictureUrl(replaceIfDiffers(user.getProfilePictureUrl(), profilePictureUrl));
+        user.setAdmin((user.getAdmin() || isAdmin) && isAdmin);
 
+        databaseCommunicationFacade.updateUser(user.getUserId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                encoder.encode(user.getPasswordHash()),
+                user.getProfilePictureUrl(),
+                user.getAdmin());
         return user;
     }
     public User findByEmail(String email) {
-        if (email == null || email.isBlank()) return null;
-        for (User user : databaseCommunicationFacade.getAllUsers()) {
-            if (user.getEmail().equals(email)) {
-                return user;
-            }
-        }
-        return null;
-    }
-    public User updateUserData(User user, String firstName,
-                                  String lastName, String email,
-                                  String passwordHash, String profilePictureUrl,
-                                    Boolean isAdmin) {
-        return new User(replaceIfDiffers(user.getFirstName(), firstName),
-                replaceIfDiffers(user.getLastName(), lastName),
-                replaceIfDiffers(user.getEmail(), email),
-                replaceIfDiffers(user.getPasswordHash(), passwordHash),
-                replaceIfDiffers(user.getProfilePictureUrl(), profilePictureUrl),
-                (user.getAdmin() || isAdmin) && isAdmin);
+        return databaseCommunicationFacade.getAllUsers().stream()
+                .filter(user -> email.equals(user.getEmail())).findAny().orElse(null);
     }
     public String replaceIfDiffers(String s1, String s2) {
         if (s1 == null) return s2;

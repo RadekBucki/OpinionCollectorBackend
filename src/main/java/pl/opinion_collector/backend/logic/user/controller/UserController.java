@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.opinion_collector.backend.database_communication.model.User;
 import pl.opinion_collector.backend.logic.user.UserFacade;
 import pl.opinion_collector.backend.logic.user.dto.Mapper;
 import pl.opinion_collector.backend.logic.user.dto.UserDto;
@@ -21,7 +22,7 @@ import pl.opinion_collector.backend.logic.user.payload.response.JwtArg;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -42,17 +43,14 @@ public class UserController {
     })
     @GetMapping
     public ResponseEntity<List<UserDto>> getUsers(@ApiParam(name = "HTTP Servlet Request",
-            value = "Request information for HTTP servlets")
-                                                      HttpServletRequest httpServletRequest) {
+            value = "Request information for HTTP servlets") HttpServletRequest httpServletRequest) {
         if (!userFacade.getUserByToken(httpServletRequest.getHeader(AUTHORIZATION)
-                .substring(7)).getAdmin()) {
+                .substring("Bearer ".length())).getAdmin()) {
             throw new AuthException("Unauthorized");
         }
 
         return new ResponseEntity<>(userFacade.getAllUsers().stream()
-                .map(mapper::mapUser)
-                .collect(Collectors.toList()),
-                HttpStatus.OK);
+                .map(mapper::mapUser).toList(), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Register new user")
@@ -71,11 +69,15 @@ public class UserController {
                                                     value = "Request information for HTTP servlets")
                                           HttpServletRequest httpServletRequest) {
         String headerToken = "";
-        if (httpServletRequest.getHeader(AUTHORIZATION) != null)
-            headerToken = httpServletRequest.getHeader(AUTHORIZATION).substring(7);
+        User user = new User();
+        if (httpServletRequest.getHeader(AUTHORIZATION) != null) {
+            headerToken = httpServletRequest.getHeader(AUTHORIZATION).substring("Bearer ".length());
+            user = userFacade.getUserByToken(headerToken);
+            if (!headerToken.isBlank() && !user.getAdmin())
+                throw new ForbiddenException("U cant register new account while u are logged in");
+        }
 
-        if (registerRequest.getIsAdmin() && !headerToken.isBlank() &&
-                userFacade.getUserByToken(headerToken).getAdmin()) {
+        if (registerRequest.getIsAdmin() && !headerToken.isBlank() && user.getAdmin()) {
             return ResponseEntity.ok().body(mapper.mapUser(
                     userFacade.registerAdmin(registerRequest.getFirstName(),
                     registerRequest.getLastName(),
@@ -84,14 +86,14 @@ public class UserController {
                     registerRequest.getPictureUrl())));
         } else if (Boolean.TRUE.equals(registerRequest.getIsAdmin())) {
             throw new ForbiddenException("U are not authorized to register new admin");
-        } else {
+        } else
             return ResponseEntity.ok().body(mapper.mapUser(
                     userFacade.register(registerRequest.getFirstName(),
                     registerRequest.getLastName(),
                     registerRequest.getEmail(),
                     registerRequest.getPassword(),
                     registerRequest.getPictureUrl())));
-        }
+
     }
     @ApiOperation(value = "Login to the user")
     @ApiResponses(value = {
@@ -103,9 +105,16 @@ public class UserController {
     })
     @PostMapping("/login")
     public ResponseEntity<JwtArg> login(@ApiParam(name = "Login request", value = "Login request information")
-                                       @Valid @RequestBody LoginArg loginRequest) {
-        String token = userFacade.login(loginRequest.getEmail(), loginRequest.getPassword());
-        return ResponseEntity.ok().body(new JwtArg(token));
+                                       @Valid @RequestBody LoginArg loginRequest,
+                                        @ApiParam(name = "HTTP Servlet Request",
+                                        value = "Request information for HTTP servlets")
+                                        HttpServletRequest httpServletRequest) {
+        if (httpServletRequest.getHeader(AUTHORIZATION) != null)
+            throw new ForbiddenException("U cant log in while u are logged in");
+
+        return ResponseEntity.ok().body(new JwtArg(
+                userFacade.login(loginRequest.getEmail(), loginRequest.getPassword()))
+        );
     }
     @ApiOperation(value = "Update the user")
     @ApiResponses(value = {
@@ -115,14 +124,13 @@ public class UserController {
             @ApiResponse(code = 401, message = "U are not authorized"),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @PutMapping("/update/{id}")
+    @PutMapping("/update")
     public ResponseEntity<UserDto> update(@ApiParam(name = "Update request",
             value = "Update request body needed to update user") @RequestBody SignupArg updateRequest,
-            @ApiParam(name = "User id", value = "Id of user u want to update", example = "1")
-            @PathVariable Integer id) {
+            @RequestParam(name = "email") String email) {
         return ResponseEntity.ok().body(mapper.mapUser(
-                userFacade.updateUser(id, updateRequest.getFirstName(),
-                updateRequest.getLastName(), updateRequest.getEmail(),
+                userFacade.updateUser(null, updateRequest.getFirstName(),
+                updateRequest.getLastName(), email,
                 updateRequest.getPassword(), updateRequest.getPictureUrl(),
                 updateRequest.getIsAdmin())));
     }

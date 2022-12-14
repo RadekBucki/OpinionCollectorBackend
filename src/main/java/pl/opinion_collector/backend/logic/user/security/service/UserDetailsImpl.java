@@ -8,7 +8,6 @@ import pl.opinion_collector.backend.database_communication.model.User;
 import java.io.Serial;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UserDetailsImpl implements UserDetails {
     @Serial
@@ -29,8 +28,7 @@ public class UserDetailsImpl implements UserDetails {
         List<String> roles = List.of(user.getAdmin() ?
                 new String[] {"ROLE_ADMIN", "ROLE_USER"} : new String[] {"ROLE_USER"});
 
-        List<GrantedAuthority> authorities =
-                roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+        List<SimpleGrantedAuthority> authorities = roles.stream().map(SimpleGrantedAuthority::new).toList();
         return new UserDetailsImpl(
                 user.getEmail(),
                 user.getPasswordHash(),

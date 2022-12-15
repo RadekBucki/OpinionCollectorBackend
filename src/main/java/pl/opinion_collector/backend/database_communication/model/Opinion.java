@@ -4,7 +4,6 @@ import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.*;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 import java.util.List;
@@ -14,9 +13,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @RequiredArgsConstructor
-@TypeDefs({
-        @TypeDef(name = "json", typeClass = JsonStringType.class)
-})
+@TypeDef(name = "json", typeClass = JsonStringType.class)
 @Table(name = "opinion")
 public class Opinion {
 

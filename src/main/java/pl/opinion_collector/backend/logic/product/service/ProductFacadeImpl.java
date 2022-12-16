@@ -144,10 +144,10 @@ public class ProductFacadeImpl implements ProductFacade {
     private ProductWrapper wrapProductList(int page, List<Product> productList) {
         PagedListHolder<Product> paged = new PagedListHolder<>(productList);
         paged.setPageSize(productCount);
-        paged.setPage(page - 1);
         if(page > paged.getPageCount() || page == 0) {
             throw new ParameterException("the specified page is outside of the page range");
         }
+        paged.setPage(page - 1);
 
         return ProductWrapper.builder()
                 .numberOfPages(paged.getPageCount())

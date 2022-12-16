@@ -17,4 +17,6 @@ spring:
 jwt:
   variables:
     jwtSecret:
-    jwtExpirationMs: 
+    jwtExpirationMs:
+listSize:
+  productListSize:

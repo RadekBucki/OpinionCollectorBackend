@@ -7,13 +7,18 @@ spring:
     url: jdbc:postgresql://localhost:5432/opinioncollector
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
+    defer-datasource-initialization: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
         globally_quoted_identifiers: true
+  sql:
+    init:
+      platform: postgresql
+      mode: always
 jwt:
   variables:
     jwtSecret:

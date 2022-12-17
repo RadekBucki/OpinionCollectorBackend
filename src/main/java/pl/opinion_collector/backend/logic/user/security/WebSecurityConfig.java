@@ -22,23 +22,22 @@ import pl.opinion_collector.backend.logic.user.security.jwt.AuthTokenFilter;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
     private static final String[][] ALL_USERS_PERMISSIONS = {
-            {"/products"},
-            {"/users/login", "/users/register", "/products/all",
+            {"/products",  "/categories"},
+            {"/users/login", "/users/register",
                     "/products/search", "/products/details",
-                    "/products/{page}", "/opinions/product"},
-            {"/products/all/{page}"},
+                    "/products/{page}", "/opinions/product"}
     };
     private static final String[] STD_USER_PERMISSIONS = {
             "/suggestions/user", "/suggestions/add",
             "/opinions/user", "/opinions/add"
     };
     private static final String[][] ADMIN_PERMISSIONS = {
-            {"/users", "/categories"},
-            {"/users/update",
-            "/products/add", "/products/edit", "/products/delete",
-            "/categories/all", "/categories/get", "/categories/add",
+            {"/users"},
+            {"/users/update", "/products/all", "/products/add", "/products/edit", "/products/delete",
+            "/categories/all", "/categories/add",
             "/categories/edit", "/categories/delete",
-            "/suggestions/get", "/suggestions/reply"}
+            "/suggestions/get", "/suggestions/reply"},
+            {"/products/all/{page}"}
     };
     private static final String[][] SWAGGER_WHITELIST = {
             {"/**/swagger-ui/**", "/**/swagger-resources/**",
@@ -77,14 +76,14 @@ public class WebSecurityConfig {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                    .antMatchers(ALL_USERS_PERMISSIONS[2]).permitAll()
-                    .antMatchers(ALL_USERS_PERMISSIONS[1]).permitAll()
-                    .antMatchers(STD_USER_PERMISSIONS).hasRole("USER")
+                    .antMatchers(ADMIN_PERMISSIONS[2]).hasRole("ADMIN")
                     .antMatchers(ADMIN_PERMISSIONS[1]).hasRole("ADMIN")
+                    .antMatchers(STD_USER_PERMISSIONS).hasRole("USER")
+                    .antMatchers(ALL_USERS_PERMISSIONS[1]).permitAll()
                     .antMatchers(SWAGGER_WHITELIST[1]).permitAll()
-                    .antMatchers(ALL_USERS_PERMISSIONS[0]).permitAll()
                     .antMatchers(ADMIN_PERMISSIONS[0]).hasRole("ADMIN")
                     .antMatchers(SWAGGER_WHITELIST[0]).permitAll()
+                    .antMatchers(ALL_USERS_PERMISSIONS[0]).permitAll()
                     .antMatchers("/*").permitAll()
                 .anyRequest().authenticated()
                 .and().addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

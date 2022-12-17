@@ -38,7 +38,10 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     public User getUserByToken(String token) {
-        return findByEmail(jwtUtils.getUserNameFromJwtToken(token));
+        User user = findByEmail(jwtUtils.getUserNameFromJwtToken(token));
+        if (token.isBlank() || user == null)
+            throw new ParameterException("Can't get user by token");
+        return user;
     }
 
     @Override
@@ -84,7 +87,7 @@ public class UserFacadeImpl implements UserFacade {
             throw new EntityNotFoundException("User with this id doesn't exist");
         }
 
-        if (findByEmail(email) == null) {
+        if (email == null || findByEmail(email) == null || user.getEmail().equals(email)) {
             updateUserData(user, firstName, lastName, email, passwordHash, profilePictureUrl, isAdmin);
             databaseCommunicationFacade.updateUser(Long.valueOf(userId),
                     user.getFirstName(),

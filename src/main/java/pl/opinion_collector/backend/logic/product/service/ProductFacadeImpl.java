@@ -1,6 +1,8 @@
 package pl.opinion_collector.backend.logic.product.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.stereotype.Component;
 import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
 import pl.opinion_collector.backend.logic.exception.type.DuplicatedDataException;
@@ -10,17 +12,16 @@ import pl.opinion_collector.backend.database_communication.model.Category;
 import pl.opinion_collector.backend.database_communication.model.Product;
 import pl.opinion_collector.backend.logic.product.service.wrapper.ProductWrapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Component
 public class ProductFacadeImpl implements ProductFacade {
 
-    private static final int PRODUCT_COUNT = 20;
     private static final String INVALID_SKU = "The product with the given sku is not in the system";
     private static final String INVALID_NAME = "The Category with the given name is not in the system";
-
+    @Value("${listSize.productListSize}")
+    private int productCount;
     @Autowired
     private DatabaseCommunicationFacade databaseCommunication;
 
@@ -141,24 +142,18 @@ public class ProductFacadeImpl implements ProductFacade {
     }
 
     private ProductWrapper wrapProductList(int page, List<Product> productList) {
-        List<Product> products = new ArrayList<>(productList);
-        int size = products.size();
-        int pageCount = (size + PRODUCT_COUNT - 1) / PRODUCT_COUNT;
-        if(page >= pageCount) {
+        PagedListHolder<Product> paged = new PagedListHolder<>(productList);
+        paged.setPageSize(productCount);
+        if(page > paged.getPageCount() || page == 0) {
             throw new ParameterException("the specified page is outside of the page range");
         }
-        ProductWrapper.ProductWrapperBuilder builder = ProductWrapper.builder()
-                .numberOfPages(pageCount - 1)
-                .actualPage(page);
-        if (size < PRODUCT_COUNT) {
-            builder.products(products);
-        } else if (products.size() > page * PRODUCT_COUNT + PRODUCT_COUNT) {
-            builder.products(products.subList(page == 0 ? 0 : page * PRODUCT_COUNT - 1,
-                            page * PRODUCT_COUNT + PRODUCT_COUNT)).build();
-        } else if (products.size() > page * PRODUCT_COUNT){
-            builder.products(products.subList(page * PRODUCT_COUNT - 1, size - 1)).build();
-        }
-        return builder.build();
+        paged.setPage(page - 1);
+
+        return ProductWrapper.builder()
+                .numberOfPages(paged.getPageCount())
+                .products(paged.getPageList())
+                .actualPage(page)
+                .build();
     }
 
 }

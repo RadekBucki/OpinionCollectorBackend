@@ -3,6 +3,7 @@ package pl.opinion_collector.backend.logic.user.payload.response;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import pl.opinion_collector.backend.logic.user.dto.UserDto;
 
 @Getter
 @Setter
@@ -17,7 +18,11 @@ public class JwtArg {
     @ApiModelProperty(notes = "Token type", example = "Bearer")
     private String type = "Bearer";
 
-    public JwtArg(String accessToken) {
+    @ApiModelProperty(notes = "User data")
+    private UserDto user;
+
+    public JwtArg(String accessToken, UserDto user) {
         this.token = accessToken;
+        this.user = user;
     }
 }

@@ -38,7 +38,10 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     public User getUserByToken(String token) {
-        return findByEmail(jwtUtils.getUserNameFromJwtToken(token));
+        User user = findByEmail(jwtUtils.getUserNameFromJwtToken(token));
+        if (token.isBlank() || user == null)
+            throw new ParameterException("Can't get user by token");
+        return user;
     }
 
     @Override
@@ -77,14 +80,15 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public User updateUser(Integer userId, String firstName, String lastName, String email, String passwordHash, String profilePictureUrl, Boolean isAdmin) {
-        if (databaseCommunicationFacade.getUserById(Long.valueOf(userId)) == null) {
-            throw new EntityNotFoundException("User with this id doesnt exist");
-        }
+    public User updateUser(Integer userId, String firstName, String lastName, String email, String passwordHash,
+                           String profilePictureUrl, Boolean isAdmin) {
         User user = databaseCommunicationFacade.getUserById(Long.valueOf(userId));
+        if (user == null) {
+            throw new EntityNotFoundException("User with this id doesn't exist");
+        }
 
-        if (findByEmail(email) == null) {
-            user = updateUserData(user, firstName, lastName, email, passwordHash, profilePictureUrl, isAdmin);
+        if (email == null || findByEmail(email) == null || user.getEmail().equals(email)) {
+            updateUserData(user, firstName, lastName, email, passwordHash, profilePictureUrl, isAdmin);
             databaseCommunicationFacade.updateUser(Long.valueOf(userId),
                     user.getFirstName(),
                     user.getLastName(),
@@ -93,31 +97,27 @@ public class UserFacadeImpl implements UserFacade {
                     user.getProfilePictureUrl(),
                     user.getAdmin());
         } else {
-            logger.error("U cant change email that is taken");
-            throw new ForbiddenException("U cant change to email that is taken");
+            logger.error("U can't change email that is taken");
+            throw new ForbiddenException("U can't change to email that is taken");
         }
 
         return user;
     }
-    public User findByEmail(String email) {
-        if (email == null || email.isBlank()) return null;
-        for (User user : databaseCommunicationFacade.getAllUsers()) {
-            if (user.getEmail().equals(email)) {
-                return user;
-            }
-        }
-        return null;
+
+    public void updateUserData(User user, String firstName,
+                               String lastName, String email,
+                               String passwordHash, String profilePictureUrl,
+                               Boolean isAdmin) {
+        user.setFirstName(replaceIfDiffers(user.getFirstName(), firstName));
+        user.setLastName(replaceIfDiffers(user.getLastName(), lastName));
+        user.setEmail(replaceIfDiffers(user.getEmail(), email));
+        user.setPasswordHash(encoder.encode(replaceIfDiffers(user.getPasswordHash(), passwordHash)));
+        user.setProfilePictureUrl(replaceIfDiffers(user.getProfilePictureUrl(), profilePictureUrl));
+        user.setAdmin((user.getAdmin() || isAdmin) && isAdmin);
     }
-    public User updateUserData(User user, String firstName,
-                                  String lastName, String email,
-                                  String passwordHash, String profilePictureUrl,
-                                    Boolean isAdmin) {
-        return new User(replaceIfDiffers(user.getFirstName(), firstName),
-                replaceIfDiffers(user.getLastName(), lastName),
-                replaceIfDiffers(user.getEmail(), email),
-                replaceIfDiffers(user.getPasswordHash(), passwordHash),
-                replaceIfDiffers(user.getProfilePictureUrl(), profilePictureUrl),
-                (user.getAdmin() || isAdmin) && isAdmin);
+    public User findByEmail(String email) {
+        return databaseCommunicationFacade.getAllUsers().stream()
+                .filter(user -> email.equals(user.getEmail())).findAny().orElse(null);
     }
     public String replaceIfDiffers(String s1, String s2) {
         if (s1 == null) return s2;

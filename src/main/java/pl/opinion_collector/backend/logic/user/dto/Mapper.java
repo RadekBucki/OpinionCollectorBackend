@@ -12,4 +12,15 @@ public class Mapper {
                 .profilePictureUrl(user.getProfilePictureUrl())
                 .build();
     }
+    public UserWithIdDto mapUserWithId(User user) {
+        return new UserWithIdDto.UserWithIdDtoBuilder()
+                .id(user.getUserId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .isAdmin(user.getAdmin())
+                .profilePictureUrl(user.getProfilePictureUrl())
+                .build();
+    }
+
 }

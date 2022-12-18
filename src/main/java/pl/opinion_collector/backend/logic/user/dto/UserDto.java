@@ -9,18 +9,18 @@ import lombok.*;
 @Setter
 @Builder
 public class UserDto {
-    @ApiModelProperty(notes = "User first name")
+    @ApiModelProperty(notes = "User first name", example = "John")
     private String firstName;
 
-    @ApiModelProperty(notes = "User last name")
+    @ApiModelProperty(notes = "User last name", example = "Smith")
     private String lastName;
 
-    @ApiModelProperty(notes = "User email")
+    @ApiModelProperty(notes = "User email", example = "example@gmail.com")
     private String email;
 
     @ApiModelProperty(notes = "Is user admin or standard user", example = "true")
     private Boolean isAdmin;
 
-    @ApiModelProperty(notes = "Profile picture url")
+    @ApiModelProperty(notes = "Profile picture url", example = "https://pl.pinterest.com/pin/327848047887112192/")
     private String profilePictureUrl;
 }

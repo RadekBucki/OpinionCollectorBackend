@@ -48,6 +48,9 @@ public class WebSecurityConfig {
                     "/**/configuration/security/**", "/**/v3/api-docs/**"}
     };
 
+    private static final String ADMIN_ROLE = "ADMIN";
+    private static final String USER_ROLE = "USER";
+
     @Bean
     public AuthEntryPointJwt getUnauthorizedHandler() {
         return new AuthEntryPointJwt();
@@ -76,12 +79,12 @@ public class WebSecurityConfig {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                    .antMatchers(ADMIN_PERMISSIONS[2]).hasRole("ADMIN")
-                    .antMatchers(ADMIN_PERMISSIONS[1]).hasRole("ADMIN")
-                    .antMatchers(STD_USER_PERMISSIONS).hasRole("USER")
+                    .antMatchers(ADMIN_PERMISSIONS[2]).hasRole(ADMIN_ROLE)
+                    .antMatchers(ADMIN_PERMISSIONS[1]).hasRole(ADMIN_ROLE)
+                    .antMatchers(STD_USER_PERMISSIONS).hasRole(USER_ROLE)
                     .antMatchers(ALL_USERS_PERMISSIONS[1]).permitAll()
                     .antMatchers(SWAGGER_WHITELIST[1]).permitAll()
-                    .antMatchers(ADMIN_PERMISSIONS[0]).hasRole("ADMIN")
+                    .antMatchers(ADMIN_PERMISSIONS[0]).hasRole(ADMIN_ROLE)
                     .antMatchers(SWAGGER_WHITELIST[0]).permitAll()
                     .antMatchers(ALL_USERS_PERMISSIONS[0]).permitAll()
                     .antMatchers("/*").permitAll()

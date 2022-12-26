@@ -3,6 +3,7 @@ package pl.opinion_collector.backend.logic.suggestion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
+import pl.opinion_collector.backend.database_communication.model.Suggestion;
 import pl.opinion_collector.backend.logic.suggestion.dto.SuggestionDto;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +32,8 @@ public class SuggestionService implements Suggestions {
 
     @Override
     public SuggestionDto replySuggestion(Long reviewerId, Integer suggestionId, String suggestionStatus, String suggestionReply) {
-        return SuggestionDto.map(databaseCommunication.replySuggestion(reviewerId, Long.valueOf(suggestionId),
-                suggestionReply, suggestionStatus));
+        Suggestion suggestion = databaseCommunication.replySuggestion(Long.valueOf(suggestionId), reviewerId,
+                suggestionStatus, suggestionReply);
+        return SuggestionDto.map(suggestion);
     }
 }

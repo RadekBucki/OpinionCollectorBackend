@@ -18,7 +18,7 @@ import pl.opinion_collector.backend.database_communication.model.Suggestion;
 public class SuggestionDto {
     @ApiModelProperty(notes = "ID of suggestion", example = "1")
     private Long suggestionId;
-    @ApiModelProperty(notes = "Suggestion reviewer id", example = "5")
+    @ApiModelProperty(notes = "Review id", example = "5")
     private Long reviewId;
     @ApiModelProperty(notes = "ID of user that created suggestion", example = "2")
     private Long userId;
@@ -38,8 +38,17 @@ public class SuggestionDto {
      * @return mapped dto
      */
     public static SuggestionDto map(Suggestion suggestion) {
-        return new SuggestionDto(suggestion.getSuggestionId(), suggestion.getReviewerId().getUserId(),
-                suggestion.getUserId().getUserId(), suggestion.getDescription(), suggestion.getProductId().getProductId(),
-                suggestion.getReviewerId().getUserId(), suggestion.getProductId().getSku());
+
+        Long suggestionId = suggestion.getSuggestionId();
+        Long reviewerId = (suggestion.getReviewerId() != null) ? suggestion.getReviewerId().getUserId() : null;
+        Long reviewId = (suggestion.getReview() != null) ? suggestion.getReview().getReviewId() : null;
+        Long userId = (suggestion.getUserId() != null) ?  suggestion.getUserId().getUserId() : null;
+        String description = suggestion.getDescription();
+        Long productId = (suggestion.getProductId() != null) ? suggestion.getProductId().getProductId() : null;
+        String sku = suggestion.getProductId().getSku();
+
+        return new SuggestionDto(suggestionId, reviewId,
+                userId, description, productId,
+                reviewerId, sku);
     }
 }

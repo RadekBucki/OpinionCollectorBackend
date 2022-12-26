@@ -6,7 +6,7 @@ import pl.opinion_collector.backend.database_communication.DatabaseCommunication
 import pl.opinion_collector.backend.database_communication.model.Suggestion;
 import pl.opinion_collector.backend.logic.suggestion.dto.SuggestionDto;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Component
 public class SuggestionService implements Suggestions {
@@ -16,8 +16,7 @@ public class SuggestionService implements Suggestions {
 
     @Override
     public List<SuggestionDto> getUserSuggestions(Long userId) {
-        return databaseCommunication.getUserSuggestions(userId).stream().map(SuggestionDto::map)
-                .collect(Collectors.toList());
+        return databaseCommunication.getUserSuggestions(userId).stream().map(SuggestionDto::map).toList();
     }
 
     @Override
@@ -27,7 +26,7 @@ public class SuggestionService implements Suggestions {
 
     @Override
     public List<SuggestionDto> getAllSuggestions() {
-        return databaseCommunication.getAllSuggestions().stream().map(SuggestionDto::map).collect(Collectors.toList());
+        return databaseCommunication.getAllSuggestions().stream().map(SuggestionDto::map).toList();
     }
 
     @Override

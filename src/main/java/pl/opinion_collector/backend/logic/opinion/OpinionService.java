@@ -6,7 +6,6 @@ import pl.opinion_collector.backend.database_communication.DatabaseCommunication
 import pl.opinion_collector.backend.logic.opinion.dto.OpinionDto;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 class OpinionService implements Opinions {
@@ -16,7 +15,7 @@ class OpinionService implements Opinions {
 
     @Override
     public List<OpinionDto> getProductOpinions(String sku) {
-        return databaseCommunication.getProductOpinions(sku).stream().map(OpinionDto::map).collect(Collectors.toList());
+        return databaseCommunication.getProductOpinions(sku).stream().map(OpinionDto::map).toList();
     }
 
     @Override
@@ -29,6 +28,6 @@ class OpinionService implements Opinions {
 
     @Override
     public List<OpinionDto> getUserOpinions(Long userId) {
-        return databaseCommunication.getUserOpinions(userId).stream().map(OpinionDto::map).collect(Collectors.toList());
+        return databaseCommunication.getUserOpinions(userId).stream().map(OpinionDto::map).toList();
     }
 }

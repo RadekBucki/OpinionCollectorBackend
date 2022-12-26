@@ -69,16 +69,9 @@ public class OpinionController {
 
         User user = userFacade.getUserByToken(getBearerTokenHeader(req));
 
-        // add opinion
-        try {
-            return ResponseEntity.ok().body(opinionsFacade.addProductOpinion(user.getUserId(), opinionDto.getSku(),
-                    opinionDto.getOpinionValue(), opinionDto.getDescription(), opinionDto.getPictureUrl(),
-                    opinionDto.getAdvantages(), opinionDto.getDisadvantages()));
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(null);
-        }
+        return ResponseEntity.ok().body(opinionsFacade.addProductOpinion(user.getUserId(), opinionDto.getSku(),
+                opinionDto.getOpinionValue(), opinionDto.getDescription(), opinionDto.getPictureUrl(),
+                opinionDto.getAdvantages(), opinionDto.getDisadvantages()));
     }
 
     public static String getBearerTokenHeader(HttpServletRequest request) {

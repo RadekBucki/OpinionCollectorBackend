@@ -3,7 +3,6 @@ package pl.opinion_collector.backend.logic.suggestion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.opinion_collector.backend.database_communication.DatabaseCommunicationFacade;
-import pl.opinion_collector.backend.database_communication.model.Suggestion;
 import pl.opinion_collector.backend.logic.exception.type.InvalidDataIdException;
 import pl.opinion_collector.backend.logic.suggestion.dto.SuggestionDto;
 import java.util.List;
@@ -25,8 +24,7 @@ public class SuggestionService implements Suggestions {
     @Override
     public SuggestionDto addSuggestion(Long userId, String sku, String suggestionDescription) {
         try {
-            Suggestion suggestion = databaseCommunication.addSuggestion(sku, userId, suggestionDescription);
-            return SuggestionDto.map(suggestion);
+            return SuggestionDto.map(databaseCommunication.addSuggestion(sku, userId, suggestionDescription));
         } catch (NullPointerException e) {
             throw new InvalidDataIdException(INVALID_SKU);
         }
@@ -40,9 +38,8 @@ public class SuggestionService implements Suggestions {
     @Override
     public SuggestionDto replySuggestion(Long reviewerId, Integer suggestionId, String suggestionStatus, String suggestionReply) {
         try {
-            Suggestion suggestion = databaseCommunication.replySuggestion(Long.valueOf(suggestionId), reviewerId,
-                    suggestionStatus, suggestionReply);
-            return SuggestionDto.map(suggestion);
+            return SuggestionDto.map(databaseCommunication.replySuggestion(Long.valueOf(suggestionId), reviewerId,
+                    suggestionStatus, suggestionReply));
         } catch (NullPointerException e) {
             throw new InvalidDataIdException(INVALID_ID);
         }

@@ -34,6 +34,7 @@ public class SuggestionDto {
 
     /**
      * Creates SuggestionDto from Suggestion
+     *
      * @param suggestion - suggestion to be mapped to dto
      * @return mapped dto
      */
@@ -42,9 +43,9 @@ public class SuggestionDto {
         Long suggestionId = suggestion.getSuggestionId();
         Long reviewerId = (suggestion.getReviewerId() != null) ? suggestion.getReviewerId().getUserId() : null;
         Long reviewId = (suggestion.getReview() != null) ? suggestion.getReview().getReviewId() : null;
-        Long userId = (suggestion.getUserId() != null) ?  suggestion.getUserId().getUserId() : null;
+        Long userId = suggestion.getUserId().getUserId();
         String description = suggestion.getDescription();
-        Long productId = (suggestion.getProductId() != null) ? suggestion.getProductId().getProductId() : null;
+        Long productId = suggestion.getProductId().getProductId();
         String sku = suggestion.getProductId().getSku();
 
         return new SuggestionDto(suggestionId, reviewId,

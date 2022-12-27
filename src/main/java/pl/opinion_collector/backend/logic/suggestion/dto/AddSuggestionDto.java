@@ -13,6 +13,6 @@ import lombok.Setter;
 public class AddSuggestionDto {
     @ApiModelProperty(notes = "Content of suggestion", example = "Change the colors!", required = true)
     private String description;
-    @ApiModelProperty(notes = "Product identifier", example = "1", required = true)
+    @ApiModelProperty(notes = "Product identifier", example = "sku123", required = true)
     private String sku;
 }

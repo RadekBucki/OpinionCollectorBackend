@@ -27,7 +27,7 @@ public class PublicSuggestionDto {
                   "pictureUrl": "www.picture.url"
                 }
             """)
-    ProductDTO product;
+    ProductDto product;
     @ApiModelProperty(notes = "Representation of reviewer of suggestion", example = """
             "reviewer": {
                   "firstName": "John",
@@ -35,14 +35,14 @@ public class PublicSuggestionDto {
                   "profilePictureUrl": "https://pl.pinterest.com/pin/327848047887112192/"
                  }
             """)
-    ReviewerDTO reviewer;
+    ReviewerDto reviewer;
     @ApiModelProperty(notes = "Representation of review of suggestion", example = """
              "review": {
                    "reply": "Reply message",
                    "status": reply status
                  }
             """)
-    ReviewDTO review;
+    ReviewDto review;
     @ApiModelProperty(notes = "Representation of a user that created suggestion", example = """
             "user": {
                   "firstName": "John",
@@ -50,7 +50,7 @@ public class PublicSuggestionDto {
                   "profilePictureUrl": "https://pl.pinterest.com/pin/327848047887112192/"
                  }
             """)
-    UserDTO user;
+    UserDto user;
 
     /**
      * Creates PublicSuggestionDto from SuggestionDTO
@@ -61,10 +61,10 @@ public class PublicSuggestionDto {
     public static PublicSuggestionDto map(SuggestionDto dto) {
 
         String description = dto.getDescription();
-        ProductDTO productDTO = dto.getProduct();
-        ReviewerDTO reviewerDTO = dto.getReviewer();
-        ReviewDTO reviewDTO = dto.getReview();
-        UserDTO userDTO = dto.getUser();
+        ProductDto productDTO = dto.getProduct();
+        ReviewerDto reviewerDTO = dto.getReviewer();
+        ReviewDto reviewDTO = dto.getReview();
+        UserDto userDTO = dto.getUser();
 
         return new PublicSuggestionDto(description, productDTO, reviewerDTO, reviewDTO, userDTO);
     }

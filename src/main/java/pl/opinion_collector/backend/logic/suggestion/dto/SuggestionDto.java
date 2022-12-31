@@ -26,7 +26,7 @@ public class SuggestionDto {
                   "pictureUrl": "www.picture.url"
                 }
             """)
-    ProductDTO product;
+    ProductDto product;
     @ApiModelProperty(notes = "Representation of reviewer of suggestion", example = """
             "reviewer": {
                   "firstName": "John",
@@ -34,14 +34,14 @@ public class SuggestionDto {
                   "profilePictureUrl": "https://pl.pinterest.com/pin/327848047887112192/"
                  }
             """)
-    ReviewerDTO reviewer;
+    ReviewerDto reviewer;
     @ApiModelProperty(notes = "Representation of review of suggestion", example = """
              "review": {
                    "reply": "Reply message",
                    "status": reply status
                  }
             """)
-    ReviewDTO review;
+    ReviewDto review;
     @ApiModelProperty(notes = "Representation of a user that created suggestion", example = """
             "user": {
                   "firstName": "John",
@@ -49,7 +49,7 @@ public class SuggestionDto {
                   "profilePictureUrl": "https://pl.pinterest.com/pin/327848047887112192/"
                  }
             """)
-    UserDTO user;
+    UserDto user;
 
     /**
      * Creates SuggestionDto from Suggestion
@@ -60,10 +60,10 @@ public class SuggestionDto {
     public static SuggestionDto map(Suggestion suggestion) {
         Long suggestionId = suggestion.getSuggestionId();
         String description = suggestion.getDescription();
-        ProductDTO productDTO = ProductDTO.map(suggestion.getProductId());
-        ReviewerDTO reviewerDTO = ReviewerDTO.map(suggestion.getReviewerId());
-        ReviewDTO reviewDTO = ReviewDTO.map(suggestion.getReview());
-        UserDTO userDTO = UserDTO.map(suggestion.getUserId());
+        ProductDto productDTO = ProductDto.map(suggestion.getProductId());
+        ReviewerDto reviewerDTO = ReviewerDto.map(suggestion.getReviewerId());
+        ReviewDto reviewDTO = ReviewDto.map(suggestion.getReview());
+        UserDto userDTO = UserDto.map(suggestion.getUserId());
         return new SuggestionDto(suggestionId, description, productDTO, reviewerDTO, reviewDTO, userDTO);
     }
 }

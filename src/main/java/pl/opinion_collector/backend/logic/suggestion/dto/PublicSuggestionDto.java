@@ -1,21 +1,22 @@
 package pl.opinion_collector.backend.logic.suggestion.dto;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
-import pl.opinion_collector.backend.database_communication.model.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 /**
- * Helper classes used to avoid dumping huge JSON onto frontend
+ * Helper dto class
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class SuggestionDto {
+public class PublicSuggestionDto {
 
-    @ApiModelProperty(notes = "ID of suggestion", example = "1")
-    Long suggestionId;
+
     @ApiModelProperty(notes = "Content of suggestion", example = "change the color of the toy!",
             required = true)
     String description;
@@ -52,18 +53,19 @@ public class SuggestionDto {
     UserDto user;
 
     /**
-     * Creates SuggestionDto from Suggestion
+     * Creates PublicSuggestionDto from SuggestionDTO
      *
-     * @param suggestion - suggestion to be mapped to dto
+     * @param dto - suggestion dto to be mapped to another dto
      * @return mapped dto
      */
-    public static SuggestionDto map(Suggestion suggestion) {
-        Long suggestionId = suggestion.getSuggestionId();
-        String description = suggestion.getDescription();
-        ProductDto productDTO = ProductDto.map(suggestion.getProductId());
-        ReviewerDto reviewerDTO = ReviewerDto.map(suggestion.getReviewerId());
-        ReviewDto reviewDTO = ReviewDto.map(suggestion.getReview());
-        UserDto userDTO = UserDto.map(suggestion.getUserId());
-        return new SuggestionDto(suggestionId, description, productDTO, reviewerDTO, reviewDTO, userDTO);
+    public static PublicSuggestionDto map(SuggestionDto dto) {
+
+        String description = dto.getDescription();
+        ProductDto productDTO = dto.getProduct();
+        ReviewerDto reviewerDTO = dto.getReviewer();
+        ReviewDto reviewDTO = dto.getReview();
+        UserDto userDTO = dto.getUser();
+
+        return new PublicSuggestionDto(description, productDTO, reviewerDTO, reviewDTO, userDTO);
     }
 }

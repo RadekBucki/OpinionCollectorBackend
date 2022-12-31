@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.opinion_collector.backend.database_communication.model.User;
 import pl.opinion_collector.backend.logic.suggestion.dto.AddSuggestionDto;
 import pl.opinion_collector.backend.logic.suggestion.dto.AnswerSuggestionDto;
+import pl.opinion_collector.backend.logic.suggestion.dto.PublicSuggestionDto;
 import pl.opinion_collector.backend.logic.suggestion.dto.SuggestionDto;
 import pl.opinion_collector.backend.logic.user.UserFacade;
 
@@ -33,9 +34,10 @@ public class SuggestionController {
      * @return list of all Suggestions of user
      */
     @GetMapping("/user")
-    public ResponseEntity<List<SuggestionDto>> getUserSuggestions(HttpServletRequest req) {
+    public ResponseEntity<List<PublicSuggestionDto>> getUserSuggestions(HttpServletRequest req) {
         User user = userFacade.getUserByToken(getBearerTokenHeader(req));
-        return ResponseEntity.ok().body(suggestionFacade.getUserSuggestions(user.getUserId()));
+        return ResponseEntity.ok().body(suggestionFacade.getUserSuggestions(user.getUserId()).stream()
+                .map(PublicSuggestionDto::map).toList());
     }
 
     /**

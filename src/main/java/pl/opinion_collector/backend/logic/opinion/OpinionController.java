@@ -2,7 +2,6 @@ package pl.opinion_collector.backend.logic.opinion;
 
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -69,16 +68,9 @@ public class OpinionController {
 
         User user = userFacade.getUserByToken(getBearerTokenHeader(req));
 
-        // add opinion
-        try {
-            return ResponseEntity.ok().body(opinionsFacade.addProductOpinion(user.getUserId(), opinionDto.getSku(),
-                    opinionDto.getOpinionValue(), opinionDto.getDescription(), opinionDto.getPictureUrl(),
-                    opinionDto.getAdvantages(), opinionDto.getDisadvantages()));
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(null);
-        }
+        return ResponseEntity.ok().body(opinionsFacade.addProductOpinion(user.getUserId(), opinionDto.getSku(),
+                opinionDto.getOpinionValue(), opinionDto.getDescription(), opinionDto.getPictureUrl(),
+                opinionDto.getAdvantages(), opinionDto.getDisadvantages()));
     }
 
     public static String getBearerTokenHeader(HttpServletRequest request) {

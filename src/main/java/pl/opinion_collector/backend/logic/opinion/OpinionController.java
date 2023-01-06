@@ -14,6 +14,7 @@ import java.util.List;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/opinions")
 public class OpinionController {

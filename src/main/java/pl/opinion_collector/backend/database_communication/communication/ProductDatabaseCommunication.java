@@ -79,6 +79,7 @@ public class ProductDatabaseCommunication {
     }
 
     public void removeProduct(String sku) {
+        entityPreUpdater.saveOldData(getProductBySku(sku));
         productRepository.deleteAllBySku(sku);
     }
 

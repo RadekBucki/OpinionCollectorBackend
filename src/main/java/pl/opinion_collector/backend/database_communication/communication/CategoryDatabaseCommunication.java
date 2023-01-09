@@ -39,6 +39,7 @@ public class CategoryDatabaseCommunication {
 
 
     public void removeCategory(String categoryName) {
+        entityPreUpdater.saveOldData(getCategoryByName(categoryName));
         categoryRepository.deleteByCategoryName(categoryName);
     }
 

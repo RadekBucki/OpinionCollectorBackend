@@ -26,12 +26,6 @@ public class EntityPreUpdater<T> {
                         .formatted(className, className)
         ).executeUpdate();
 
-        // Clear table if necessary
-        entityManager.createNativeQuery(
-                "DELETE FROM old_%s"
-                        .formatted(className)
-        ).executeUpdate();
-
         String getterMethod = "get" + className + "Id";
 
         // ID field name with its value

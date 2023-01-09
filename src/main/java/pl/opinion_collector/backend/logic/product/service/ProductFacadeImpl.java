@@ -119,6 +119,7 @@ public class ProductFacadeImpl implements ProductFacade {
     public Category editCategory(String categoryName, Boolean visible) {
         Category category = Optional.ofNullable(databaseCommunication.getCategoryByName(categoryName))
                 .orElseThrow(() -> new InvalidDataIdException(INVALID_NAME));
+        updateCategory(category, visible);
         databaseCommunication.updateCategory(categoryName, visible);
         return category;
     }
@@ -174,6 +175,10 @@ public class ProductFacadeImpl implements ProductFacade {
         product.setPictureUrl(pictureUrl);
         product.setSku(sku);
         product.setVisible(visible);
+    }
+
+    private void updateCategory(Category category, Boolean visible) {
+        category.setVisible(visible);
     }
 
 }

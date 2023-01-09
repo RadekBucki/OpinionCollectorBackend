@@ -7,6 +7,7 @@ import pl.opinion_collector.backend.database_communication.model.Category;
 import pl.opinion_collector.backend.database_communication.model.Product;
 import pl.opinion_collector.backend.database_communication.model.User;
 import pl.opinion_collector.backend.database_communication.repository.ProductRepository;
+import pl.opinion_collector.backend.database_communication.utils.EntityPreUpdater;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +24,9 @@ public class ProductDatabaseCommunication {
 
     @Autowired
     private UserDatabaseCommunication userDatabaseCommunication;
+
+    @Autowired
+    private EntityPreUpdater<Product> entityPreUpdater;
 
     public Product getProductBySku(String sku) {
         return productRepository.findBySku(sku);
@@ -64,6 +68,7 @@ public class ProductDatabaseCommunication {
     }
 
     public void updateProduct(Long authorId, String sku, String name, String pictureUrl, String description, List<String> categoryNames, Boolean visible) {
+        entityPreUpdater.saveOldData(getProductBySku(sku));
         List<Category> categories = mapNamesToCategories(categoryNames);
         Product product = getProductBySku(sku);
         product.getCategories().clear();

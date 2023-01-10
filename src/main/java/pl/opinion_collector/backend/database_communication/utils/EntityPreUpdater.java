@@ -20,11 +20,25 @@ public class EntityPreUpdater<T> {
 
         String className = oldEntity.getClass().getSimpleName();
 
-        // Create new table if necessary
-        entityManager.createNativeQuery(
-                "CREATE TABLE IF NOT EXISTS old_%s AS SELECT * FROM %s WHERE 1 = 0"
-                        .formatted(className, className)
-        ).executeUpdate();
+        // Check if table exists
+        var tableExists = entityManager.createNativeQuery(
+                "SELECT tablename FROM pg_tables WHERE tablename = 'old_%s'"
+                        .formatted(className.toLowerCase())
+        ).getResultList();
+
+        if (tableExists.isEmpty()) {
+
+            entityManager.createNativeQuery(
+                    "CREATE TABLE IF NOT EXISTS old_%s AS SELECT * FROM %s WHERE 1 = 0"
+                            .formatted(className, className)
+            ).executeUpdate();
+
+            entityManager.createNativeQuery(
+                    "ALTER TABLE old_%s ADD COLUMN modification_date TIMESTAMP"
+                            .formatted(className)
+            ).executeUpdate();
+
+        }
 
         String getterMethod = "get" + className + "Id";
 
@@ -42,7 +56,7 @@ public class EntityPreUpdater<T> {
 
         // Insert old value to new table
         entityManager.createNativeQuery(
-                        "INSERT INTO old_%s SELECT * FROM %s WHERE %s = :%s"
+                        "INSERT INTO old_%s SELECT *, CURRENT_TIMESTAMP FROM %s WHERE %s = :%s"
                                 .formatted(className, className, id.getFirst(), id.getFirst())
                 ).setParameter(id.getFirst(), id.getSecond())
                 .executeUpdate();

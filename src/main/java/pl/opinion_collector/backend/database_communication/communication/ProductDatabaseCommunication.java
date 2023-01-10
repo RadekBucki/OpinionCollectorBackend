@@ -3,6 +3,7 @@ package pl.opinion_collector.backend.database_communication.communication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import pl.opinion_collector.backend.database_communication.listener.ProductListener;
 import pl.opinion_collector.backend.database_communication.model.Category;
 import pl.opinion_collector.backend.database_communication.model.Product;
 import pl.opinion_collector.backend.database_communication.model.User;
@@ -41,7 +42,13 @@ public class ProductDatabaseCommunication {
     }
 
     public List<Product> getProductsFilterProducts(String categoryName, String searchPhrase, Double opinionAvgMin, Double opinionAvgMax) {
+
         List<Product> filteredProducts = getAllProducts();
+        ProductListener productListener = new ProductListener();
+
+        // Make sure that avg opinion is calculated
+        filteredProducts.forEach(productListener::calculateAvgOpinion);
+
         if (categoryName != null) {
             Category category = categoryDatabaseCommunication.getCategoryByName(categoryName);
             filteredProducts = filteredProducts.stream()
@@ -53,11 +60,14 @@ public class ProductDatabaseCommunication {
                     .filter(product -> product.getName().toLowerCase().contains(searchPhrase.toLowerCase()))
                     .toList();
         }
+
         Double minAvg = Objects.requireNonNullElse(opinionAvgMin, 0.0);
         Double maxAvg = Objects.requireNonNullElse(opinionAvgMax, 5.0);
+
         filteredProducts = filteredProducts.stream()
                 .filter(product -> ((product.getOpinionAvg() >= minAvg) && (product.getOpinionAvg() <= maxAvg)))
                 .toList();
+
         return filteredProducts;
     }
 

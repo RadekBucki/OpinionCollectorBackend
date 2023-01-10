@@ -10,6 +10,7 @@ import pl.opinion_collector.backend.logic.opinion.dto.OpinionDto;
 import pl.opinion_collector.backend.logic.user.UserFacade;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -65,7 +66,7 @@ public class OpinionController {
                     "authorId, productId",
             required = true)
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OpinionDto> addOpinion(HttpServletRequest req, @RequestBody OpinionDto opinionDto) {
+    public ResponseEntity<OpinionDto> addOpinion(HttpServletRequest req, @RequestBody @Valid OpinionDto opinionDto) {
 
         User user = userFacade.getUserByToken(getBearerTokenHeader(req));
 

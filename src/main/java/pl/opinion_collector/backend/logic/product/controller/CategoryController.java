@@ -62,7 +62,7 @@ public class CategoryController {
             required = true)
     @PostMapping("/add")
     public ResponseEntity<CategoryDto> addCategory(@RequestBody @Valid CategoryArg categoryArg) {
-        return new ResponseEntity<>(map.mapCategory(productFacade.addCategory(categoryArg.getName(),
+        return new ResponseEntity<>(map.mapCategory(productFacade.addCategory(categoryArg.getCategoryName(),
                 categoryArg.getVisible())),
                 HttpStatus.ACCEPTED);
     }
@@ -80,7 +80,7 @@ public class CategoryController {
             required = true)
     @PutMapping("/edit")
     public ResponseEntity<CategoryDto> editCategory(@RequestBody @Valid CategoryArg categoryArg) {
-        return new ResponseEntity<>(map.mapCategory(productFacade.editCategory(categoryArg.getName(),
+        return new ResponseEntity<>(map.mapCategory(productFacade.editCategory(categoryArg.getCategoryName(),
                 categoryArg.getVisible())), HttpStatus.ACCEPTED);
     }
 

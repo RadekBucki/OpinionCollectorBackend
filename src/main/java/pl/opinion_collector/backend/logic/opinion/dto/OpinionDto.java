@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.opinion_collector.backend.database_communication.model.Opinion;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 /**
@@ -23,6 +25,8 @@ public class OpinionDto {
     @ApiModelProperty(notes = "Product identifier", example = "sku123")
     private String sku;
     @ApiModelProperty(notes = "Opinion value, grade", example = "1")
+    @Min(value = 1, message = "Opinion cannot be lower than 1")
+    @Max(value = 5, message = "Opinion cannot be higher than 5")
     private Integer opinionValue;
     @ApiModelProperty(notes = "Content of opinion", example = "dont like it at all")
     private String description;

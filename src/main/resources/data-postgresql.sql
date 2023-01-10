@@ -2,9 +2,9 @@ insert into category values (default, 'Smartfony',true);
 insert into category values (default, 'Laptopy',true);
 insert into category values (default, 'Pozdespoly komputerowe',false);
 
-insert into "user" values (default, true,'admin@admin.com','Uzytkownik','Nr1','$2y$10$TpEZyGw9kU4bBDhTgDjU4ebSFi0j3yoBz/5IOoFLLxd.h9lY2x3ge','www.zdjecie.pl'); -- Haslo: admin
-insert into "user" values (default, false,'321@321.com','Uzytkownik2','Nr2','12321','www.test.pl');
-insert into "user" values (default, false,'test@test.gg','User','Testowy','qwerty123','www.www.pl');
+insert into "user" values (default, true,'admin@admin.com','Uzytkownik','Nr1','$2y$10$TpEZyGw9kU4bBDhTgDjU4ebSFi0j3yoBz/5IOoFLLxd.h9lY2x3ge','www.zdjecie.pl'); -- Password: admin
+insert into "user" values (default, false,'321@321.com','Uzytkownik2','Nr2','$2y$10$urrJZCn8CmJlmmfrhR64guBFZa8EB7SpI5ZubLXKA5sXwW3ZvM/qe','www.test.pl'); -- Password: 12321
+insert into "user" values (default, false,'test@test.gg','User','Testowy','$2y$10$dEaQqErGfxX2R3LeeT1G8eeKQDEuhZvWqii862a9JPciF7JhVWioG','www.www.pl'); -- Password: qwerty123
 
 insert into product  values(default, 'Ekran "6,5cala 6/128GB"','Samsung Galaxy S20',null,'www.picture.url','skusku',true,1);
 insert into product values (default, 'Procesor Intel, dysk tysionc, cztery ka xD','MacBook Air M1',null,'macbook.url','skuu',true,2);

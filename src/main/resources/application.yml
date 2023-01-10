@@ -18,7 +18,7 @@ spring:
   sql:
     init:
       platform: postgresql
-      mode: always
+      mode: never  # Change it to 'always' if you want to initialize data on app start.
       continue-on-error: true
 jwt:
   variables:

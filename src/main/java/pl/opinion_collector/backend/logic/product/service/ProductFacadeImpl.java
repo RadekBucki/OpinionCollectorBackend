@@ -12,6 +12,7 @@ import pl.opinion_collector.backend.database_communication.model.Category;
 import pl.opinion_collector.backend.database_communication.model.Product;
 import pl.opinion_collector.backend.logic.product.service.wrapper.ProductWrapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,6 +85,8 @@ public class ProductFacadeImpl implements ProductFacade {
                                Boolean visible) {
         Product product = Optional.ofNullable(databaseCommunication.getProductBySku(sku))
                 .orElseThrow(() -> new InvalidDataIdException(INVALID_SKU));
+        updateProduct(product, categoryNames, description, name, pictureUrl, sku, visible);
+
         databaseCommunication.updateProduct(authorId,
                 sku,
                 name,
@@ -116,6 +119,7 @@ public class ProductFacadeImpl implements ProductFacade {
     public Category editCategory(String categoryName, Boolean visible) {
         Category category = Optional.ofNullable(databaseCommunication.getCategoryByName(categoryName))
                 .orElseThrow(() -> new InvalidDataIdException(INVALID_NAME));
+        updateCategory(category, visible);
         databaseCommunication.updateCategory(categoryName, visible);
         return category;
     }
@@ -154,6 +158,27 @@ public class ProductFacadeImpl implements ProductFacade {
                 .products(paged.getPageList())
                 .actualPage(page)
                 .build();
+    }
+
+    private void updateProduct(Product product,
+                               List<String> categoryNames,
+                               String description,
+                               String name,
+                               String pictureUrl,
+                               String sku,
+                               Boolean visible) {
+        List<Category> categories = new ArrayList<>();
+        categoryNames.forEach(categoryName -> categories.add(databaseCommunication.getCategoryByName(categoryName)));
+        product.setCategories(categories);
+        product.setDescription(description);
+        product.setName(name);
+        product.setPictureUrl(pictureUrl);
+        product.setSku(sku);
+        product.setVisible(visible);
+    }
+
+    private void updateCategory(Category category, Boolean visible) {
+        category.setVisible(visible);
     }
 
 }

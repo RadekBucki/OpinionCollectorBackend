@@ -13,6 +13,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import pl.opinion_collector.backend.logic.exception.type.*;
 
+import javax.naming.InsufficientResourcesException;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public final ResponseEntity<Object> handleException(RuntimeException exception) {
         return handleResponse(HttpStatus.NOT_ACCEPTABLE, exception);
     }
-    @ExceptionHandler({AuthException.class})
+    @ExceptionHandler({AuthException.class, AuthenticationException.class, InsufficientResourcesException.class})
     public final ResponseEntity<Object> handleAuth(RuntimeException exception) {
         return handleResponse(HttpStatus.UNAUTHORIZED, exception);
     }
@@ -55,10 +56,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({EntityNotFoundException.class})
     public final ResponseEntity<Object> handleNotFound(RuntimeException exception) {
         return handleResponse(HttpStatus.NOT_FOUND, exception);
-    }
-    @ExceptionHandler({AuthenticationException.class})
-    public ResponseEntity<Object> handleAuthenticationException(RuntimeException exception) {
-        return handleResponse(HttpStatus.BAD_REQUEST, exception);
     }
 
     public final ResponseEntity<Object> handleResponse(HttpStatus httpStatus, RuntimeException exception) {

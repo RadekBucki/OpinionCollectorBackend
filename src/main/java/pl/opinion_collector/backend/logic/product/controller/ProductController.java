@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.opinion_collector.backend.logic.product.controller.dto.Mapper;
-import pl.opinion_collector.backend.logic.product.controller.dto.ProductDto;
+import pl.opinion_collector.backend.logic.product.controller.dto.ProductExtendDto;
 import pl.opinion_collector.backend.logic.product.controller.dto.ProductWrapperDto;
 import pl.opinion_collector.backend.logic.product.controller.pojo.ProductArg;
 import pl.opinion_collector.backend.logic.product.service.ProductFacade;
@@ -79,13 +79,13 @@ public class ProductController {
             value = "contains search parameters",
             required = true)
     @GetMapping("/search")
-    public ResponseEntity<List<ProductDto>> searchProducts(@RequestParam(name = "categoryName",
+    public ResponseEntity<List<ProductExtendDto>> searchProducts(@RequestParam(name = "categoryName",
                                                                    required = false) String categoryName,
-                                                           @RequestParam(name = "searchPhrase",
+                                                                 @RequestParam(name = "searchPhrase",
                                                                    required = false) String searchPhrase,
-                                                           @RequestParam(name = "opinionAvgMin",
+                                                                 @RequestParam(name = "opinionAvgMin",
                                                                    required = false) Integer opinionAvgMin,
-                                                           @RequestParam(name = "opinionAvgMax",
+                                                                 @RequestParam(name = "opinionAvgMax",
                                                                    required = false) Integer opinionAvgMax) {
         return new ResponseEntity<>(productFacade.getProductsFiltered(categoryName,
                         searchPhrase,
@@ -99,7 +99,7 @@ public class ProductController {
      * get Product details
      *
      * @param sku - product sku
-     * @return {@link ProductDto}
+     * @return {@link ProductExtendDto}
      */
     @ApiParam(
             name = "sku",
@@ -107,7 +107,7 @@ public class ProductController {
             value = "product sku",
             required = true)
     @GetMapping("/details")
-    public ResponseEntity<ProductDto> getProductsDetails(@RequestParam(name = "sku") String sku) {
+    public ResponseEntity<ProductExtendDto> getProductsDetails(@RequestParam(name = "sku") String sku) {
         return new ResponseEntity<>(map.mapProduct(productFacade.getProductBySku(sku)),
                 HttpStatus.OK);
     }
@@ -117,7 +117,7 @@ public class ProductController {
      *
      * @param req - servlet container
      * @param arg - {@link ProductArg}
-     * @return {@link ProductDto}
+     * @return {@link ProductExtendDto}
      */
     @ApiParam(
             name = "arg",
@@ -125,8 +125,8 @@ public class ProductController {
             value = "products params",
             required = true)
     @PostMapping("/add")
-    public ResponseEntity<ProductDto> addProduct(HttpServletRequest req,
-                                                 @RequestBody @Valid ProductArg arg) {
+    public ResponseEntity<ProductExtendDto> addProduct(HttpServletRequest req,
+                                                       @RequestBody @Valid ProductArg arg) {
         return new ResponseEntity<>(map.mapProduct(productFacade.addProduct(userFacade.
                         getUserByToken(getToken(req)).getUserId(),
                 arg.getSku(),
@@ -142,7 +142,7 @@ public class ProductController {
      *
      * @param req - servlet container
      * @param arg - {@link ProductArg}
-     * @return {@link ProductDto}
+     * @return {@link ProductExtendDto}
      */
     @ApiParam(
             name = "arg",
@@ -150,8 +150,8 @@ public class ProductController {
             value = "products params",
             required = true)
     @PutMapping("/edit")
-    public ResponseEntity<ProductDto> editProduct(HttpServletRequest req,
-                                                  @RequestBody @Valid ProductArg arg) {
+    public ResponseEntity<ProductExtendDto> editProduct(HttpServletRequest req,
+                                                        @RequestBody @Valid ProductArg arg) {
         return new ResponseEntity<>(map.mapProduct(productFacade.editProduct(userFacade.
                         getUserByToken(getToken(req)).getUserId(),
                 arg.getSku(),
@@ -166,7 +166,7 @@ public class ProductController {
      * delete Product
      *
      * @param sku - sku of Product
-     * @return {@link ProductDto}
+     * @return {@link ProductExtendDto}
      */
     @ApiParam(
             name = "sku",
@@ -174,7 +174,7 @@ public class ProductController {
             value = "Contains the sku of the Product",
             required = true)
     @DeleteMapping("/delete")
-    public ResponseEntity<ProductDto> deleteProduct(@RequestParam(name = "sku") String sku) {
+    public ResponseEntity<ProductExtendDto> deleteProduct(@RequestParam(name = "sku") String sku) {
         return new ResponseEntity<>(map.mapProduct(productFacade.removeProduct(sku)),
                 HttpStatus.ACCEPTED);
     }

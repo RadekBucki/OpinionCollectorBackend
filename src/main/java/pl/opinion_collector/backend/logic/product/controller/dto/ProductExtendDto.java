@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class ProductDto {
+public class ProductExtendDto {
     @ApiModelProperty(notes = "product sku", example = "skusku", required = true)
     private String sku;
     @ApiModelProperty(notes = "Product name", example = "Iphone 15", required = true)
@@ -26,8 +26,8 @@ public class ProductDto {
     private Double opinionAvg;
     @ApiModelProperty(notes = "the name of the person who added the product", example = "Will", required = true)
     private String firstName;
-    @ApiModelProperty(notes = "product opinions list", example = "See footnote of Opinions")
+    @ApiModelProperty(notes = "product opinions list", dataType = "pl.opinion_collector.backend.logic.product.controller.dto.OpinionProductDto")
     private List<OpinionProductDto> opinions;
-    @ApiModelProperty(notes = "product categories list", example = "See footnote of Categories", required = true)
+    @ApiModelProperty(notes = "product categories list", dataType = "pl.opinion_collector.backend.logic.product.controller.dto.CategoryDto", required = true)
     private List<CategoryDto> categories;
 }

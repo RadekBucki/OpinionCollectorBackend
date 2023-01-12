@@ -16,8 +16,8 @@ public final class Mapper {
      * @param product - Product from dataBase layer
      * @return ProductDto
      */
-    public ProductDto mapProduct(Product product) {
-        return new ProductDto.ProductDtoBuilder()
+    public ProductExtendDto mapProduct(Product product) {
+        return new ProductExtendDto.ProductExtendDtoBuilder()
                 .sku(product.getSku())
                 .name(product.getName())
                 .pictureUrl(product.getPictureUrl())
@@ -74,17 +74,4 @@ public final class Mapper {
                         .toList())
                 .build();
     }
-
-    /**
-     * get wrapped exception reason
-     *
-     * @param e - Exception
-     * @return ExceptionDto
-     */
-    public ExceptionDto mapException(Exception e){
-        return ExceptionDto.builder()
-                .message(e.getMessage())
-                .build();
-    }
-
 }

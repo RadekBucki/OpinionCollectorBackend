@@ -9,11 +9,17 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    defer-datasource-initialization: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
         globally_quoted_identifiers: true
+  sql:
+    init:
+      platform: postgresql
+      mode: never  # Change it to 'always' if you want to initialize data on app start.
+      continue-on-error: true
 jwt:
   variables:
     jwtSecret:

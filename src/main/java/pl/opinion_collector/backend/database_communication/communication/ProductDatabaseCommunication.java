@@ -3,10 +3,12 @@ package pl.opinion_collector.backend.database_communication.communication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import pl.opinion_collector.backend.database_communication.listener.ProductListener;
 import pl.opinion_collector.backend.database_communication.model.Category;
 import pl.opinion_collector.backend.database_communication.model.Product;
 import pl.opinion_collector.backend.database_communication.model.User;
 import pl.opinion_collector.backend.database_communication.repository.ProductRepository;
+import pl.opinion_collector.backend.database_communication.utils.EntityPreUpdater;
 
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +26,9 @@ public class ProductDatabaseCommunication {
     @Autowired
     private UserDatabaseCommunication userDatabaseCommunication;
 
+    @Autowired
+    private EntityPreUpdater<Product> entityPreUpdater;
+
     public Product getProductBySku(String sku) {
         return productRepository.findBySku(sku);
     }
@@ -37,7 +42,13 @@ public class ProductDatabaseCommunication {
     }
 
     public List<Product> getProductsFilterProducts(String categoryName, String searchPhrase, Double opinionAvgMin, Double opinionAvgMax) {
+
         List<Product> filteredProducts = getAllProducts();
+        ProductListener productListener = new ProductListener();
+
+        // Make sure that avg opinion is calculated
+        filteredProducts.forEach(productListener::calculateAvgOpinion);
+
         if (categoryName != null) {
             Category category = categoryDatabaseCommunication.getCategoryByName(categoryName);
             filteredProducts = filteredProducts.stream()
@@ -49,11 +60,14 @@ public class ProductDatabaseCommunication {
                     .filter(product -> product.getName().toLowerCase().contains(searchPhrase.toLowerCase()))
                     .toList();
         }
+
         Double minAvg = Objects.requireNonNullElse(opinionAvgMin, 0.0);
         Double maxAvg = Objects.requireNonNullElse(opinionAvgMax, 5.0);
+
         filteredProducts = filteredProducts.stream()
                 .filter(product -> ((product.getOpinionAvg() >= minAvg) && (product.getOpinionAvg() <= maxAvg)))
                 .toList();
+
         return filteredProducts;
     }
 
@@ -64,6 +78,7 @@ public class ProductDatabaseCommunication {
     }
 
     public void updateProduct(Long authorId, String sku, String name, String pictureUrl, String description, List<String> categoryNames, Boolean visible) {
+        entityPreUpdater.saveOldData(getProductBySku(sku));
         List<Category> categories = mapNamesToCategories(categoryNames);
         Product product = getProductBySku(sku);
         product.getCategories().clear();
@@ -74,6 +89,7 @@ public class ProductDatabaseCommunication {
     }
 
     public void removeProduct(String sku) {
+        entityPreUpdater.saveOldData(getProductBySku(sku));
         productRepository.deleteAllBySku(sku);
     }
 

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import pl.opinion_collector.backend.database_communication.model.User;
 import pl.opinion_collector.backend.database_communication.repository.UserRepository;
+import pl.opinion_collector.backend.database_communication.utils.EntityPreUpdater;
 
 import java.util.List;
 
@@ -14,6 +15,9 @@ public class UserDatabaseCommunication {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EntityPreUpdater<User> entityPreUpdater;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -29,6 +33,7 @@ public class UserDatabaseCommunication {
     }
 
     public void updateUser(Long userId, String firstName, String lastName, String email, String passwordHash, String profilePictureUrl, Boolean isAdmin) {
+        entityPreUpdater.saveOldData(getUserById(userId));
         userRepository.updateUser(userId, firstName, lastName, email, passwordHash, profilePictureUrl, isAdmin);
     }
 

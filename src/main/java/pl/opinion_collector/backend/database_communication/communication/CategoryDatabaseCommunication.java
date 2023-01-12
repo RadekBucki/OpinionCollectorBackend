@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import pl.opinion_collector.backend.database_communication.model.Category;
 import pl.opinion_collector.backend.database_communication.repository.CategoryRepository;
+import pl.opinion_collector.backend.database_communication.utils.EntityPreUpdater;
 
 import java.util.List;
 
@@ -14,6 +15,9 @@ public class CategoryDatabaseCommunication {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    EntityPreUpdater<Category> entityPreUpdater;
 
     public Category getCategoryByName(String categoryName) {
         return categoryRepository.getCategoryByCategoryName(categoryName);
@@ -29,11 +33,13 @@ public class CategoryDatabaseCommunication {
     }
 
     public void updateCategory(String categoryName, Boolean visible) {
+        entityPreUpdater.saveOldData(getCategoryByName(categoryName));
         categoryRepository.updateCategory(categoryName, visible);
     }
 
 
     public void removeCategory(String categoryName) {
+        entityPreUpdater.saveOldData(getCategoryByName(categoryName));
         categoryRepository.deleteByCategoryName(categoryName);
     }
 

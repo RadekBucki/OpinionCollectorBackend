@@ -3,6 +3,7 @@ package pl.opinion_collector.backend.database_communication.communication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import pl.opinion_collector.backend.database_communication.listener.ProductListener;
 import pl.opinion_collector.backend.database_communication.model.Opinion;
 import pl.opinion_collector.backend.database_communication.repository.OpinionRepository;
 
@@ -26,6 +27,8 @@ public class OpinionDatabaseCommunication {
     }
 
     public Opinion addProductOpinion(Integer opinionValue, String opinionDescription, String opinionPicture, List<String> advantages, List<String> disadvantages, String sku, Long userId) {
+        ProductListener productListener = new ProductListener();
+        productListener.calculateAvgOpinion(productDatabaseCommunication.getProductBySku(sku));
         Opinion opinion = new Opinion(opinionValue, opinionDescription, opinionPicture, advantages, disadvantages, userDatabaseCommunication.getUserById(userId), productDatabaseCommunication.getProductBySku(sku));
         return opinionRepository.save(opinion);
     }

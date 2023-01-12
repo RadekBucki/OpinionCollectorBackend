@@ -43,7 +43,7 @@ public class ProductDatabaseCommunication {
 
     public List<Product> getProductsFilterProducts(String categoryName, String searchPhrase, Double opinionAvgMin, Double opinionAvgMax) {
 
-        List<Product> filteredProducts = getAllProducts();
+        List<Product> filteredProducts = getVisibleProducts();
         ProductListener productListener = new ProductListener();
 
         // Make sure that avg opinion is calculated

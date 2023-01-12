@@ -10,9 +10,9 @@ insert into product  values(default, 'Ekran "6,5cala 6/128GB"','Samsung Galaxy S
 insert into product values (default, 'Procesor Intel, 1000GB, 4K display','MacBook Air M1',1.0,'https://www.macworld.com/wp-content/uploads/2021/03/macbook-air-2108-hero2-100779122-orig-7.jpeg?quality=50&strip=all','skuu',true,2);
 insert into product values(default, 'Mines bitcoin perfectly','GeForceRTX4090',5.0,'https://techstory.in/wp-content/uploads/2021/12/Newsycanuse-1024x626.jpg','sku321',false,3);
 
-insert into opinion values (default, '["Its great"]',5,null,1,1);
-insert into opinion values (default, '["Not so good I would say"]',1,'https://i.ytimg.com/vi/nGHpgArkKOw/maxresdefault.jpg',2,1);
-insert into opinion values (default, '["Really recommend. Heats all my house."]',5,null,3,2);
+insert into opinion values (default, '["Its great"]','Noice :O',null,5,'https://i.ytimg.com/vi/nGHpgArkKOw/maxresdefault.jpg',1,1);
+insert into opinion values (default, null,'Not so good I would say','["Useless", "Bad quality"]',1,null,1,3);
+insert into opinion values (default, '["Really recommend. Heats all my house."]','Wow!','["Expensive"]',4,null,2,1);
 
 insert into suggestion values (default, 'I would add 5th camera',1,null,1,2);
 insert into suggestion values (default, 'Maybe more expensive? I have to work only 3 months to buy it...',2,null,1,2);
@@ -29,11 +29,3 @@ update suggestion set review_review_id=3 where suggestion_id=3;
 insert into category_products values (1,1);
 insert into category_products values (2,2);
 insert into category_products values (3,3);
-
-update opinion set product_id=1 where opinion_id=1;
-update opinion set product_id=2 where opinion_id=2;
-update opinion set product_id=3 where opinion_id=3;
-
-update opinion set user_id=1 where opinion_id=1;
-update opinion set user_id=2 where opinion_id=2;
-update opinion set user_id=3 where opinion_id=3;

@@ -52,7 +52,7 @@ public class Product {
     private List<Suggestion> suggestions = new ArrayList<>();
 
     @NonNull
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinTable(
             name = "category_products",
             joinColumns = @JoinColumn(name = "product_id"),

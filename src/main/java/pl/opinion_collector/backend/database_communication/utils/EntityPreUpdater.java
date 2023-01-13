@@ -21,21 +21,22 @@ public class EntityPreUpdater<T> {
         String className = oldEntity.getClass().getSimpleName();
 
         // Check if table exists
+        String tableName = className.toLowerCase().substring(0, className.contains("$") ? className.indexOf("$") : className.length());
         var tableExists = entityManager.createNativeQuery(
                 "SELECT tablename FROM pg_tables WHERE tablename = 'old_%s'"
-                        .formatted(className.toLowerCase())
+                        .formatted(tableName)
         ).getResultList();
 
         if (tableExists.isEmpty()) {
 
             entityManager.createNativeQuery(
                     "CREATE TABLE IF NOT EXISTS old_%s AS SELECT * FROM %s WHERE 1 = 0"
-                            .formatted(className, className)
+                            .formatted(tableName, tableName)
             ).executeUpdate();
 
             entityManager.createNativeQuery(
                     "ALTER TABLE old_%s ADD COLUMN modification_date TIMESTAMP"
-                            .formatted(className)
+                            .formatted(tableName)
             ).executeUpdate();
 
         }

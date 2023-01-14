@@ -31,6 +31,9 @@ class OpinionService implements Opinions {
                                      String opinionPicture, List<String> advantages, List<String> disadvantages) {
 
         try {
+            if (opinionPicture == null) {
+                opinionPicture = "";
+            }
             Opinion opinion = databaseCommunication.addProductOpinion(opinionValue, opinionDescription, opinionPicture,
                     advantages, disadvantages, sku, userId);
             return OpinionDto.map(opinion);

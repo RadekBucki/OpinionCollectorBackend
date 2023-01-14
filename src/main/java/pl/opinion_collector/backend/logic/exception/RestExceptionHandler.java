@@ -3,6 +3,7 @@ package pl.opinion_collector.backend.logic.exception;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -48,7 +49,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public final ResponseEntity<Object> handleAuth(RuntimeException exception) {
         return handleResponse(HttpStatus.UNAUTHORIZED, exception);
     }
-    @ExceptionHandler({ForbiddenException.class})
+    @ExceptionHandler({ForbiddenException.class, InsufficientAuthenticationException.class})
     public final ResponseEntity<Object> handleForbiddenException(RuntimeException exception) {
         return handleResponse(HttpStatus.FORBIDDEN, exception);
     }

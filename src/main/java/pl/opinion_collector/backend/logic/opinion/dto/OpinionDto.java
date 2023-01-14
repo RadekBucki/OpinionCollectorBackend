@@ -24,6 +24,8 @@ public class OpinionDto {
 
     @ApiModelProperty(notes = "Product identifier", example = "sku123")
     private String sku;
+    @ApiModelProperty(notes = "Product name", example = "Samsung Galaxy S20")
+    private String productName;
     @ApiModelProperty(notes = "Opinion value, grade", example = "1")
     @Min(value = 1, message = "Opinion cannot be lower than 1")
     @Max(value = 5, message = "Opinion cannot be higher than 5")
@@ -45,7 +47,7 @@ public class OpinionDto {
      * @return mapped dto
      */
     public static OpinionDto map(Opinion opinion) {
-        return new OpinionDto(opinion.getProductId().getSku(), opinion.getOpinionValue(),
+        return new OpinionDto(opinion.getProductId().getSku(), opinion.getProductId().getName(), opinion.getOpinionValue(),
                 opinion.getDescription(), opinion.getPictureUrl(), opinion.getAdvantages(), opinion.getDisadvantages());
     }
 

@@ -28,9 +28,10 @@ public class OpinionDatabaseCommunication {
 
     public Opinion addProductOpinion(Integer opinionValue, String opinionDescription, String opinionPicture, List<String> advantages, List<String> disadvantages, String sku, Long userId) {
         ProductListener productListener = new ProductListener();
-        productListener.calculateAvgOpinion(productDatabaseCommunication.getProductBySku(sku));
         Opinion opinion = new Opinion(opinionValue, opinionDescription, opinionPicture, advantages, disadvantages, userDatabaseCommunication.getUserById(userId), productDatabaseCommunication.getProductBySku(sku));
-        return opinionRepository.save(opinion);
+        Opinion added = opinionRepository.save(opinion);
+        productListener.calculateAvgOpinion(productDatabaseCommunication.getProductBySku(sku));
+        return added;
     }
 
     public List<Opinion> getUserOpinions(Long userId) {

@@ -19,9 +19,9 @@ insert into suggestion values (default, 'I would add 5th camera',1,null,1,2);
 insert into suggestion values (default, 'Maybe more expensive? I have to work only 3 months to buy it...',2,null,1,2);
 insert into suggestion values (default, 'Average **N word here** would mine that bitcoin faster. More power!',3,null,1,3);
 
-insert into review values (default, '6th camera on its way','done',1);
-insert into review values (default, 'Increasing the price, wallet will resist','done',2);
-insert into review values (default, 'So please equip yourself with **N word here**','declined',3);
+insert into review values (default, '6th camera on its way','DONE',1);
+insert into review values (default, 'Increasing the price, wallet will resist','DONE',2);
+insert into review values (default, 'So please equip yourself with **N word here**','DECLINED',3);
 
 update suggestion set review_review_id=1 where suggestion_id=1;
 update suggestion set review_review_id=2 where suggestion_id=2;

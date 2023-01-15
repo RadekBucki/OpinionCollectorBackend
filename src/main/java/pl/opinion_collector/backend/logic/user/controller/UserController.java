@@ -83,7 +83,8 @@ public class UserController {
                                           HttpServletRequest httpServletRequest) {
         String headerToken = "";
         User user = new User();
-        if (httpServletRequest.getHeader(AUTHORIZATION) != null) {
+        String headerAuth = httpServletRequest.getHeader(AUTHORIZATION);
+        if (headerAuth != null && !headerAuth.equals("")) {
             headerToken = httpServletRequest.getHeader(AUTHORIZATION).substring("Bearer ".length());
             user = userFacade.getUserByToken(headerToken);
             if (!headerToken.isBlank() && !user.getAdmin())
